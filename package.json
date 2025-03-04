@@ -1,0 +1,32 @@
+{
+  "name": "rosgril",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "browser-sync": "^3.0.3",
+    "gulp": "^5.0.0",
+    "gulp-cached": "^1.1.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-filter": "^9.0.1",
+    "gulp-if": "^3.0.0",
+    "gulp-newer": "^1.4.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-sass": "^6.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-terser": "^2.1.0",
+    "sass": "^1.85.1"
+  },
+  "dependencies": {
+    "jquery": "^3.7.1"
+  }
+}

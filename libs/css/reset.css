@@ -1,0 +1,56 @@
+/* Сброс отступов, полей и боксовой модели */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Наследование семейства шрифтов */
+body, button, input, textarea {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* Убираем стандартный стиль списка */
+ul, ol {
+    list-style: none;
+}
+
+/* Убираем стандартные стили ссылок */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Обнуляем заголовки */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    font-size: inherit;
+}
+
+/* Обнуляем таблицы */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Убираем обводку при клике */
+button, input, textarea {
+    border: none;
+    outline: none;
+    background: none;
+}
+
+/* Базовый стиль для изображений */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Глобальный сброс для flex-контейнеров */
+html, body {
+    height: 100%;
+}
