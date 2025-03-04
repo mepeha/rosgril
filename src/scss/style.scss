@@ -484,17 +484,37 @@ footer {
   }
 }
 
-
+.detail-title {
+  color: rgb(180, 24, 24);
+  font-family: $work;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 125%;
+  text-transform: uppercase;
+}
 .detail-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 118px minmax(0, 1fr) minmax(0, 1fr);
+  box-sizing: border-box;
   &__mini {
-    width: 118px;
-    padding-bottom: 30px;
+
+    padding-bottom: 40px;
+    .slick-prev {
+      display: none !important;
+    }
+    .slick-next {
+      top: unset;
+      right: 50%;
+      bottom: 0;
+    }
+    .slick-next::before {
+      content: url("../img/arrow-slider-detail.svg");
+    }
   }
 
   &__mini-item {
-    margin: 10px 0;
+    margin:0 0 10px 0;
     height: 87px;
     object-fit: contain;
     box-sizing: border-box;
@@ -505,11 +525,249 @@ footer {
   }
 
   &__big {
-    width: 350px;
+    margin-left: 20px;
+    .slick-next {
+      right: 25px;
+      transform: rotate(270deg);
+    }
+    .slick-prev {
+      top: 45%;
+      left: 25px;
+      z-index: 2;
+      transform: rotate(90deg);
+    }
+    .slick-next::before  {
 
+      content: url("../img/arrow-slider-detail.svg");
+    }
+    .slick-prev::before  {
+      content: url("../img/arrow-slider-detail.svg");
+    }
   }
 
   &__big-item {
-    height: 100%;
+
+  }
+
+
+
+
+  &__info {
+    margin-left: 78px;
+  }
+
+  &__title {
+
+    margin-bottom: 25px;
+  }
+
+  &__item {
+    color: rgb(236, 236, 236);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 100%;
+    display: flex;
+    align-items: flex-end; /* Выравниваем всё по нижнему краю */
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  &__name {
+    white-space: nowrap;
+    flex-shrink: 0; /* Чтобы текст не сжимался */
+  }
+
+  &__line {
+    flex-grow: 1; /* Растягивается на всю доступную ширину */
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    height: 1px;
+  }
+
+  &__body {
+    white-space: nowrap;
+    flex-shrink: 0; /* Чтобы текст не сжимался */
+  }
+  &__bottom {
+    margin-top: 35px;
+    display: flex;
+    justify-content: space-around;
+
+  }
+  &__button {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
   }
 }
+
+.price {
+  &__discount {
+    display: flex;
+    justify-content: flex-end;
+    gap: 11px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 130%;
+    margin-bottom: 5px;
+  }
+
+  &__percent {
+    color: rgb(180, 24, 24);
+  }
+
+  &__old {
+    color: rgb(148, 147, 147);
+    text-decoration: line-through;
+  }
+
+  &__new {
+    color: rgb(255, 255, 255);
+    font-size: 35px;
+    font-weight: 400;
+    line-height: 130%;
+  }
+}
+
+.counter {
+  user-select: none;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-family: $work;
+  color: rgb(255, 255, 255);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 125%;
+  &__minus {
+    width: 55px;
+    height: 55px;
+  }
+
+  &__num {
+
+  }
+
+  &__plus {
+    width: 55px;
+    height: 55px;
+  }
+}
+.button-video {
+  padding: 18px 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.detail-description {
+  &__area {
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+    gap: 80px;
+  }
+
+  &__model {
+  }
+
+  &__video {
+  }
+}
+
+
+
+.model {
+  &__title {
+    margin-bottom: 45px;
+  }
+
+  &__area {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  &__item {
+    display: flex;
+    gap: 78px;
+  }
+
+  &__img {
+    width: 194px;
+    height: 194px;
+    box-sizing: border-box;
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: 40px;
+
+  }
+  &__info {
+    margin-top: 30px;
+    color: rgb(236, 236, 236);
+
+    line-height: 130%;
+  }
+  &__name {
+    margin-bottom: 26px;
+    position: relative;
+    font-size: 35px;
+    font-weight: 400;
+  }
+  &__name::before {
+    content: "";
+    bottom: -15px;
+    right: 0;
+    position: absolute;
+    width: calc(100% + 20px);
+    box-sizing: border-box;
+    height: 1px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+  }
+  &__name::after {
+    content: "•";
+    display: flex;
+    justify-content: flex-start;
+    bottom: 0px;
+    left: -88px;
+    transform: rotate(25deg);
+    position: absolute;
+    width: 74px;
+    box-sizing: border-box;
+    height: 12px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+  }
+  &__text {
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+
+.video-review {
+  &__slider {
+  }
+
+  &__item {
+  }
+
+  &__counter {
+  }
+
+  &__prev {
+  }
+
+  &__current {
+  }
+
+  &__all {
+  }
+
+  &__next {
+  }
+}
+
+
+
+
+
+
+
