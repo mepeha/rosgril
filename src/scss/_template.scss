@@ -1,0 +1,89 @@
+body {
+  font-family: $bounded;
+  font-weight: 400;
+  width: 100vw;
+  overflow-x: hidden;
+}
+.container {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 1770px;
+  padding: 0 15px;
+}
+section {
+  padding: 100px 0;
+}
+.button {
+  cursor: pointer;
+  height: 60px;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 245px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 22px;
+  transition: all 0.2s ease-in-out;
+  border-radius: 30px;
+  box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.25);
+}
+.button-white {
+  color: white;
+  box-sizing: border-box;
+  border: 3px solid var(--white, rgba(255, 255, 255, 1));
+  border-radius: 30px;
+}
+.button-white:hover {
+  background-color: white;
+  color: black;
+}
+.button-black {
+  color: black;
+  box-sizing: border-box;
+  border: 3px solid var(--white, rgb(0, 0, 0));
+}
+.button-black:hover {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+.button-black-fill {
+  color: white;
+  box-sizing: border-box;
+  border: 3px solid var(--white, rgb(0, 0, 0));
+  background-color: black;
+}
+.button-black-fill:hover {
+  background-color: white;
+  color: black;
+}
+.button-white-fill {
+  color: black;
+  box-sizing: border-box;
+  border: 3px solid var(--white, rgb(0, 0, 0));
+  background-color: white;
+}
+.button-white-fill:hover {
+  background-color: black;
+  color: white;
+}
+
+
+
+.title {
+  font-size: 55px;
+  font-weight: 500;
+  line-height: 66px;
+  color: white;
+
+}
+
+.slick-next {
+  right: 72px;
+  width: unset;
+  height: unset;
+}
+.slick-next::before {
+  content: url("/dist/img/arrow-left.webp");
+}

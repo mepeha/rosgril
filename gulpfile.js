@@ -8,6 +8,7 @@ const newer = require("gulp-newer");
 const cached = require("gulp-cached");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
+const dependents = require("gulp-dependents");
 
 const nodeModules = "node_modules/";
 
@@ -39,8 +40,8 @@ gulp.task("vendorStyles", function () {
 // Собираем SCSS в style.css + автопрефиксы
 gulp.task("styles", function () {
     return gulp
-        .src("src/scss/**/*.scss")
-        .pipe(cached("scss")) // Кэшируем изменения
+        .src("src/scss/style.scss")
+        .pipe(dependents())
         .pipe(sourcemaps.init())
         .pipe(sass().on("error", sass.logError))
         .pipe(postcss([autoprefixer()])) // Добавляем автопрефиксы

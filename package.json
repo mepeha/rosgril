@@ -17,6 +17,7 @@
     "gulp-cached": "^1.1.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
+    "gulp-dependents": "^1.2.5",
     "gulp-filter": "^9.0.1",
     "gulp-if": "^3.0.0",
     "gulp-newer": "^1.4.0",

@@ -5,120 +5,217 @@
   <title>Title</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="dist/css/vendor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="dist/css/vendor.css">
   <link rel="stylesheet" href="dist/css/style.css">
   </head>
 <body>
 
-<header class="header-main front">
+<header class="header front">
+  <div class="header__holder">
     <div class="container">
-      <div class="header-main__area">
-        <img src="dist/img/logo.svg" alt="Росгриль" class="header-main__logo">
-        <nav class="header-main__nav light-border">
-            <div class="header-main__burger">
-              <span></span>
-              <span></span>
-              <span></span>
+      <div class="header__top">
+        <a href="/" class="header__logo logo">
+          <img src="dist/img/logo.webp" class="logo__img" alt="Логотип">
+          <span class="logo__slogan">
+          Производство декоративных ПВХ-покрытий
+        </span>
+        </a>
+        <div class="header__menu menu">
+          <a href="/">Главная</a>
+          <a href="/">О компании</a>
+          <a href="/">Каталог</a>
+          <a href="/">Новости</a>
+          <a href="/">Контакты</a>
+        </div>
+        <div class="header__info">
+          <div class="header__like like">
+            <img src="dist/img/heart-btn.webp" alt="">
+            <span>2 товара</span>
+          </div>
+          <a href="tel:+7 (831) 000-00-01" class="header__tel tel">+7 (831) 000-00-01</a>
+          <div class="header__callback">
+            <button class="header__callback-btn">Заказать звонок</button>
+            <div class="header__social social">
+              <a href="" class="social__item">
+                <img src="dist/img/mail-btn.webp" alt="">
+              </a>
+              <a href="" class="social__item">
+                <img src="dist/img/mail-btn.webp" alt="">
+              </a>
+              <a href="" class="social__item">
+                <img src="dist/img/mail-btn.webp" alt="">
+              </a>
             </div>
-            МЕНЮ
-        </nav>
-        <div class="header-main__social social">
-          <a href="#" target="_blank" class="social__item light-border">
-            <img src="dist/img/telega.svg" alt="Телеграмм">
-          </a>
-          <a href="#" target="_blank" class="social__item light-border">
-            <img src="dist/img/telega.svg" alt="Телеграмм">
-          </a>
-          <a href="#" target="_blank" class="social__item light-border">
-            <img src="dist/img/telega.svg" alt="Телеграмм">
-          </a>
-          <a href="#" target="_blank" class="social__item light-border">
-            <img src="dist/img/telega.svg" alt="Телеграмм">
-          </a>
-        </div>
-        <div class="header-main__search search">
-          <div class="search__icon">
-            <img src="dist/img/search.svg" alt="">
-          </div>
-          
-        </div>
-        <div class="header-main__card card card--active light-border">
-          <img src="dist/img/cart.svg" alt="Корзина" class="card__icon">
-          <div class="card__number">
-            1
-          </div>
-          <img src="dist/img/arrow.svg" alt="Стрелка" class="card__arrow">
-        </div>
-      </div>
-    </div>
-</header>
-<main>
-  <div class="main-slider">
-
-    <div class="main-slider__elem" style="background-image: url(/dist/img/main-slider-back-1.webp)">
-      <img src="dist/img/slider-img-1.png" alt="Товар" class="main-slider__image">
-      <div class="container">
-        <div class="main-slider__area">
-          <h2 class="main-slider__title">
-            Для кулинарии и готовки
-          </h2>
-          <div class="main-slider__btns">
-            <a href="#" class="main-slider__btn light-border">Каталог</a>
-            <a href="#" class="main-slider__btn light-border arrow">Заказать звонок</a>
-          </div>
-          <div class="main-slider__tabs">
-            <a href="" class="main-slider__tab">
-              Мультипечи
-            </a>
-            <a href="" class="main-slider__tab">
-              Грили
-            </a>
-            <a href="" class="main-slider__tab">
-              Мультипечи
-            </a>
-            <a href="" class="main-slider__tab">
-              Мультипечи
-            </a>
           </div>
         </div>
-
-
-
-      </div>
-    </div>
-    <div class="main-slider__elem" style="background-image: url(/dist/img/main-slider-back-2.webp)">
-      <img src="dist/img/slider-img-2.webp" alt="Товар" class="main-slider__image">
-      <div class="container">
-        <div class="main-slider__area">
-          <h2 class="main-slider__title">
-            Для интерьера и экстерьера
-          </h2>
-          <div class="main-slider__btns">
-            <a href="#" class="main-slider__btn light-border">Каталог</a>
-            <a href="#" class="main-slider__btn light-border arrow">Заказать звонок</a>
-          </div>
-          <div class="main-slider__tabs">
-            <a href="" class="main-slider__tab">
-              Мультипечи
-            </a>
-            <a href="" class="main-slider__tab">
-              Грили
-            </a>
-            <a href="" class="main-slider__tab">
-              Мультипечи
-            </a>
-            <a href="" class="main-slider__tab">
-              Мультипечи
-            </a>
-          </div>
-        </div>
-
-
 
       </div>
     </div>
   </div>
+
+
+  <div class="front-banner">
+    <div class="front-banner__item" style="background-image: url(dist/img/bg-main-slider.webp)">
+      <div class="container">
+        <div class="front-banner__area">
+          <div class="front-banner__time">
+            ОСЕНЬ 2025 ГОДА
+          </div>
+          <div class="front-banner__title title">
+            Открытие производства декоративных ПВХ-покрытий
+          </div>
+          <a href="" class="front-banner__button button button-white">
+            Подробнее
+          </a>
+        </div>
+
+      </div>
+    </div>
+    <div class="front-banner__item" style="background-image: url(dist/img/bg-main-slider.webp)">
+      <div class="container">
+        <div class="front-banner__area">
+          <div class="front-banner__time">
+            ОСЕНЬ 2025 ГОДА
+          </div>
+          <div class="front-banner__title title">
+            Открытие производства декоративных ПВХ-покрытий
+          </div>
+          <a href="" class="front-banner__button button button-white">
+            Подробнее
+          </a>
+        </div>
+
+      </div>
+    </div>
+    <div class="front-banner__item" style="background-image: url(dist/img/bg-main-slider.webp)">
+      <div class="container">
+        <div class="front-banner__area">
+          <div class="front-banner__time">
+            ОСЕНЬ 2025 ГОДА
+          </div>
+          <div class="front-banner__title title">
+            Открытие производства декоративных ПВХ-покрытий
+          </div>
+          <a href="" class="front-banner__button button button-white">
+            Подробнее
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="collection">
+    <div class="container">
+      <div class="collection__head">
+        <h2 class="collection__title title">
+          Коллекция
+        </h2>
+        <div class="collection__buttons">
+          <button class="button button-black">
+            Заказать звонок
+          </button>
+          <a href="/catalog" class="button button-black-fill">
+            Вся коллекция
+          </a>
+        </div>
+
+      </div>
+      <div class="collection__area">
+        <div class="collection__nav">
+          <div class="collection__nav-item" style="background-image: url(dist/img/collection-tab-bg-1.webp)">
+            Однотонные
+          </div>
+          <div class="collection__nav-item" style="background-image: url(dist/img/collection-tab-bg-2.webp)">
+            Каменные
+          </div>
+          <div class="collection__nav-item" style="background-image: url(dist/img/collection-tab-bg-3.webp)">
+            Древесные
+          </div>
+        </div>
+        <div class="collection__list">
+          <div class="product">
+            <div class="product__img">
+              <img src="dist/img/catalog-image-1.webp" alt="" class="product__photo">
+              <div class="new">Новинка</div>
+              <a href="dist/img/catalog-image-3.webp" data-fancybox="" class="loop">
+                <img src="dist/img/loop.webp" alt="">
+              </a>
+              <a href="/catalog" class="product__more button button-white">Подробнее</a>
+            </div>
+            <div class="product__name">
+              Аззурро
+            </div>
+            <div class="product__desc">
+              Размеры: 0,3 х 1400 мм
+            </div>
+          </div>
+          <div class="product">
+            <div class="product__img">
+              <img src="dist/img/catalog-image-2.webp" alt="" class="product__photo">
+              <div class="new">Новинка</div>
+              <a href="dist/img/catalog-image-3.webp" data-fancybox="" class="loop">
+                <img src="dist/img/loop.webp" alt="">
+              </a>
+              <div class="product__more button button-white">Подробнее</div>
+            </div>
+            <div class="product__name">
+              Аззурро
+            </div>
+            <div class="product__desc">
+              Размеры: 0,3 х 1400 мм
+            </div>
+          </div>
+          <div class="product">
+            <div class="product__img">
+              <img src="dist/img/catalog-image-3.webp" alt="" class="product__photo">
+              <div class="new">Новинка</div>
+              <a href="dist/img/catalog-image-3.webp" data-fancybox="" class="loop">
+                <img src="dist/img/loop.webp" alt="">
+              </a>
+              <div class="product__more button button-white">Подробнее</div>
+            </div>
+            <div class="product__name">
+              Аззурро
+            </div>
+            <div class="product__desc">
+              Размеры: 0,3 х 1400 мм
+            </div>
+          </div>
+          <div class="product">
+            <div class="product__img">
+              <img src="dist/img/catalog-image-1.webp" alt="" class="product__photo">
+              <div class="new">Новинка</div>
+              <a href="dist/img/catalog-image-1.webp" data-fancybox class="loop">
+                <img src="dist/img/loop.webp" alt="">
+              </a>
+              <div class="product__more button button-white">Подробнее</div>
+            </div>
+            <div class="product__name">
+              Аззурро
+            </div>
+            <div class="product__desc">
+              Размеры: 0,3 х 1400 мм
+            </div>
+          </div>
+        </div>
+        <div class="collection__nav">
+          <div class="collection__nav-item" style="background-image: url(dist/img/collection-tab-bg-4.webp)">
+            Однотонные
+          </div>
+          <div class="collection__nav-item" style="background-image: url(dist/img/collection-tab-bg-5.webp)">
+            Каменные
+          </div>
+          <div class="collection__nav-item" style="background-image: url(dist/img/collection-tab-bg-6.webp)">
+            Древесные
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
 </main>
 
 

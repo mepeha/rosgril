@@ -1,0 +1,100 @@
+.header {
+  background: linear-gradient(180.00deg, rgba(71, 55, 34, 1),rgba(71, 55, 34, 0.8) 100%);
+  color: white;
+  &__top {
+    padding: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    img {
+      width: 126px;
+      height: 166px;
+    }
+    span {
+
+      max-width: 126px;
+      font-family: $nunito;
+      font-size: 14px;
+      line-height: 19px;
+      text-align: left;
+    }
+  }
+
+  &__menu {
+    justify-self: center;
+    flex: 1;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 27px;
+  }
+
+  &__like {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  &__tel {
+  }
+
+  &__callback {
+    display: flex;
+    gap: 24px;
+  }
+
+  &__callback-btn {
+    color: white;
+    text-decoration: underline;
+  }
+
+  &__social {
+    display: flex;
+    gap: 9px;
+  }
+}
+
+.front {
+  .header__holder  {
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}
+
+.logo {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  &__img {
+  }
+
+  &__slogan {
+    font-family: $nunito;
+  }
+}
+.menu {
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.like {
+}
+
+.tel {
+}
+
+.social {
+  &__item {
+  }
+}

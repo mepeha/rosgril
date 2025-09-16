@@ -1,0 +1,125 @@
+.collection {
+  background: var(--brown, linear-gradient(269.43deg, rgba(147.11538696289062, 129.7341766357422, 92.65440368652344, 1),rgba(78, 60, 37, 1) 100%));
+  &__head {
+    display: flex;
+    margin-bottom: 67px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__title {
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 36px;
+  }
+
+  &__area {
+  }
+
+  &__nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+  }
+
+  &__nav-item {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 140px;
+
+    color: rgba(64, 46, 36, 1);
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 26px;
+  }
+
+  &__list {
+    padding: 37px 55px;
+    background: linear-gradient(90.00deg, rgba(240.28846740722656, 240.28846740722656, 240.28846740722656, 1),rgba(240.28846740722656, 240.28846740722656, 240.28846740722656, 1) 70%,rgba(236.61058044433594, 229.6188201904297, 220.6848602294922, 1) 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+
+
+
+
+.product {
+  border-radius: 30px;
+  padding: 25px;
+  transition: all 0.2s ease-in-out;
+  &__img {
+    height: 248px;
+    position: relative;
+    margin-bottom: 18px;
+  }
+  &__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  &__more {
+    transition: all 0.2s ease-in-out;
+    position: absolute;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    cursor: pointer;
+  }
+
+  &__name {
+    font-family: $nunito;
+    font-size: 18px;
+    line-height: 25px;
+  }
+
+  &__desc {
+    font-family: $nunito;
+    font-size: 14px;
+    line-height: 19px;
+  }
+  .new {
+    width: 80px;
+    height: 20px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    background: var(--beige, rgba(167, 152, 120, 1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 19px;
+    letter-spacing: 0%;
+    text-align: center;
+  }
+
+  .loop {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    opacity: 0;
+  }
+}
+.product:hover  {
+  .product__more {
+    opacity: 1;
+  }
+  & {
+    box-shadow: 0px 2px 4px 0px rgba(38, 38, 38, 0.02),0px 10px 40px 0px rgba(38, 38, 38, 0.05),0px 2px 4px 0px rgba(38, 38, 38, 0.02),0px 10px 40px 0px rgba(38, 38, 38, 0.05);
+    background: rgba(247, 247, 247, 1);
+  }
+  .loop {
+    opacity: 1;
+    cursor: pointer;
+  }
+}
+
