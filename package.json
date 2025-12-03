@@ -28,6 +28,7 @@
     "sass": "^1.85.1"
   },
   "dependencies": {
+    "animate.css": "^4.1.1",
     "jquery": "^3.7.1"
   }
 }
