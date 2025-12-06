@@ -1,0 +1,93 @@
+.cases {
+  background-color: rgb(32,32,32);
+}
+
+.cases__topper {
+  border-radius: 60px;
+  background-color: rgb(250,250,250);
+}
+
+
+
+
+.cases__head {
+}
+
+
+.cases__title {
+}
+
+
+
+.cases__slogan {
+}
+
+
+
+.cases__area {
+  display: grid;
+  gap: 12px;
+}
+
+.cases__item {
+  padding: 28px;
+  border-radius: 30px;
+}
+
+
+
+.cases__name {
+  font-family: $inter;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+
+.counter {
+  color: rgb(121,121,121);
+  font-size: 20px;
+}
+
+.name {
+  font-size: 24px;
+}
+
+.cases__body {
+  display: grid;
+  grid-template-columns: 1fr 232px;
+  gap: 12px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info__item {
+
+}
+
+.info__name {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.info__text {
+}
+
+.image-open {
+  border: 1px solid rgb(232,232,232);
+  border-radius: 30px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 28px;
+  background-position: center;
+  background-size: cover;
+
+}

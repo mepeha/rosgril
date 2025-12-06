@@ -1,0 +1,56 @@
+.partners {
+}
+
+
+
+.partners__head {
+  margin-bottom: 50px;
+}
+
+
+
+.partners__title {
+}
+
+
+
+.partners__slogan {
+}
+
+
+.partners__wrapper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.partners__area {
+  display: flex;
+  flex-shrink: 0;
+  animation: partners-run 20s linear infinite;
+  white-space: nowrap;
+}
+
+.partners__item {
+  width: 300px;
+  object-fit: contain;
+  padding: 0 30px;
+  flex-shrink: 0;
+  opacity: 0.8;
+  transition: opacity .3s;
+}
+
+.partners__item:hover {
+  opacity: 1;
+}
+
+@keyframes partners-run {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
