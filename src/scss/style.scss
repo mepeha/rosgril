@@ -1,13 +1,16 @@
-$onest: "Onest", sans-serif;
 $inter: "Inter", sans-serif;
-$blue: rgba(56, 101, 248, 1);
-$dark: rgba(32, 32, 32, 1);
 
+
+@mixin max($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
 
 @import "template";
 @import "header";
-@import "about";
-@import "services";
-@import "partners";
-@import "why";
-@import "cases";
+@import "banner";
+@import "create";
+
+
+

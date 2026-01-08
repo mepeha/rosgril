@@ -28,7 +28,12 @@
     "sass": "^1.85.1"
   },
   "dependencies": {
+    "@fancyapps/ui": "^6.1.7",
+    "@studio-freight/lenis": "^1.0.42",
     "animate.css": "^4.1.1",
-    "jquery": "^3.7.1"
+    "aos": "^2.3.4",
+    "jquery": "^3.7.1",
+    "relax": "^0.1.1",
+    "rellax": "^1.12.1"
   }
 }

@@ -30,7 +30,11 @@ gulp.task("serve", function () {
 // Объединяем и минифицируем CSS-библиотеки (только если изменились)
 gulp.task("vendorStyles", function () {
     return gulp
-        .src("libs/css/*.css")
+        .src([
+            "node_modules/aos/dist/aos.css",
+            "node_modules/@fancyapps/ui/dist/fancybox/fancybox.css",
+            "libs/css/*.css",
+        ])
         .pipe(newer("dist/css/vendor.css"))
         .pipe(concat("vendor.css"))
         .pipe(gulp.dest("dist/css"))
@@ -56,6 +60,8 @@ gulp.task("vendorScripts", function () {
     return gulp
         .src([
             nodeModules + "jquery/dist/jquery.min.js",
+            "node_modules/aos/dist/aos.js",
+            "node_modules/@fancyapps/ui/dist/fancybox/fancybox.umd.js",
             "libs/js/*.min.js"
         ])
         .pipe(newer("dist/js/vendor.js"))
