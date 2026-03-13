@@ -1,0 +1,68 @@
+@use "globals" as *;
+
+.end-home__area {
+  .slick-prev,
+  .slick-next {
+    width: 20px;
+    height: 43px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+
+  .slick-prev {
+    left: -45px;
+  }
+
+  .slick-next {
+    right: -45px;
+  }
+
+  .slick-slide {
+    margin: 0 15px;
+  }
+
+  .slick-prev:before,
+  .slick-next:before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 43px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 1;
+  }
+
+  .slick-prev:before {
+    background-image: url("/dist/img/arrow-left.webp");
+  }
+
+  .slick-next:before {
+    background-image: url("/dist/img/arrow-right.webp");
+  }
+}
+
+.fancybox__container {
+  .f-button.is-prev,
+  .f-button.is-next {
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border: 0;
+  }
+
+  .f-button.is-prev {
+    background-image: url("/dist/img/arrow-left.webp");
+  }
+
+  .f-button.is-next {
+    background-image: url("/dist/img/arrow-right.webp");
+  }
+
+  .f-button.is-prev svg,
+  .f-button.is-next svg {
+    display: none;
+  }
+}

@@ -1,0 +1,95 @@
+@use "globals" as *;
+
+.feedback {
+  background: rgba(244, 177, 102, 1);
+  padding: 100px 0;
+  position: relative;
+}
+
+.container {
+}
+
+.feedback__area {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  @include laptop {
+    flex-direction: column;
+    width: 100%;
+    gap: 38px;
+  }
+}
+
+.feedback__info {
+  width: 450px;
+  color: black;
+  .text {
+
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 34px;
+    letter-spacing: 0%;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+  .info__title {
+  }
+  @include laptop {
+    width: 100%;
+  }
+}
+
+
+
+
+.feedback__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 579px;
+  @include laptop {
+    width: 100%;
+  }
+}
+
+.feedback__input {
+  padding: 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(124, 83, 37, 1);
+  color: rgba(0, 0, 0, 1);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0%;
+  text-align: left;
+  &::placeholder {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 34px;
+    letter-spacing: 0%;
+    text-align: left;
+  }
+  @include laptop {
+    width: 100%;
+  }
+}
+
+.feedback__button {
+  margin-top: 36px;
+  border: 1px solid black;
+}
+.feedback__bg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  mix-blend-mode: multiply;
+  z-index: 1;
+}
+.button {
+}
+
+.button-stroke {
+}
