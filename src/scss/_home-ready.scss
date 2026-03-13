@@ -1,0 +1,32 @@
+@use "globals" as *;
+
+.home-ready {
+  background: rgba(43, 43, 43, 1);
+}
+
+.container {
+}
+
+.home-ready__area {
+  padding: 46px 0 66px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 150px;
+  @include laptop {
+    padding: 46px 0 66px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+}
+
+.home-ready__image {
+  height: 100%;
+  @include laptop {
+    width: 100%;
+  }
+}
+
+
+

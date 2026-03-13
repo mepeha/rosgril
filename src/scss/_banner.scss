@@ -1,21 +1,25 @@
+@use "globals" as *;
 .banner {
-  height: 600px;
-}
-
-.container {
+  @include laptop {
+    position: relative;
+  }
 }
 
 .banner__area {
   position: relative;
-
+  height: 600px;
+  @include laptop {
+    height: fit-content;
+    position: unset;
+  }
 }
 
 .banner__title {
   text-transform: uppercase;
-  font-size: 60px;
-  font-weight: 400;
-  line-height: 70px;
   padding-top: 106px;
+  @include tablet {
+    padding-top: 214px;
+  }
 }
 .banner__button {
   margin-top: 32px;
@@ -26,4 +30,14 @@
   position: absolute;
   left: 500px;
   top: 0;
+  height: 100%;
+  object-fit: cover;
+  @include desktop {
+    left: 150px;
+  }
+  @include laptop {
+    left: 0;
+    height: 236px;
+    width: 100%;
+  }
 }

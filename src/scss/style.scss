@@ -1,16 +1,11 @@
-$inter: "Inter", sans-serif;
-
-
-@mixin max($width) {
-  @media (max-width: $width) {
-    @content;
-  }
-}
-
-@import "template";
-@import "header";
-@import "banner";
-@import "create";
-
-
-
+@use "globals" as *;
+@use "template";
+@use "header";
+@use "banner";
+@use "create";
+@use "page-menu";
+@use "home-ready";
+@use "catalog";
+@use "end-home";
+@use "feedback";
+@use "footer";

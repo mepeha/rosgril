@@ -1,0 +1,109 @@
+@use "globals" as *;
+.page-menu {
+}
+
+
+.page-menu__area {
+  padding: 50px 300px 50px 70px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 162px 162px 162px;
+  gap: 20px;
+  background-color: rgba(33, 33, 33, 1);
+  position: relative;
+  @include desktop {
+    padding: 50px 70px;
+  }
+  @include laptop {
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px 70px 70px 70px;
+    padding: 15px 15px;
+  }
+}
+
+.page-menu__item {
+  position: relative;
+  z-index: 2;
+  padding: 33px 47px;
+
+  &.project {
+    grid-row: span 3;
+    background-image: url("/dist/img/page-menu-item-bg.webp");
+  }
+  &:nth-child(2) {
+    background: rgba(255, 249, 242, 1);
+  }
+  &:nth-child(3) {
+    background: rgba(255, 243, 229, 1);
+  }
+  &:nth-child(4) {
+    background: rgba(240, 214, 185, 1);
+  }
+  @include laptop {
+    padding: 10px 70px 10px 15px;
+    &.project {
+      grid-row: unset;
+      background-position: left center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+  }
+}
+
+.page-menu__bg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  mix-blend-mode: lighten;
+  z-index: 1;
+}
+.name {
+  color: rgba(0, 0, 0, 1);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: 0%;
+  text-align: left;
+  @include laptop {
+    font-size: 16px;
+  }
+}
+.project .name {
+  font-size: 28px;
+  @include laptop {
+    font-size: 18px;
+  }
+}
+.price {
+  position: absolute;
+  border-radius: 18px;
+  background: rgba(33, 33, 33, 1);
+  font-size: 28px;
+  line-height: 34px;
+  padding: 10px;
+  left: 37px;
+  bottom: 22px;
+  @include laptop {
+    font-size: 14px;
+    line-height: 19px;
+    padding: 3px 5px;
+    left: 15px;
+    bottom: 13px;
+  }
+}
+
+.arrow {
+  position: absolute;
+  right: 37px;
+  bottom: 22px;
+  @include laptop {
+    svg {
+      width: 46.04px;
+      height: 46.04px;
+    }
+
+    right: 12px;
+    bottom: 6px;
+  }
+}
