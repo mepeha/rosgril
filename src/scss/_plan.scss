@@ -1,0 +1,47 @@
+@use "globals" as *;
+
+.plans {
+  background-color: white;
+  color: black;
+  padding: 41px;
+}
+
+.container {
+}
+
+.block-title {
+}
+
+.plans__area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.plans__part {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  button {
+    background: unset;
+    color: black;
+    border: 1px solid rgb(0, 0, 0);
+
+  }
+}
+
+.plans__title {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 39px;
+  text-transform: uppercase;
+}
+
+.plans__image {
+  img {
+    height: 500px;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+

@@ -3,6 +3,8 @@ $(function () {
     const $burger = $('.header__burger');
     const $mobileMenu = $('.mobile-menu');
     const $mobileOverlay = $('.mobile-menu__overlay');
+    const $cardMainSlider = $('.card-slider__main');
+    const $cardMiniSlider = $('.card-slider__mini');
     const $endHomeSlider = $('.end-home__area');
 
     if ($burger.length && $mobileMenu.length) {
@@ -42,6 +44,36 @@ $(function () {
         });
     }
 
+    if ($cardMainSlider.length && $cardMiniSlider.length) {
+        if (!$cardMainSlider.hasClass('slick-initialized')) {
+            $cardMainSlider.slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                asNavFor: '.card-slider__mini',
+                infinite: false,
+                arrows: false,
+                dots: false,
+                adaptiveHeight: true
+            });
+        }
+
+        if (!$cardMiniSlider.hasClass('slick-initialized')) {
+            $cardMiniSlider.slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                asNavFor: '.card-slider__main',
+                focusOnSelect: true,
+                centerMode: true,
+                centerPadding: '0px',
+                infinite: false,
+                arrows: false,
+                dots: false,
+                swipeToSlide: true,
+                draggable: true
+            });
+        }
+    }
+
     if ($endHomeSlider.length && !$endHomeSlider.hasClass('slick-initialized')) {
         $endHomeSlider.slick({
             slidesToShow: 3,
@@ -69,6 +101,13 @@ $(function () {
                     }
                 }
             ]
+        });
+    }
+
+    if (window.Fancybox && typeof Fancybox.bind === 'function') {
+        Fancybox.bind('[data-fancybox]', {
+            dragToClose: false,
+            placeFocusBack: false
         });
     }
 });

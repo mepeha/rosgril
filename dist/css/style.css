@@ -464,6 +464,26 @@ h3 {
   }
 }
 
+.page-menu .price {
+  position: absolute;
+  border-radius: 18px;
+  background: rgb(33, 33, 33);
+  font-size: 28px;
+  line-height: 34px;
+  padding: 10px;
+  left: 37px;
+  bottom: 22px;
+}
+@media (max-width: 991px) {
+  .page-menu .price {
+    font-size: 14px;
+    line-height: 19px;
+    padding: 3px 5px;
+    left: 15px;
+    bottom: 13px;
+  }
+}
+
 .page-menu__area {
   padding: 50px 300px 50px 70px;
   display: grid;
@@ -545,26 +565,6 @@ h3 {
 @media (max-width: 991px) {
   .project .name {
     font-size: 18px;
-  }
-}
-
-.price {
-  position: absolute;
-  border-radius: 18px;
-  background: rgb(33, 33, 33);
-  font-size: 28px;
-  line-height: 34px;
-  padding: 10px;
-  left: 37px;
-  bottom: 22px;
-}
-@media (max-width: 991px) {
-  .price {
-    font-size: 14px;
-    line-height: 19px;
-    padding: 3px 5px;
-    left: 15px;
-    bottom: 13px;
   }
 }
 
@@ -963,5 +963,205 @@ h3 {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.card-head__area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 650px);
+  gap: 20px;
+}
+
+.card-slider {
+  max-width: 700px;
+}
+
+.card-slider__main {
+  margin-bottom: 16px;
+}
+.card-slider__main .slick-slide img {
+  width: 100%;
+  display: block;
+}
+
+.card-slider__main-item {
+  display: block;
+}
+
+.card-slider__mini {
+  margin: 0 -8px;
+}
+.card-slider__mini .slick-slide {
+  margin: 0 8px;
+}
+.card-slider__mini .slick-slide img {
+  width: 100%;
+  display: block;
+  filter: brightness(0.82);
+}
+.card-slider__mini .card-slider__mini-item.slick-current {
+  opacity: 1;
+}
+.card-slider__mini .card-slider__mini-item.slick-current img {
+  filter: brightness(1);
+}
+
+.card-slider__mini-item {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.card-info {
+  padding: 24px;
+  background: rgb(43, 43, 43);
+  color: white;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 22px;
+}
+.card-info .param {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+.card-info .param__head {
+  color: rgb(178, 178, 178);
+}
+.card-info .material {
+  padding: 12px 0;
+  border-top: 1px solid rgb(108, 108, 108);
+  border-bottom: 1px solid rgb(108, 108, 108);
+  margin: 12px 0;
+}
+.card-info .material__title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.card-info .general {
+  display: grid;
+  grid-template-columns: minmax(0, 194px) minmax(0, 1fr);
+  gap: 28px;
+}
+.card-info .price {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: rgb(244, 177, 102);
+}
+.card-info .price__area {
+  padding: 20px 10px;
+  background: rgb(61, 61, 61);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.card-info .price__title {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 22px;
+  margin-bottom: 2px;
+}
+.card-info .price__subtitle {
+  color: rgb(178, 178, 178);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17px;
+  margin-bottom: 12px;
+}
+.card-info .price__cost {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 29px;
+}
+.card-info .price__more {
+  margin-top: 8px;
+  color: rgb(178, 178, 178);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+  letter-spacing: 0%;
+  text-align: left;
+  text-decoration-line: underline;
+}
+.card-info .dop {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgb(108, 108, 108);
+  padding-left: 28px;
+}
+.card-info .dop__title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 22px;
+  margin-bottom: 12px;
+}
+.card-info .buttons {
+  margin-top: 24px;
+}
+.card-info .buttons__head {
+  margin-bottom: 24px;
+}
+.card-info .buttons__head .button {
+  width: 100%;
+}
+.card-info .buttons__change {
+  display: flex;
+  justify-content: stretch;
+  gap: 24px;
+}
+.card-info .buttons__change .button {
+  text-align: center;
+  width: 100%;
+}
+
+.card-info__subtitle {
+  color: rgb(146, 146, 146);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 29px;
+}
+
+.card-info__title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 29px;
+  margin-bottom: 12px;
+}
+
+.plans {
+  background-color: white;
+  color: black;
+  padding: 41px;
+}
+
+.plans__area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.plans__part {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.plans__part button {
+  background: unset;
+  color: black;
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.plans__title {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 39px;
+  text-transform: uppercase;
+}
+
+.plans__image img {
+  height: 500px;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 /*# sourceMappingURL=style.css.map */
