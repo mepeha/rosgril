@@ -243,7 +243,7 @@
             <div class="plans__image">
               <img src="dist/img/plan-1.webp" alt="">
             </div>
-            <button class="button button-stroke">
+            <button class="button button-stroke plans__edit-button" type="button">
               редактировать планировку
             </button>
           </div>
@@ -254,11 +254,60 @@
           <div class="plans__image">
             <img src="dist/img/plan-2.webp" alt="">
           </div>
-          <button class="button button-stroke">
+          <button class="button button-stroke plans__edit-button" type="button">
             редактировать планировку
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="plan-editor-modal" aria-hidden="true">
+    <button class="plan-editor-modal__overlay" type="button" aria-label="Закрыть редактор"></button>
+    <div class="plan-editor-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="plan-editor-title">
+      <div class="plan-editor-modal__head">
+        <h2 class="plan-editor-modal__title" id="plan-editor-title">
+          ИЗМЕНЕНИЕ ПЛАНИРОВКИ
+        </h2>
+        <button class="plan-editor-modal__close" type="button" aria-label="Закрыть редактор">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <div class="plan-editor-modal__plan-row">
+        <span class="plan-editor-modal__plan-label">План</span>
+        <select class="plan-editor-modal__plan-select" aria-label="Выбор плана"></select>
+      </div>
+
+      <div class="plan-editor-modal__toolbar">
+        <button class="plan-editor-modal__tool is-active" type="button" data-plan-tool="brush">Кисть</button>
+        <button class="plan-editor-modal__tool" type="button" data-plan-tool="eraser">Ластик</button>
+        <button class="plan-editor-modal__tool" type="button" data-plan-tool="line">Линия</button>
+        <button class="plan-editor-modal__tool" type="button" data-plan-tool="text">Текст</button>
+        <button class="plan-editor-modal__tool" type="button" data-plan-tool="hand">Перемещение</button>
+        <button class="plan-editor-modal__tool" type="button" data-plan-action="clear">Очистить всё</button>
+        <div class="plan-editor-modal__zoom">
+          <button class="plan-editor-modal__zoom-btn" type="button" data-plan-zoom="out" aria-label="Уменьшить масштаб">-</button>
+          <button class="plan-editor-modal__zoom-value" type="button" data-plan-zoom="reset" aria-label="Сбросить масштаб">100%</button>
+          <button class="plan-editor-modal__zoom-btn" type="button" data-plan-zoom="in" aria-label="Увеличить масштаб">+</button>
+        </div>
+      </div>
+
+      <div class="plan-editor-modal__canvas-wrap">
+        <div class="plan-editor-modal__stage">
+          <img class="plan-editor-modal__base-image" src="" alt="Планировка">
+          <canvas class="plan-editor-modal__canvas"></canvas>
+        </div>
+      </div>
+
+      <form class="plan-editor-modal__form">
+        <label class="plan-editor-modal__comment-title" for="plan-editor-comment">Комментарий к планировке</label>
+        <input class="plan-editor-modal__comment-input" id="plan-editor-comment" type="text">
+        <button class="plan-editor-modal__submit button button-main" type="submit">
+          ОТПРАВИТЬ ИЗМЕНЕНИЯ
+        </button>
+      </form>
     </div>
   </div>
 

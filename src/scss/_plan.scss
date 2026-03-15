@@ -3,29 +3,28 @@
 .plans {
   background-color: white;
   color: black;
-  padding: 41px;
-}
-
-.container {
-}
-
-.block-title {
+  padding: 41px 0;
 }
 
 .plans__area {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+
+  @include laptop {
+    grid-template-columns: 1fr;
+  }
 }
 
 .plans__part {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  button {
-    background: unset;
-    color: black;
-    border: 1px solid rgb(0, 0, 0);
+  gap: 12px;
 
+  .plans__edit-button {
+    background: transparent;
+    color: black;
+    border: 1px solid black;
   }
 }
 
@@ -37,11 +36,307 @@
 }
 
 .plans__image {
+  border: 1px solid rgba(223, 223, 223, 1);
+  background: rgba(246, 246, 246, 1);
+
   img {
     height: 500px;
     width: 100%;
     object-fit: contain;
+    display: block;
+  }
+
+  @include laptop {
+    img {
+      height: 380px;
+    }
   }
 }
 
+.plan-editor-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 
+  &.is-open {
+    display: flex;
+  }
+}
+
+.plan-editor-modal__overlay {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.plan-editor-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(1400px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  background: rgba(238, 238, 238, 1);
+  color: rgba(22, 22, 22, 1);
+  padding: 28px 36px 24px;
+}
+
+.plan-editor-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.plan-editor-modal__title {
+  margin: 0;
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.plan-editor-modal__close {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+
+  span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    background: rgba(22, 22, 22, 1);
+  }
+
+  span:nth-child(1) {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  span:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+}
+
+.plan-editor-modal__plan-row {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.plan-editor-modal__plan-label {
+  font-size: 32px;
+  line-height: 39px;
+}
+
+.plan-editor-modal__plan-select {
+  border: 0;
+  background: transparent;
+  padding: 2px 18px 2px 0;
+  font-size: 32px;
+  line-height: 39px;
+  cursor: pointer;
+}
+
+.plan-editor-modal__toolbar {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.plan-editor-modal__tool {
+  border: 1px solid rgba(188, 188, 188, 1);
+  background: rgba(248, 248, 248, 1);
+  color: rgba(22, 22, 22, 1);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 22px;
+
+  &.is-active {
+    border-color: rgba(122, 122, 122, 1);
+    background: rgba(232, 232, 232, 1);
+  }
+}
+
+.plan-editor-modal__zoom {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plan-editor-modal__zoom-btn,
+.plan-editor-modal__zoom-value {
+  border: 1px solid rgba(188, 188, 188, 1);
+  background: rgba(248, 248, 248, 1);
+  color: rgba(22, 22, 22, 1);
+  cursor: pointer;
+}
+
+.plan-editor-modal__zoom-btn {
+  width: 34px;
+  height: 34px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.plan-editor-modal__zoom-value {
+  min-width: 68px;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.plan-editor-modal__canvas-wrap {
+  margin-top: 14px;
+  border: 1px solid rgba(198, 198, 198, 1);
+  background: rgba(236, 236, 236, 1);
+  padding: 12px;
+}
+
+.plan-editor-modal__stage {
+  position: relative;
+  width: 100%;
+  height: 470px;
+  overflow: hidden;
+}
+
+.plan-editor-modal__base-image {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.plan-editor-modal__canvas {
+  z-index: 2;
+}
+
+.plan-editor-modal__stage .canvas-container {
+  position: absolute !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  z-index: 2;
+}
+
+.plan-editor-modal__form {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-editor-modal__comment-title {
+  font-size: 38px;
+  line-height: 46px;
+}
+
+.plan-editor-modal__comment-input {
+  border: 1px solid rgba(198, 198, 198, 1);
+  background: white;
+  height: 72px;
+  padding: 0 16px;
+  color: rgba(22, 22, 22, 1);
+  font-size: 20px;
+}
+
+.plan-editor-modal__submit {
+  margin-top: 8px;
+  margin-left: auto;
+}
+
+body.plan-editor-open {
+  overflow: hidden;
+}
+
+@include laptop {
+  .plan-editor-modal {
+    padding: 12px;
+  }
+
+  .plan-editor-modal__dialog {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    padding: 20px;
+  }
+
+  .plan-editor-modal__title {
+    font-size: 36px;
+  }
+
+  .plan-editor-modal__plan-label,
+  .plan-editor-modal__plan-select {
+    font-size: 24px;
+    line-height: 29px;
+  }
+
+  .plan-editor-modal__stage {
+    height: 380px;
+  }
+
+  .plan-editor-modal__comment-title {
+    font-size: 24px;
+    line-height: 29px;
+  }
+
+  .plan-editor-modal__comment-input {
+    height: 56px;
+    font-size: 16px;
+  }
+}
+
+@include tablet {
+  .plan-editor-modal__title {
+    font-size: 28px;
+  }
+
+  .plan-editor-modal__toolbar {
+    gap: 6px;
+  }
+
+  .plan-editor-modal__tool {
+    font-size: 14px;
+    line-height: 17px;
+    padding: 5px 8px;
+  }
+
+  .plan-editor-modal__zoom {
+    margin-left: 0;
+  }
+
+  .plan-editor-modal__zoom-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .plan-editor-modal__zoom-value {
+    min-width: 60px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .plan-editor-modal__stage {
+    height: 300px;
+  }
+}

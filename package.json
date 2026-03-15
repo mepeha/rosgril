@@ -32,6 +32,7 @@
     "@studio-freight/lenis": "^1.0.42",
     "animate.css": "^4.1.1",
     "aos": "^2.3.4",
+    "fabric": "^7.2.0",
     "jquery": "^3.7.1",
     "relax": "^0.1.1",
     "rellax": "^1.12.1"

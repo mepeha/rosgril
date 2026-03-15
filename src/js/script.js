@@ -6,7 +6,6 @@ $(function () {
     const $cardMainSlider = $('.card-slider__main');
     const $cardMiniSlider = $('.card-slider__mini');
     const $endHomeSlider = $('.end-home__area');
-
     if ($burger.length && $mobileMenu.length) {
         const openMenu = function () {
             $body.addClass('menu-open');

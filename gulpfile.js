@@ -5,7 +5,6 @@ const terser = require("gulp-terser");
 const browserSync = require("browser-sync").create();
 const sourcemaps = require("gulp-sourcemaps");
 const newer = require("gulp-newer");
-const cached = require("gulp-cached");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
 const dependents = require("gulp-dependents");
@@ -62,6 +61,7 @@ gulp.task("vendorScripts", function () {
             nodeModules + "jquery/dist/jquery.min.js",
             "node_modules/aos/dist/aos.js",
             "node_modules/@fancyapps/ui/dist/fancybox/fancybox.umd.js",
+            "node_modules/fabric/dist/index.min.js",
             "libs/js/*.min.js"
         ])
         .pipe(newer("dist/js/vendor.js"))
@@ -75,7 +75,6 @@ gulp.task("vendorScripts", function () {
 gulp.task("scripts", function () {
     return gulp
         .src("src/js/**/*.js")
-        .pipe(cached("js")) // Кэшируем изменения
         .pipe(concat("main.js"))
         .pipe(gulp.dest("dist/js"))
         .pipe(browserSync.stream());
