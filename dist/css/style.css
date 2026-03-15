@@ -1329,6 +1329,20 @@ h3 {
   border: 1px solid rgb(198, 198, 198);
   background: rgb(236, 236, 236);
   padding: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.plan-editor-modal__canvas-wrap.is-plan-switching .plan-editor-modal__stage {
+  will-change: transform, opacity;
+}
+
+.plan-editor-modal__canvas-wrap.is-plan-switching-next .plan-editor-modal__stage {
+  animation: plan-editor-swipe-next 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plan-editor-modal__canvas-wrap.is-plan-switching-prev .plan-editor-modal__stage {
+  animation: plan-editor-swipe-prev 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .plan-editor-modal__stage {
@@ -1390,6 +1404,26 @@ h3 {
   margin-left: auto;
 }
 
+@keyframes plan-editor-swipe-next {
+  from {
+    opacity: 0;
+    transform: translateX(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes plan-editor-swipe-prev {
+  from {
+    opacity: 0;
+    transform: translateX(-36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 body.plan-editor-open {
   overflow: hidden;
 }

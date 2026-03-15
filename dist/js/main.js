@@ -9,6 +9,7 @@ $(function () {
     const $planEditorSelect = $('.plan-editor-modal__plan-select');
     const $planEditorToolButtons = $('.plan-editor-modal__tool[data-plan-tool]');
     const $planEditorClearButton = $('.plan-editor-modal__tool[data-plan-action="clear"]');
+    const $planEditorCanvasWrap = $('.plan-editor-modal__canvas-wrap');
     const $planEditorStage = $('.plan-editor-modal__stage');
     const $planEditorBaseImage = $('.plan-editor-modal__base-image');
     const $planEditorCanvas = $('.plan-editor-modal__canvas');
@@ -41,6 +42,7 @@ $(function () {
         panOriginX: 0,
         panOriginY: 0,
         imageLoadRequestId: 0,
+        switchAnimationTimer: null,
         storageWriteTimer: null,
         persistedState: {
             activePlanIndex: 0,
@@ -120,6 +122,29 @@ $(function () {
         }
 
         persistStateToSession();
+    };
+
+    const triggerPlanSwitchAnimation = function (direction) {
+        if (!$planEditorCanvasWrap.length) {
+            return;
+        }
+
+        const classBase = 'is-plan-switching';
+        const classDirection = direction === 'prev' ? 'is-plan-switching-prev' : 'is-plan-switching-next';
+
+        if (planEditorState.switchAnimationTimer) {
+            clearTimeout(planEditorState.switchAnimationTimer);
+            planEditorState.switchAnimationTimer = null;
+        }
+
+        $planEditorCanvasWrap.removeClass('is-plan-switching-next is-plan-switching-prev');
+        void $planEditorCanvasWrap.get(0).offsetWidth;
+        $planEditorCanvasWrap.addClass(classBase + ' ' + classDirection);
+
+        planEditorState.switchAnimationTimer = setTimeout(function () {
+            $planEditorCanvasWrap.removeClass(classBase + ' is-plan-switching-next is-plan-switching-prev');
+            planEditorState.switchAnimationTimer = null;
+        }, 300);
     };
 
     const collectPlanParts = function () {
@@ -676,11 +701,12 @@ $(function () {
         return true;
     };
 
-    const loadPlanImage = function (planIndex) {
+    const loadPlanImage = function (planIndex, options) {
         if (!planEditorState.plans.length) {
             return;
         }
 
+        const settings = options && typeof options === 'object' ? options : {};
         const safeIndex = Math.max(0, Math.min(planIndex, planEditorState.plans.length - 1));
         const plan = planEditorState.plans[safeIndex];
         const image = new Image();
@@ -701,6 +727,10 @@ $(function () {
             $planEditorBaseImage.attr('src', plan.imageSrc);
             fitPlanEditorStage();
             restorePlanSnapshot(safeIndex);
+
+            if (settings.animate) {
+                triggerPlanSwitchAnimation(settings.direction === 'prev' ? 'prev' : 'next');
+            }
         };
 
         image.src = plan.imageSrc;
@@ -752,7 +782,9 @@ $(function () {
         $planEditorModal.addClass('is-open').attr('aria-hidden', 'false');
         $body.addClass('plan-editor-open');
         setPlanEditorTool('brush');
-        loadPlanImage(targetIndex);
+        loadPlanImage(targetIndex, {
+            animate: false
+        });
     };
 
     const getCurrentEditedImageDataUrl = function () {
@@ -850,8 +882,12 @@ $(function () {
                 return;
             }
 
+            const direction = selectedIndex > planEditorState.activeIndex ? 'next' : 'prev';
             queueCurrentPlanSave(true);
-            loadPlanImage(selectedIndex);
+            loadPlanImage(selectedIndex, {
+                animate: true,
+                direction: direction
+            });
         });
 
         $planEditorToolButtons.on('click', function () {
