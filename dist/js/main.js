@@ -1,4 +1,91 @@
 $(function () {
+    const $cardCalcBlocks = $('.card-calc');
+
+    if (!$cardCalcBlocks.length) {
+        return;
+    }
+
+    const parseCurrency = function (value) {
+        const digits = String(value || '').match(/\d+/g);
+
+        if (!digits || !digits.length) {
+            return NaN;
+        }
+
+        return Number(digits.join(''));
+    };
+
+    const parsePrice = function (value) {
+        const parsedValue = Number(value);
+
+        if (!isFinite(parsedValue)) {
+            return 0;
+        }
+
+        return parsedValue;
+    };
+
+    const formatCurrency = function (value) {
+        const safeValue = Math.max(0, Math.round(parsePrice(value)));
+        return safeValue.toLocaleString('ru-RU') + ' ₽';
+    };
+
+    $cardCalcBlocks.each(function () {
+        const $calc = $(this);
+        const $inputs = $calc.find('[data-calc-group] input[data-price]');
+        const $changesOutput = $calc.find('[data-calc-out="changes"]');
+        const $baseOutput = $calc.find('[data-calc-out="base"]');
+        const $totalOutput = $calc.find('[data-calc-out="total"]');
+
+        if (!$inputs.length) {
+            return;
+        }
+
+        const resolveBaseCost = function () {
+            const $main = $calc.closest('main');
+            const $scope = $main.length ? $main : $(document);
+            const $priceNode = $scope.find('.price__cost').first();
+            const priceFromCard = parseCurrency($priceNode.text());
+
+            if (isFinite(priceFromCard)) {
+                return priceFromCard;
+            }
+
+            const priceFromData = parseCurrency($calc.attr('data-base-cost'));
+
+            if (isFinite(priceFromData)) {
+                return priceFromData;
+            }
+
+            return 0;
+        };
+
+        const getChangesTotal = function () {
+            let sum = 0;
+
+            $inputs.filter(':checked').each(function () {
+                sum += parsePrice($(this).attr('data-price'));
+            });
+
+            return sum;
+        };
+
+        const renderTotals = function () {
+            const base = resolveBaseCost();
+            const changes = getChangesTotal();
+            const total = base + changes;
+
+            $changesOutput.text(formatCurrency(changes));
+            $baseOutput.text(formatCurrency(base));
+            $totalOutput.text(formatCurrency(total));
+        };
+
+        $inputs.on('change', renderTotals);
+        renderTotals();
+    });
+});
+
+$(function () {
     const STORAGE_KEY = 'planEditor:v1:' + String(window.location && window.location.pathname ? window.location.pathname : '/');
     const STORAGE_SAVE_DELAY = 250;
 

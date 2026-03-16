@@ -786,6 +786,12 @@ h3 {
   background: rgb(244, 177, 102);
   padding: 100px 0;
   position: relative;
+  color: black;
+}
+
+.feedback.dark {
+  background: rgb(41, 41, 41);
+  color: white;
 }
 
 .feedback__area {
@@ -804,7 +810,6 @@ h3 {
 
 .feedback__info {
   width: 450px;
-  color: black;
 }
 .feedback__info .text {
   font-size: 28px;
@@ -818,6 +823,13 @@ h3 {
   .feedback__info {
     width: 100%;
   }
+}
+
+.dark .feedback__info {
+  width: 600px;
+}
+.dark .info__title {
+  margin-bottom: 20px;
 }
 
 .feedback__form {
@@ -863,6 +875,16 @@ h3 {
   .feedback__input {
     width: 100%;
   }
+}
+
+.dark .feedback__input {
+  border-bottom: 1px solid rgb(104, 104, 104);
+}
+.dark .feedback__input::-moz-placeholder {
+  color: white;
+}
+.dark .feedback__input::placeholder {
+  color: white;
 }
 
 .feedback__button {
@@ -1243,6 +1265,205 @@ h3 {
   display: block;
 }
 
+.card-calc {
+  padding: 0 0 120px;
+}
+
+.card-calc__title {
+  margin-bottom: 12px;
+  max-width: 980px;
+  text-transform: uppercase;
+}
+
+.card-calc__note {
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: rgb(178, 178, 178);
+}
+
+.card-calc__box {
+  border: 1px solid rgb(86, 86, 86);
+  background: rgb(43, 43, 43);
+  padding: 28px 28px 34px;
+}
+
+.card-calc__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.card-calc__column {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+.card-calc__group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.card-calc__group-title {
+  margin: 0 0 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: rgb(244, 177, 102);
+  text-transform: uppercase;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.card-calc__group-number {
+  flex-shrink: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.card-calc__option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.card-calc__option:last-child {
+  margin-bottom: 0;
+}
+
+.card-calc__option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-calc__control {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgb(214, 214, 214);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.card-calc__control::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgb(244, 177, 102);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.18s ease;
+}
+
+.card-calc__option input:checked + .card-calc__control {
+  border-color: rgb(244, 177, 102);
+}
+
+.card-calc__option input:checked + .card-calc__control::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.card-calc__option-text {
+  color: rgb(229, 229, 229);
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.card-calc__summary {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgb(99, 99, 99);
+  display: flex;
+  justify-content: center;
+  gap: 72px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.card-calc__summary-item {
+  max-width: 340px;
+}
+
+.card-calc__summary-label {
+  color: rgb(208, 208, 208);
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.card-calc__summary-value {
+  margin-top: 10px;
+  color: rgb(244, 177, 102);
+  font-size: 48px;
+  line-height: 1;
+}
+
+@media (max-width: 1400px) {
+  .card-calc__grid {
+    gap: 24px;
+  }
+  .card-calc__group-title {
+    font-size: 26px;
+  }
+  .card-calc__group-number {
+    font-size: 30px;
+  }
+  .card-calc__option-text {
+    font-size: 22px;
+  }
+  .card-calc__summary-value {
+    font-size: 40px;
+  }
+}
+@media (max-width: 991px) {
+  .card-calc {
+    padding-bottom: 60px;
+  }
+  .card-calc__box {
+    padding: 20px;
+  }
+  .card-calc__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .card-calc__group-title {
+    font-size: 20px;
+  }
+  .card-calc__group-number {
+    font-size: 24px;
+  }
+  .card-calc__option-text {
+    font-size: 16px;
+  }
+  .card-calc__summary {
+    gap: 28px;
+  }
+  .card-calc__summary-label {
+    font-size: 16px;
+  }
+  .card-calc__summary-value {
+    font-size: 32px;
+  }
+}
+@media (max-width: 768px) {
+  .card-calc__grid {
+    grid-template-columns: 1fr;
+  }
+  .card-calc__summary {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+}
 .plans {
   background-color: white;
   color: black;

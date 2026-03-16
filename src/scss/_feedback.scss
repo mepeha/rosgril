@@ -4,8 +4,12 @@
   background: rgba(244, 177, 102, 1);
   padding: 100px 0;
   position: relative;
+  color: black;
 }
-
+.feedback.dark {
+  background: rgba(41, 41, 41, 1);
+  color: white;
+}
 .container {
 }
 
@@ -23,7 +27,7 @@
 
 .feedback__info {
   width: 450px;
-  color: black;
+
   .text {
 
     font-size: 28px;
@@ -39,7 +43,14 @@
     width: 100%;
   }
 }
-
+.dark {
+  .feedback__info {
+    width: 600px;
+  }
+  .info__title {
+    margin-bottom: 20px;
+  }
+}
 
 
 
@@ -75,7 +86,13 @@
     width: 100%;
   }
 }
+.dark .feedback__input {
+  border-bottom: 1px solid rgba(104, 104, 104, 1);
+  &::placeholder {
+    color: white;
 
+  }
+}
 .feedback__button {
   margin-top: 36px;
   border: 1px solid black;
