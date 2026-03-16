@@ -6,6 +6,10 @@
   color: rgba(208, 208, 208, 1);
   font-weight: 400;
   line-height: 22px;
+  @include laptop {
+    font-size: 16px;
+    padding: 60px 0;
+  }
 
 
   .param {
@@ -34,20 +38,30 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 34px;
+    @include laptop {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
 
   }
 
   .dop__item {
     padding: 32px;
     background: rgba(43, 43, 43, 1);
+    @include laptop {
+      padding: 16px;
+    }
   }
 
   .dop__title {
     margin-bottom: 12px;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 29px;
     color: rgba(244, 177, 102, 1);
+    @include laptop {
+      font-size: 18px;
+    }
   }
 
   .text {
@@ -69,6 +83,9 @@
     align-items: center;
     gap: 18px;
     margin-top: 15px;
+    @include laptop {
+      grid-template-columns: 1fr;
+    }
   }
 
   .seti__item {
@@ -99,6 +116,9 @@
 .card-tabs__head {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  @include laptop {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card-tabs__head-item {
@@ -116,6 +136,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  @include laptop {
+    border-left: unset;
+    border-right: unset;
+    border-bottom: 1px solid rgba(99, 99, 99, 1);
+    font-size: 18px;
+  }
 }
 .card-tabs__head-item.active {
   background: rgba(244, 177, 102, 1);

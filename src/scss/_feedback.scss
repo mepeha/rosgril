@@ -45,7 +45,7 @@
 }
 .dark {
   .feedback__info {
-    width: 600px;
+    max-width: 600px;
   }
   .info__title {
     margin-bottom: 20px;
@@ -88,8 +88,9 @@
 }
 .dark .feedback__input {
   border-bottom: 1px solid rgba(104, 104, 104, 1);
+  color: white;
   &::placeholder {
-    color: white;
+    color: rgba(255, 255, 255, 0.47);
 
   }
 }
