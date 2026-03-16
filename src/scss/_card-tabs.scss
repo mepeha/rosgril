@@ -1,0 +1,135 @@
+@use "globals" as *;
+
+.card-tabs {
+  padding: 120px 0;
+  font-size: 18px;
+  color: rgba(208, 208, 208, 1);
+  font-weight: 400;
+  line-height: 22px;
+
+
+  .param {
+    border-bottom: 1px solid rgba(108, 108, 108, 1);
+    padding:  0 0 8px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .param__head {
+    color: rgba(244, 177, 102, 1);
+  }
+
+  .param__body {
+    color: white;
+  }
+
+  .subtext {
+    color: rgba(178, 178, 178, 1);
+    font-size: 14px;
+
+  }
+
+  .dop {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 34px;
+
+  }
+
+  .dop__item {
+    padding: 32px;
+    background: rgba(43, 43, 43, 1);
+  }
+
+  .dop__title {
+    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 29px;
+    color: rgba(244, 177, 102, 1);
+  }
+
+  .text {
+    p {
+      margin: 8px 0;
+    }
+
+    a {
+      text-decoration: underline;
+      color: white;
+    }
+
+  }
+
+  .seti {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-top: 15px;
+  }
+
+  .seti__item {
+    background: rgba(43, 43, 43, 1);
+    padding: 24px;
+    height: 100%;
+
+  }
+
+  .seti__price {
+    margin-top: 10px;
+    color: rgba(244, 177, 102, 1);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0%;
+    text-align: left;
+  }
+
+}
+
+.container {
+}
+.width-eight {
+  width: 80%;
+  margin: 0 auto;
+}
+.card-tabs__head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.card-tabs__head-item {
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0%;
+  text-align: left;
+  text-transform: uppercase;
+  border-left: 1px solid rgba(99, 99, 99, 1),;
+  border-right: 1px solid rgba(99, 99, 99, 1),;
+  background: rgba(43, 43, 43, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card-tabs__head-item.active {
+  background: rgba(244, 177, 102, 1);
+  color: rgba(31, 31, 31, 1);
+}
+.card-tabs__body {
+  margin-top: 20px;
+}
+
+.card-tabs__body-item {
+  display: none;
+}
+
+.card-tabs__body-item.active {
+  display: block;
+}
+
