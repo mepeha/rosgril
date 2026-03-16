@@ -6,6 +6,7 @@ $(function () {
     const $cardMainSlider = $('.card-slider__main');
     const $cardMiniSlider = $('.card-slider__mini');
     const $endHomeSlider = $('.end-home__area');
+    const $cardTabs = $('.card-tabs');
     if ($burger.length && $mobileMenu.length) {
         const openMenu = function () {
             $body.addClass('menu-open');
@@ -100,6 +101,64 @@ $(function () {
                     }
                 }
             ]
+        });
+    }
+
+    if ($cardTabs.length) {
+        $cardTabs.each(function () {
+            const $tabs = $(this);
+            const $heads = $tabs.find('.card-tabs__head-item');
+            const $bodies = $tabs.find('.card-tabs__body-item');
+
+            if (!$heads.length || !$bodies.length) {
+                return;
+            }
+
+            const activateTab = function (key, fallbackIndex) {
+                let targetIndex = typeof fallbackIndex === 'number' ? fallbackIndex : 0;
+
+                if (key) {
+                    const keyIndex = $heads.filter('[data-tab-key="' + key + '"]').first().index();
+                    if (keyIndex >= 0) {
+                        targetIndex = keyIndex;
+                    }
+                }
+
+                const $targetHead = $heads.eq(targetIndex);
+                const targetKey = String($targetHead.data('tab-key') || '');
+                let $targetBody;
+
+                if (targetKey) {
+                    $targetBody = $bodies.filter('[data-tab-key="' + targetKey + '"]').first();
+                } else {
+                    $targetBody = $bodies.eq(targetIndex);
+                }
+
+                $heads.removeClass('active');
+                $bodies.removeClass('active');
+                $targetHead.addClass('active');
+
+                if ($targetBody.length) {
+                    $targetBody.addClass('active');
+                } else {
+                    $bodies.eq(targetIndex).addClass('active');
+                }
+            };
+
+            let initialIndex = $heads.filter('.active').first().index();
+            if (initialIndex < 0) {
+                initialIndex = 0;
+            }
+
+            const initialKey = String($heads.eq(initialIndex).data('tab-key') || '');
+            activateTab(initialKey, initialIndex);
+
+            $heads.on('click', function () {
+                const $head = $(this);
+                const key = String($head.data('tab-key') || '');
+                const index = $head.index();
+                activateTab(key, index);
+            });
         });
     }
 
