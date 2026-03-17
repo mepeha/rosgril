@@ -26,12 +26,7 @@
   background: rgba(33, 33, 33, 1);
   height: 175px;
   transition: all 0.2s ease-in-out;
-  .name {
-    font-size: 24px;
-    font-weight: 700;
-    color: white;
 
-  }
 
   .arrow {
   }
@@ -88,13 +83,7 @@
 }
 
 .item__name {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 24px;
-  margin-bottom: 8px;
-  @include laptop {
-    font-size: 15px;
-  }
+ margin-bottom: 8px;
 }
 
 .item__param {
@@ -112,22 +101,15 @@
   padding: 2px 8px;
   border-radius: 8px;
   background: rgba(65, 65, 65, 1);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 22px;
   @include laptop {
-    font-size: 13px;
   }
 }
 
 .item__price {
-  font-size: 26px;
-  font-weight: 400;
-  line-height: 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   @include laptop {
-    font-size: 20px;
+
   }
 }

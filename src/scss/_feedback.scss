@@ -2,7 +2,7 @@
 
 .feedback {
   background: rgba(244, 177, 102, 1);
-  padding: 100px 0;
+  padding: 60px 0;
   position: relative;
   color: black;
 }
@@ -27,7 +27,13 @@
 
 .feedback__info {
   width: 450px;
-
+  .param  {
+    margin-bottom: 20px;
+    height: 40px;
+  }
+  .param__body {
+    justify-self: flex-end;
+  }
   .text {
 
     font-size: 28px;

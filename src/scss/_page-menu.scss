@@ -1,14 +1,17 @@
 @use "globals" as *;
 .page-menu {
+  .name {
+    color: black;
+  }
   .price {
     position: absolute;
     border-radius: 18px;
     background: rgba(33, 33, 33, 1);
-    font-size: 28px;
-    line-height: 34px;
+
+
     padding: 10px;
-    left: 37px;
-    bottom: 22px;
+    left: 32px;
+    bottom: 32px;
     @include laptop {
       font-size: 14px;
       line-height: 19px;
@@ -42,7 +45,7 @@
 .page-menu__item {
   position: relative;
   z-index: 2;
-  padding: 33px 47px;
+  padding: 32px 100px 32px 32px;
 
   &.project {
     grid-row: span 3;
@@ -76,17 +79,6 @@
   mix-blend-mode: lighten;
   z-index: 1;
 }
-.name {
-  color: rgba(0, 0, 0, 1);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0%;
-  text-align: left;
-  @include laptop {
-    font-size: 16px;
-  }
-}
 .project .name {
   font-size: 28px;
   @include laptop {
@@ -96,8 +88,8 @@
 
 .arrow {
   position: absolute;
-  right: 37px;
-  bottom: 22px;
+  right: 32px;
+  bottom: 32px;
   @include laptop {
     svg {
       width: 46.04px;

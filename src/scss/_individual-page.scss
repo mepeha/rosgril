@@ -8,7 +8,7 @@
 }
 
 .individual-banner__area {
-  height: 407px;
+  height: 437px;
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 638px) 1fr;
@@ -22,28 +22,12 @@
   @include desktop {
     margin-top: 100px;
   }
- h1 {
-   font-size: 40px;
-   font-weight: 500;
-   line-height: 48px;
-   letter-spacing: 0%;
-   text-align: left;
-   text-transform: uppercase;
-   @include laptop {
-     font-size: 24px;
-     line-height: 24.82px;
-   }
  }
-}
+
 
 .subtext {
-  font-size: 24px;
-  color: rgba(244, 177, 102, 1);
-  line-height: 29px;
   margin: 8px 0 12px;
   @include laptop {
-    font-size: 18px;
-    line-height: 20px;
   }
 }
 
@@ -77,7 +61,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   row-gap: 24px;
-  column-gap: 68px;
+  column-gap: 24px;
   @include laptop {
     grid-template-columns: 1fr ;
   }
@@ -85,7 +69,7 @@
 }
 
 .preim__item {
-  padding: 32px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -99,28 +83,11 @@
   }
 
   .name {
-    color: rgba(244, 177, 102, 1);
-    font-size: 24px;
-    font-weight: 400;
-    line-height: 29px;
-    letter-spacing: 0%;
-    text-align: left;
-    text-transform: uppercase;
-    @include laptop {
-      font-size: 18px;
-    }
+
   }
 
   .text {
-    color: rgba(208, 208, 208, 1);
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 22px;
-    letter-spacing: 0%;
-    text-align: left;
-    @include laptop {
-      font-size: 16px;
-    }
+      margin-bottom: unset;
   }
 }
 
@@ -136,45 +103,7 @@
 .block-title {
 }
 
-.text {
-  h4 {
-    color: rgba(244, 177, 102, 1);
-    font-size: 24px;
-    font-weight: 400;
-    line-height: 29px;
-    letter-spacing: 0%;
-    text-align: left;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    @include laptop {
-      font-size: 18px;
-    }
-  }
-  p {
-    margin-bottom: 12px;
-    color: rgba(208, 208, 208, 1);
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 22px;
-    letter-spacing: 0%;
-    text-align: left;
-    @include laptop {
-      font-size: 16px;
-    }
-  }
-  strong {
-    color: rgba(255, 255, 255, 1);
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 22px;
-    letter-spacing: 0%;
-    text-align: left;
-    text-transform: uppercase;
-    @include laptop {
-      font-size: 16px;
-    }
-  }
-}
+
 
 .stages-slider {
 

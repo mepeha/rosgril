@@ -2,12 +2,8 @@
 
 .card-tabs {
   padding: 120px 0;
-  font-size: 18px;
-  color: rgba(208, 208, 208, 1);
-  font-weight: 400;
-  line-height: 22px;
+
   @include laptop {
-    font-size: 16px;
     padding: 60px 0;
   }
 
@@ -21,16 +17,14 @@
   }
 
   .param__head {
-    color: rgba(244, 177, 102, 1);
+
   }
 
   .param__body {
-    color: white;
   }
 
   .subtext {
-    color: rgba(178, 178, 178, 1);
-    font-size: 14px;
+
 
   }
 
@@ -55,10 +49,7 @@
 
   .dop__title {
     margin-bottom: 12px;
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 29px;
-    color: rgba(244, 177, 102, 1);
+
     @include laptop {
       font-size: 18px;
     }
@@ -71,7 +62,6 @@
 
     a {
       text-decoration: underline;
-      color: white;
     }
 
   }
@@ -97,12 +87,8 @@
 
   .seti__price {
     margin-top: 10px;
-    color: rgba(244, 177, 102, 1);
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 22px;
-    letter-spacing: 0%;
-    text-align: left;
+
+
   }
 
 }

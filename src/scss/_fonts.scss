@@ -1,0 +1,109 @@
+@use "globals" as *;
+
+h1 {
+  font-size: 54px;
+  line-height: 62px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  @include laptop {
+    margin-bottom: 20px;
+    font-size: 20px;
+    line-height: 25px;
+  }
+}
+h2 {
+  font-size: 40px;
+  line-height: 48px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  @include laptop {
+    margin-bottom: 20px;
+    font-size: 20px;
+    line-height: 25px;
+  }
+}
+h3 {
+  font-size: 28px;
+  color: rgb(244, 177, 102);
+  line-height: 32px;
+  text-transform: uppercase;
+  margin: 8px 0 12px;
+  @include laptop {
+    font-size: 22px;
+    line-height: 25px;
+  }
+}
+
+.name {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28px;
+  margin-bottom: 32px;
+  @include laptop {
+    font-size: 18px;
+  }
+}
+
+.text {
+  font-size: 24px;
+  line-height: 29px;
+  margin-bottom: 32px;
+  @include laptop {
+    font-size: 18px;
+    line-height: 20px;
+    margin-bottom: 16px;
+  }
+}
+.mini {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17px;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+p {
+  margin: 8px 0;
+}
+a {
+
+}
+ul {
+  margin-bottom: 32px;
+}
+li {
+  list-style-type: circle;
+  margin: 12px 0 12px 20px;
+}
+.gray {
+  color: rgba(178, 178, 178);
+}
+.orange {
+  color: rgb(244, 177, 102);
+}
+.underline {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.content {
+  .name {
+    margin-bottom: 12px;
+  }
+  p {
+    margin: 12px 0 32px;
+  }
+}
+.mini-content {
+  ul {
+    margin-bottom: 16px;
+  }
+  p {
+    margin: 6px 0 8px;
+  }
+  li {
+
+    margin: 6px 0 6px 20px;
+  }
+}

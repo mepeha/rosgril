@@ -12,9 +12,6 @@
 
 .card-calc__note {
   margin: 0 0 24px;
-  font-size: 16px;
-  line-height: 1.45;
-  color: rgba(178, 178, 178, 1);
 }
 
 .card-calc__box {
@@ -48,10 +45,6 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  color: rgba(244, 177, 102, 1);
-  text-transform: uppercase;
-  font-size: 18px;
-  line-height: 1.2;
 }
 
 .card-calc__group-number {
@@ -62,7 +55,7 @@
 
 .card-calc__option {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   margin-bottom: 10px;
   cursor: pointer;
@@ -110,9 +103,7 @@
 }
 
 .card-calc__option-text {
-  color: rgba(229, 229, 229, 1);
-  font-size: 16px;
-  line-height: 1.25;
+
 }
 
 .card-calc__summary {
@@ -148,17 +139,14 @@
 }
 
 .card-calc__summary-label {
-  color: rgba(208, 208, 208, 1);
-  font-size: 18px;
-  line-height: 1.35;
+  margin-bottom: 12px;
+
 }
 
 .card-calc__summary-value {
   margin-top: auto;
   padding-top: 10px;
-  color: rgba(244, 177, 102, 1);
   font-size: 48px;
-  line-height: 1;
 }
 
 .card-calc__summary-action {
@@ -215,7 +203,6 @@
   }
 
   .card-calc__group-title {
-    font-size: 17px;
     gap: 8px;
   }
 
@@ -229,8 +216,7 @@
   }
 
   .card-calc__option-text {
-    font-size: 15px;
-    line-height: 1.3;
+
   }
 
   .card-calc__summary {
@@ -242,7 +228,7 @@
   }
 
   .card-calc__summary-label {
-    font-size: 16px;
+
   }
 
   .card-calc__summary-value {
@@ -257,7 +243,6 @@
 
   .card-calc__note {
     margin-bottom: 20px;
-    font-size: 14px;
   }
 
   .card-calc__box {
@@ -275,7 +260,6 @@
 
   .card-calc__group-title {
     margin-bottom: 10px;
-    font-size: 16px;
   }
 
   .card-calc__group-number {
@@ -293,7 +277,6 @@
   }
 
   .card-calc__option-text {
-    font-size: 14px;
   }
 
   .card-calc__summary {
@@ -312,7 +295,6 @@
   }
 
   .card-calc__summary-label {
-    font-size: 14px;
   }
 
   .card-calc__summary-value {
@@ -335,7 +317,7 @@
 
   .card-calc__note {
     margin-bottom: 16px;
-    line-height: 1.4;
+
   }
 
   .card-calc__box {
@@ -352,7 +334,6 @@
   }
 
   .card-calc__group-title {
-    font-size: 15px;
   }
 
   .card-calc__group-number {
@@ -364,7 +345,6 @@
   }
 
   .card-calc__option-text {
-    font-size: 14px;
   }
 
   .card-calc__summary {
@@ -390,7 +370,6 @@
   }
 
   .card-calc__summary-label {
-    font-size: 13px;
   }
 
   .card-calc__summary-value {
@@ -419,7 +398,7 @@
   }
 
   .card-calc__group-title {
-    font-size: 14px;
+
   }
 
   .card-calc__group-number {
@@ -438,7 +417,6 @@
   }
 
   .card-calc__option-text {
-    font-size: 13px;
   }
 
   .card-calc__summary-totals {
@@ -451,7 +429,6 @@
   }
 
   .card-calc__summary-label {
-    font-size: 12px;
   }
 
   .card-calc__summary-value {
@@ -469,6 +446,6 @@
   }
 
   .card-calc__summary-action {
-    font-size: 13px;
+
   }
 }

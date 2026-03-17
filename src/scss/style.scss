@@ -1,5 +1,7 @@
 @use "globals" as *;
+@use "fonts";
 @use "template";
+
 @use "header";
 @use "banner";
 @use "create";
@@ -14,3 +16,4 @@
 @use "card-calc";
 @use "plan";
 @use "individual-page";
+@use "take-project";
