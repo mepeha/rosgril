@@ -2129,6 +2129,12 @@ body.plan-editor-open {
   text-align: left;
   text-transform: uppercase;
 }
+@media (max-width: 991px) {
+  .individual-banner__info h1 {
+    font-size: 30px;
+    line-height: 35.82px;
+  }
+}
 
 .subtext {
   font-size: 24px;
@@ -2141,6 +2147,11 @@ body.plan-editor-open {
   position: absolute;
   left: 700px;
   top: 0;
+}
+@media (max-width: 991px) {
+  .individual-banner__image {
+    display: none;
+  }
 }
 
 .preim__area {
@@ -2182,6 +2193,11 @@ body.plan-editor-open {
   text-align: left;
   text-transform: uppercase;
 }
+@media (max-width: 991px) {
+  .preim__item .name {
+    font-size: 18px;
+  }
+}
 .preim__item .text {
   color: rgb(208, 208, 208);
   font-size: 18px;
@@ -2189,6 +2205,15 @@ body.plan-editor-open {
   line-height: 22px;
   letter-spacing: 0%;
   text-align: left;
+}
+@media (max-width: 991px) {
+  .preim__item .text {
+    font-size: 16px;
+  }
+}
+
+.stages-project {
+  overflow: hidden;
 }
 
 .text h4 {
@@ -2201,6 +2226,11 @@ body.plan-editor-open {
   text-transform: uppercase;
   margin-bottom: 12px;
 }
+@media (max-width: 991px) {
+  .text h4 {
+    font-size: 18px;
+  }
+}
 .text p {
   margin-bottom: 12px;
   color: rgb(208, 208, 208);
@@ -2209,6 +2239,11 @@ body.plan-editor-open {
   line-height: 22px;
   letter-spacing: 0%;
   text-align: left;
+}
+@media (max-width: 991px) {
+  .text p {
+    font-size: 16px;
+  }
 }
 .text strong {
   color: rgb(255, 255, 255);
@@ -2219,9 +2254,14 @@ body.plan-editor-open {
   text-align: left;
   text-transform: uppercase;
 }
+@media (max-width: 991px) {
+  .text strong {
+    font-size: 16px;
+  }
+}
 
 .stages-slider {
-  margin: 0 -8px;
+  margin: 60px -8px;
 }
 .stages-slider .slick-list {
   overflow: visible;

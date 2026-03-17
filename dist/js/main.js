@@ -44,6 +44,7 @@ $(function () {
         const stickyStartOffset = 280;
         let isFirstRender = true;
         let stickyRafId = null;
+        let forceFloatingUntil = 0;
 
         if (!$inputs.length || !$summary.length || !$box.length) {
             return;
@@ -243,7 +244,9 @@ $(function () {
             const hasEnteredSection = viewportBottom > calcTop + stickyStartOffset;
             const beforeAnchorPosition = fixedSummaryTop + 2 < anchorTop;
             const enoughRoom = (calcBottom - scrollTop) > summaryHeight + floatingBottomOffset + 20;
-            const shouldFloat = hasEnteredSection && beforeAnchorPosition && enoughRoom;
+            const normalFloating = hasEnteredSection && beforeAnchorPosition && enoughRoom;
+            const forceFloating = Date.now() < forceFloatingUntil && beforeAnchorPosition && enoughRoom;
+            const shouldFloat = normalFloating || forceFloating;
 
             if (shouldFloat) {
                 enableFloatingSummary();
@@ -264,7 +267,7 @@ $(function () {
             });
         };
 
-        const ensureSummaryInViewport = function () {
+        const revealFloatingSummaryOnChange = function () {
             if (window.innerWidth > 991) {
                 return;
             }
@@ -284,14 +287,29 @@ $(function () {
                 return;
             }
 
-            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const scrollTop = $window.scrollTop();
-            const targetTop = scrollTop + rect.top - Math.max(80, Math.round(viewportHeight * 0.2));
+            const calcOffset = $calc.offset();
 
-            window.scrollTo({
-                top: Math.max(0, targetTop),
-                behavior: prefersReducedMotion ? 'auto' : 'smooth'
-            });
+            if (!calcOffset) {
+                return;
+            }
+
+            const scrollTop = $window.scrollTop();
+            const viewportBottom = scrollTop + viewportHeight;
+            const calcTop = calcOffset.top;
+            const calcBottom = calcTop + $calc.outerHeight();
+            const summaryHeight = $summary.outerHeight();
+            const floatingBottomOffset = getFloatingBottomOffset();
+            const sectionVisible = viewportBottom > calcTop && scrollTop < calcBottom;
+            const hasRoomForFloating = (calcBottom - scrollTop) > summaryHeight + floatingBottomOffset + 20;
+
+            if (!sectionVisible || !hasRoomForFloating) {
+                return;
+            }
+
+            forceFloatingUntil = Date.now() + 900;
+            enableFloatingSummary();
+            requestFloatingStateUpdate();
+            window.setTimeout(requestFloatingStateUpdate, 920);
         };
 
         const renderTotals = function () {
@@ -311,7 +329,7 @@ $(function () {
             renderTotals();
             window.setTimeout(function () {
                 requestFloatingStateUpdate();
-                ensureSummaryInViewport();
+                revealFloatingSummaryOnChange();
             }, 30);
         });
 

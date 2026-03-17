@@ -26,6 +26,10 @@
    letter-spacing: 0%;
    text-align: left;
    text-transform: uppercase;
+   @include laptop {
+     font-size: 30px;
+     line-height: 35.82px;
+   }
  }
 }
 
@@ -44,6 +48,9 @@
   position: absolute;
   left: 700px;
   top: 0;
+  @include laptop {
+    display: none;
+  }
 }
 
 
@@ -90,6 +97,9 @@
     letter-spacing: 0%;
     text-align: left;
     text-transform: uppercase;
+    @include laptop {
+      font-size: 18px;
+    }
   }
 
   .text {
@@ -99,12 +109,16 @@
     line-height: 22px;
     letter-spacing: 0%;
     text-align: left;
+    @include laptop {
+      font-size: 16px;
+    }
   }
 }
 
 
 
 .stages-project {
+  overflow: hidden;
 }
 
 .container {
@@ -123,6 +137,9 @@
     text-align: left;
     text-transform: uppercase;
     margin-bottom: 12px;
+    @include laptop {
+      font-size: 18px;
+    }
   }
   p {
     margin-bottom: 12px;
@@ -132,6 +149,9 @@
     line-height: 22px;
     letter-spacing: 0%;
     text-align: left;
+    @include laptop {
+      font-size: 16px;
+    }
   }
   strong {
     color: rgba(255, 255, 255, 1);
@@ -141,11 +161,16 @@
     letter-spacing: 0%;
     text-align: left;
     text-transform: uppercase;
+    @include laptop {
+      font-size: 16px;
+    }
   }
 }
 
 .stages-slider {
-  margin: 0 -8px;
+
+  margin: 60px -8px;
+
   .slick-list {
     overflow: visible;
   }
