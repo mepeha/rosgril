@@ -1316,6 +1316,7 @@ $(function () {
     const $cardMainSlider = $('.card-slider__main');
     const $cardMiniSlider = $('.card-slider__mini');
     const $endHomeSlider = $('.end-home__area');
+    const $stagesSlider = $('.stages-slider');
     const $cardTabs = $('.card-tabs');
     if ($burger.length && $mobileMenu.length) {
         const openMenu = function () {
@@ -1408,6 +1409,33 @@ $(function () {
                     settings: {
                         slidesToShow: 1,
                         arrows: false
+                    }
+                }
+            ]
+        });
+    }
+
+    if ($stagesSlider.length && !$stagesSlider.hasClass('slick-initialized')) {
+        $stagesSlider.slick({
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            infinite: false,
+            arrows: false,
+            dots: true,
+            adaptiveHeight: false,
+            swipeToSlide: true,
+            mobileFirst: true,
+            responsive: [
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 2
+                    }
+                },
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 3
                     }
                 }
             ]
