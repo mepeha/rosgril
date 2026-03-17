@@ -7,6 +7,7 @@ $(function () {
     const $cardMiniSlider = $('.card-slider__mini');
     const $endHomeSlider = $('.end-home__area');
     const $stagesSlider = $('.stages-slider');
+    const $projectExample = $('.project-example');
     const $cardTabs = $('.card-tabs');
     if ($burger.length && $mobileMenu.length) {
         const openMenu = function () {
@@ -129,6 +130,51 @@ $(function () {
                     }
                 }
             ]
+        });
+    }
+
+    if ($projectExample.length) {
+        $projectExample.each(function () {
+            const $block = $(this);
+            const $slider = $block.find('.project-example__slider');
+            const $thumbs = $block.find('.project-example__thumb[data-example-slide]');
+
+            if (!$slider.length) {
+                return;
+            }
+
+            const setActiveThumb = function (index) {
+                $thumbs.removeClass('is-active');
+                $thumbs.filter('[data-example-slide="' + index + '"]').addClass('is-active');
+            };
+
+            $slider.on('init reInit afterChange', function (event, slick, currentSlide) {
+                const slideIndex = typeof currentSlide === 'number' ? currentSlide : 0;
+                setActiveThumb(slideIndex);
+            });
+
+            if (!$slider.hasClass('slick-initialized')) {
+                $slider.slick({
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    infinite: false,
+                    arrows: true,
+                    dots: false,
+                    adaptiveHeight: false,
+                    swipe: true,
+                    touchMove: true
+                });
+            }
+
+            $thumbs.on('click', function () {
+                const targetIndex = Number($(this).attr('data-example-slide'));
+
+                if (!isFinite(targetIndex)) {
+                    return;
+                }
+
+                $slider.slick('slickGoTo', targetIndex);
+            });
         });
     }
 
