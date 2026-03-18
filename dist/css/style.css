@@ -1,5 +1,5 @@
 h1 {
-  font-size: 54px;
+  font-size: 46px;
   line-height: 62px;
   font-weight: 700;
   text-transform: uppercase;
@@ -485,6 +485,13 @@ body {
   }
 }
 
+.create.arch-buro .create__area {
+  gap: 100px;
+}
+.create.arch-buro .create__image {
+  width: 100%;
+}
+
 @media (max-width: 991px) {
   .create__image {
     height: 300px;
@@ -528,6 +535,17 @@ body {
   .info {
     padding: 32px 0 0;
     gap: 16px;
+  }
+}
+
+.our-services__area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+@media (max-width: 991px) {
+  .our-services__area {
+    grid-template-columns: 1fr;
   }
 }
 

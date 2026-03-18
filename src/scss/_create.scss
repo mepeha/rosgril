@@ -18,7 +18,17 @@
     grid-template-columns: 1fr;
     gap: 32px;
   }
+
 }
+.create.arch-buro {
+  .create__area {
+    gap: 100px;
+  }
+  .create__image {
+    width: 100%;
+  }
+}
+
 .create__image {
   @include laptop {
     height: 300px;
@@ -65,4 +75,23 @@
 }
 
 .info__button {
+}
+
+
+.our-services {
+}
+
+.our-services__area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  @include laptop {
+    grid-template-columns: 1fr;
+  }
+}
+
+.our-services__info {
+}
+
+.our-services__img {
 }
