@@ -35,11 +35,11 @@
   }
 
   .slick-prev:before {
-    background-image: url("/dist/img/arrow-left.webp");
+    background-image: url("../img/arrow-left.webp");
   }
 
   .slick-next:before {
-    background-image: url("/dist/img/arrow-right.webp");
+    background-image: url("../img/arrow-right.webp");
   }
 }
 
@@ -54,11 +54,11 @@
   }
 
   .f-button.is-prev {
-    background-image: url("/dist/img/arrow-left.webp");
+    background-image: url("../img/arrow-left.webp");
   }
 
   .f-button.is-next {
-    background-image: url("/dist/img/arrow-right.webp");
+    background-image: url("../img/arrow-right.webp");
   }
 
   .f-button.is-prev svg,

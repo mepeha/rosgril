@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="36ee2820-815a-49e9-ba12-4236aa874a20" name="server" url="http://37.140.192.12">
+        <fileTransfer rootFolder="/www/tanyadesign.ru/wp-content/themes/tanyatheme" host="37.140.192.12" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
