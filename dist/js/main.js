@@ -1,4 +1,288 @@
 $(function () {
+    const STORAGE_KEY = 'tanyatheme:lead-queue:v1';
+    const STORAGE_VERSION = 1;
+    const MAX_PROJECTS = 2;
+
+    const normalizeText = function (value) {
+        return String(value || '').replace(/\s+/g, ' ').trim();
+    };
+
+    const deepClone = function (value) {
+        try {
+            return JSON.parse(JSON.stringify(value));
+        } catch (error) {
+            return null;
+        }
+    };
+
+    const createEmptyState = function () {
+        return {
+            version: STORAGE_VERSION,
+            order: [],
+            projects: {}
+        };
+    };
+
+    const normalizeProjectKey = function (value) {
+        const fallback = String(window.location && window.location.pathname ? window.location.pathname : '/');
+        const raw = normalizeText(value);
+        return raw !== '' ? raw : fallback;
+    };
+
+    const normalizeProjectToken = function (value) {
+        const raw = normalizeText(value)
+            .toLowerCase()
+            .replace(/[^a-z0-9а-яё_-]+/gi, '-')
+            .replace(/^-+|-+$/g, '')
+            .replace(/-{2,}/g, '-');
+
+        return raw.slice(0, 96);
+    };
+
+    const normalizeRecord = function (record, key) {
+        const baseMeta = record && typeof record.projectMeta === 'object' ? record.projectMeta : {};
+        const normalized = {
+            projectKey: key,
+            projectMeta: {
+                path: normalizeText(baseMeta.path || key) || key,
+                url: normalizeText(baseMeta.url || ''),
+                title: normalizeText(baseMeta.title || ''),
+                id: normalizeText(baseMeta.id || '')
+            },
+            updatedAt: Number(record && record.updatedAt) || Date.now()
+        };
+
+        if (record && typeof record.planEditor === 'object' && record.planEditor) {
+            normalized.planEditor = record.planEditor;
+        }
+
+        if (record && typeof record.calculator === 'object' && record.calculator) {
+            normalized.calculator = record.calculator;
+        }
+
+        return normalized;
+    };
+
+    const loadState = function () {
+        try {
+            const raw = window.localStorage.getItem(STORAGE_KEY);
+
+            if (!raw) {
+                return createEmptyState();
+            }
+
+            const parsed = JSON.parse(raw);
+            const order = Array.isArray(parsed && parsed.order) ? parsed.order.map(normalizeProjectKey) : [];
+            const projectsRaw = parsed && typeof parsed.projects === 'object' && parsed.projects ? parsed.projects : {};
+            const projects = {};
+
+            order.forEach(function (key) {
+                if (projectsRaw[key] && typeof projectsRaw[key] === 'object') {
+                    projects[key] = normalizeRecord(projectsRaw[key], key);
+                }
+            });
+
+            return {
+                version: STORAGE_VERSION,
+                order: Object.keys(projects),
+                projects: projects
+            };
+        } catch (error) {
+            console.warn('[LeadContext] Failed to load queue state', error);
+            return createEmptyState();
+        }
+    };
+
+    let state = loadState();
+
+    const saveState = function () {
+        try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (error) {
+            console.warn('[LeadContext] Failed to save queue state', error);
+        }
+    };
+
+    const removeProject = function (projectKey) {
+        const key = normalizeProjectKey(projectKey);
+        const nextOrder = state.order.filter(function (item) {
+            return item !== key;
+        });
+
+        delete state.projects[key];
+        state.order = nextOrder;
+    };
+
+    const touchProject = function (projectKey) {
+        const key = normalizeProjectKey(projectKey);
+        removeProject(key);
+        state.order.push(key);
+    };
+
+    const pruneQueue = function () {
+        while (state.order.length > MAX_PROJECTS) {
+            const oldestKey = state.order.shift();
+
+            if (oldestKey) {
+                delete state.projects[oldestKey];
+            }
+        }
+    };
+
+    const isRecordEmpty = function (record) {
+        if (!record || typeof record !== 'object') {
+            return true;
+        }
+
+        const hasPlanEditor = !!(record.planEditor && typeof record.planEditor === 'object');
+        const hasCalculator = !!(record.calculator && typeof record.calculator === 'object');
+
+        return !hasPlanEditor && !hasCalculator;
+    };
+
+    const getCurrentProjectMeta = function () {
+        const path = normalizeProjectKey(window.location && window.location.pathname ? window.location.pathname : '/');
+        const $main = $('main.single-project-main').first();
+        const titleFromMain = normalizeText($main.attr('data-project-title'));
+        const idFromMain = normalizeText($main.attr('data-project-id'));
+        const titleFromHead = normalizeText($('.page-head__title').first().text());
+        const idFromCard = normalizeText($('.card-info__subtitle').first().text());
+        const title = titleFromMain || titleFromHead || normalizeText(document.title);
+        const projectId = idFromMain || idFromCard;
+        const projectToken = normalizeProjectToken(projectId || title);
+        const key = projectToken ? (path + '::' + projectToken) : path;
+
+        return {
+            key: key,
+            path: path,
+            url: String(window.location && window.location.href ? window.location.href : ''),
+            title: title,
+            id: projectId
+        };
+    };
+
+    const ensureProjectRecord = function (projectKey) {
+        const key = normalizeProjectKey(projectKey);
+
+        if (!state.projects[key]) {
+            state.projects[key] = normalizeRecord({
+                projectMeta: getCurrentProjectMeta()
+            }, key);
+        }
+
+        return state.projects[key];
+    };
+
+    const upsertProject = function (projectKey, partialState) {
+        const key = normalizeProjectKey(projectKey);
+        const patch = partialState && typeof partialState === 'object' ? partialState : {};
+        const record = ensureProjectRecord(key);
+
+        if (patch.projectMeta && typeof patch.projectMeta === 'object') {
+            const patchMeta = patch.projectMeta;
+            record.projectMeta = {
+                path: normalizeText(patchMeta.path || record.projectMeta.path || key) || key,
+                url: normalizeText(patchMeta.url || record.projectMeta.url || ''),
+                title: normalizeText(patchMeta.title || record.projectMeta.title || ''),
+                id: normalizeText(patchMeta.id || record.projectMeta.id || '')
+            };
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'planEditor')) {
+            if (patch.planEditor && typeof patch.planEditor === 'object') {
+                record.planEditor = patch.planEditor;
+            } else {
+                delete record.planEditor;
+            }
+        }
+
+        if (Object.prototype.hasOwnProperty.call(patch, 'calculator')) {
+            if (patch.calculator && typeof patch.calculator === 'object') {
+                record.calculator = patch.calculator;
+            } else {
+                delete record.calculator;
+            }
+        }
+
+        record.updatedAt = Date.now();
+
+        if (isRecordEmpty(record)) {
+            removeProject(key);
+            saveState();
+            return null;
+        }
+
+        state.projects[key] = normalizeRecord(record, key);
+        touchProject(key);
+        pruneQueue();
+        saveState();
+
+        return deepClone(state.projects[key]);
+    };
+
+    const upsertCurrentProject = function (partialState) {
+        const meta = getCurrentProjectMeta();
+        const patch = partialState && typeof partialState === 'object' ? partialState : {};
+        const mergedMeta = Object.assign({}, meta, patch.projectMeta || {});
+        const payload = Object.assign({}, patch, {
+            projectMeta: mergedMeta
+        });
+
+        return upsertProject(meta.key, payload);
+    };
+
+    const getProject = function (projectKey) {
+        const key = normalizeProjectKey(projectKey);
+        const project = state.projects[key];
+        return project ? deepClone(project) : null;
+    };
+
+    const getUnsentProjects = function () {
+        return state.order
+            .map(function (key) {
+                return state.projects[key] ? deepClone(state.projects[key]) : null;
+            })
+            .filter(function (item) {
+                return !!item;
+            });
+    };
+
+    const markSent = function (projectKeys) {
+        const keys = Array.isArray(projectKeys) ? projectKeys : [];
+
+        if (!keys.length) {
+            return;
+        }
+
+        keys.forEach(function (projectKey) {
+            removeProject(projectKey);
+        });
+
+        saveState();
+    };
+
+    const clear = function () {
+        state = createEmptyState();
+        saveState();
+    };
+
+    window.tanyathemeLeadContext = {
+        STORAGE_KEY: STORAGE_KEY,
+        MAX_PROJECTS: MAX_PROJECTS,
+        getCurrentProjectKey: function () {
+            return getCurrentProjectMeta().key;
+        },
+        getCurrentProjectMeta: getCurrentProjectMeta,
+        upsertProject: upsertProject,
+        upsertCurrentProject: upsertCurrentProject,
+        getProject: getProject,
+        getUnsentProjects: getUnsentProjects,
+        markSent: markSent,
+        clear: clear
+    };
+});
+
+$(function () {
     const $cardCalcBlocks = $('.card-calc');
 
     if (!$cardCalcBlocks.length) {
@@ -30,6 +314,18 @@ $(function () {
         return safeValue.toLocaleString('ru-RU') + ' ₽';
     };
 
+    const normalizeText = function (value) {
+        return String(value || '').replace(/\s+/g, ' ').trim();
+    };
+
+    const getLeadContext = function () {
+        if (window.tanyathemeLeadContext && typeof window.tanyathemeLeadContext === 'object') {
+            return window.tanyathemeLeadContext;
+        }
+
+        return null;
+    };
+
     $cardCalcBlocks.each(function (blockIndex) {
         const $window = $(window);
         const $calc = $(this);
@@ -43,6 +339,7 @@ $(function () {
         const eventNamespace = '.cardCalc' + blockIndex;
         const stickyStartOffset = 280;
         let isFirstRender = true;
+        let isCalculatorTouched = false;
         let stickyRafId = null;
         let forceFloatingUntil = 0;
 
@@ -323,9 +620,129 @@ $(function () {
             animateOutputValue($totalOutput, total, shouldAnimate);
             isFirstRender = false;
             requestFloatingStateUpdate();
+
+            const leadContext = getLeadContext();
+
+            if (isCalculatorTouched && leadContext && typeof leadContext.upsertCurrentProject === 'function') {
+                const selections = {};
+                const selectedOptions = [];
+
+                $calc.find('[data-calc-group]').each(function (groupIndex) {
+                    const $group = $(this);
+                    const groupKey = String($group.attr('data-calc-group') || (groupIndex + 1));
+                    const $groupTitle = $group.find('.card-calc__group-title').first().clone();
+
+                    $groupTitle.find('.card-calc__group-number').remove();
+
+                    const groupTitle = normalizeText($groupTitle.text());
+                    const selectedIndices = [];
+                    const selectedTitles = [];
+
+                    $group.find('input[data-price]').each(function (optionIndex) {
+                        if (!$(this).is(':checked')) {
+                            return;
+                        }
+
+                        const $option = $(this).closest('.card-calc__option');
+                        const optionTitle = normalizeText($option.find('.card-calc__option-text').text());
+                        const optionPrice = parsePrice($(this).attr('data-price'));
+
+                        selectedIndices.push(optionIndex);
+                        selectedTitles.push(optionTitle);
+                        selectedOptions.push({
+                            groupKey: groupKey,
+                            groupTitle: groupTitle,
+                            optionIndex: optionIndex,
+                            optionTitle: optionTitle,
+                            price: optionPrice,
+                            priceFormatted: formatCurrency(optionPrice)
+                        });
+                    });
+
+                    selections[groupKey] = {
+                        groupKey: groupKey,
+                        groupTitle: groupTitle,
+                        selectedIndices: selectedIndices,
+                        selectedTitles: selectedTitles
+                    };
+                });
+
+                leadContext.upsertCurrentProject({
+                    calculator: {
+                        selections: selections,
+                        selectedOptions: selectedOptions,
+                        totals: {
+                            base: base,
+                            changes: changes,
+                            total: total,
+                            baseFormatted: formatCurrency(base),
+                            changesFormatted: formatCurrency(changes),
+                            totalFormatted: formatCurrency(total)
+                        },
+                        updatedAt: Date.now()
+                    }
+                });
+            }
+        };
+
+        const restoreCalculatorState = function () {
+            const leadContext = getLeadContext();
+
+            if (!leadContext || typeof leadContext.getProject !== 'function' || typeof leadContext.getCurrentProjectKey !== 'function') {
+                return false;
+            }
+
+            const currentProject = leadContext.getProject(leadContext.getCurrentProjectKey());
+            const calculatorState = currentProject && currentProject.calculator && typeof currentProject.calculator === 'object'
+                ? currentProject.calculator
+                : null;
+
+            if (!calculatorState || !calculatorState.selections || typeof calculatorState.selections !== 'object') {
+                return false;
+            }
+
+            $calc.find('[data-calc-group]').each(function (groupIndex) {
+                const $group = $(this);
+                const groupKey = String($group.attr('data-calc-group') || (groupIndex + 1));
+                const groupState = calculatorState.selections[groupKey];
+
+                if (!groupState || !Array.isArray(groupState.selectedIndices)) {
+                    return;
+                }
+
+                const $groupInputs = $group.find('input[data-price]');
+
+                if (!$groupInputs.length) {
+                    return;
+                }
+
+                $groupInputs.prop('checked', false);
+
+                groupState.selectedIndices.forEach(function (selectedIndex) {
+                    const safeIndex = Number(selectedIndex);
+
+                    if (!isFinite(safeIndex)) {
+                        return;
+                    }
+
+                    const $input = $groupInputs.eq(safeIndex);
+
+                    if ($input.length) {
+                        $input.prop('checked', true);
+                    }
+                });
+
+                if ($group.find('input[type="radio"]').length && !$group.find('input[data-price]:checked').length) {
+                    $group.find('input[data-price]').first().prop('checked', true);
+                }
+            });
+
+            isCalculatorTouched = true;
+            return true;
         };
 
         $inputs.on('change', function () {
+            isCalculatorTouched = true;
             renderTotals();
             window.setTimeout(function () {
                 requestFloatingStateUpdate();
@@ -340,6 +757,7 @@ $(function () {
             window.visualViewport.addEventListener('scroll', requestFloatingStateUpdate);
         }
 
+        restoreCalculatorState();
         renderTotals();
     });
 });
@@ -347,6 +765,13 @@ $(function () {
 $(function () {
     const STORAGE_KEY = 'planEditor:v1:' + String(window.location && window.location.pathname ? window.location.pathname : '/');
     const STORAGE_SAVE_DELAY = 250;
+    const getLeadContext = function () {
+        if (window.tanyathemeLeadContext && typeof window.tanyathemeLeadContext === 'object') {
+            return window.tanyathemeLeadContext;
+        }
+
+        return null;
+    };
 
     const $body = $('body');
     const $planEditorModal = $('.plan-editor-modal');
@@ -632,6 +1057,53 @@ $(function () {
     const queueCurrentPlanSave = function (withObjects) {
         saveCurrentPlanState(withObjects);
         schedulePersistState();
+        syncPlanEditorToLeadContext();
+    };
+
+    const buildAllPlansPayload = function () {
+        const plans = planEditorState.plans.map(function (plan, index) {
+            const snapshot = planEditorState.persistedState.plansState[plan.planKey] || {};
+            const hasObjects = Array.isArray(snapshot.fabricObjectsJson) && snapshot.fabricObjectsJson.length > 0;
+
+            return {
+                planIndex: index,
+                planKey: plan.planKey,
+                planTitle: plan.displayTitle || plan.title || 'План ' + (index + 1),
+                sourceImage: plan.imageSrc || '',
+                comment: typeof snapshot.comment === 'string' ? snapshot.comment : '',
+                zoom: clampPlanEditorZoom(parseNumberOr(snapshot.zoom, 1)),
+                panX: parseNumberOr(snapshot.panX, 0),
+                panY: parseNumberOr(snapshot.panY, 0),
+                fabricObjectsJson: Array.isArray(snapshot.fabricObjectsJson) ? snapshot.fabricObjectsJson : [],
+                updatedAt: parseNumberOr(snapshot.updatedAt, 0),
+                hasEdits: hasObjects
+            };
+        });
+
+        return {
+            pageKey: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+            activePlanIndex: planEditorState.activeIndex,
+            plans: plans
+        };
+    };
+
+    const syncPlanEditorToLeadContext = function () {
+        const leadContext = getLeadContext();
+
+        if (!leadContext || typeof leadContext.upsertCurrentProject !== 'function') {
+            return;
+        }
+
+        const payload = buildAllPlansPayload();
+        const hasPayloadChanges = payload.plans.some(function (plan) {
+            return !!plan.hasEdits || normalizeText(plan.comment) !== '';
+        });
+
+        leadContext.upsertCurrentProject({
+            planEditor: hasPayloadChanges
+                ? Object.assign({}, payload, { updatedAt: Date.now() })
+                : null
+        });
     };
 
     const clearPlanAnnotations = function (shouldPersist) {
@@ -1176,31 +1648,7 @@ $(function () {
 
     const getAllPlansPayload = function () {
         queueCurrentPlanSave(true);
-
-        const plans = planEditorState.plans.map(function (plan, index) {
-            const snapshot = planEditorState.persistedState.plansState[plan.planKey] || {};
-            const hasObjects = Array.isArray(snapshot.fabricObjectsJson) && snapshot.fabricObjectsJson.length > 0;
-
-            return {
-                planIndex: index,
-                planKey: plan.planKey,
-                planTitle: plan.displayTitle || plan.title || 'План ' + (index + 1),
-                sourceImage: plan.imageSrc || '',
-                comment: typeof snapshot.comment === 'string' ? snapshot.comment : '',
-                zoom: clampPlanEditorZoom(parseNumberOr(snapshot.zoom, 1)),
-                panX: parseNumberOr(snapshot.panX, 0),
-                panY: parseNumberOr(snapshot.panY, 0),
-                fabricObjectsJson: Array.isArray(snapshot.fabricObjectsJson) ? snapshot.fabricObjectsJson : [],
-                updatedAt: parseNumberOr(snapshot.updatedAt, 0),
-                hasEdits: hasObjects
-            };
-        });
-
-        return {
-            pageKey: String(window.location && window.location.pathname ? window.location.pathname : '/'),
-            activePlanIndex: planEditorState.activeIndex,
-            plans: plans
-        };
+        return buildAllPlansPayload();
     };
 
     if ($planEditorModal.length && $planParts.length) {
@@ -1294,6 +1742,14 @@ $(function () {
 
         $planEditorForm.on('submit', function (event) {
             event.preventDefault();
+            queueCurrentPlanSave(true);
+
+            if (window.tanyathemeFeedbackPopup && typeof window.tanyathemeFeedbackPopup.open === 'function') {
+                closePlanEditor();
+                window.tanyathemeFeedbackPopup.open({
+                    source: 'plan-editor'
+                });
+            }
         });
 
         $(document).on('keydown', function (event) {
@@ -1315,6 +1771,7 @@ $(function () {
         $(window).on('beforeunload', function () {
             saveCurrentPlanState(true);
             flushPersistState();
+            syncPlanEditorToLeadContext();
         });
 
         window.planEditorApi = {
@@ -1339,6 +1796,30 @@ $(function () {
     const $cardTabs = $('.card-tabs');
     const $feedbackPopup = $('[data-feedback-popup]');
     const $feedbackPopupOpeners = $('[data-feedback-popup-open]');
+    const $feedbackForms = $('.feedback__form');
+    const $captchaPopup = $('[data-captcha-popup]');
+    const $captchaPopupText = $captchaPopup.find('[data-captcha-popup-text]');
+    const $captchaPopupWidget = $captchaPopup.find('[data-captcha-popup-widget]');
+    const $captchaPopupError = $captchaPopup.find('[data-captcha-popup-error]');
+    const $captchaPopupClosers = $captchaPopup.find('[data-captcha-popup-close]');
+    const getLeadContext = function () {
+        if (window.tanyathemeLeadContext && typeof window.tanyathemeLeadContext === 'object') {
+            return window.tanyathemeLeadContext;
+        }
+
+        return null;
+    };
+    const leadConfig = window.tanyathemeLead && typeof window.tanyathemeLead === 'object'
+        ? window.tanyathemeLead
+        : {};
+    const captchaState = {
+        widgetId: null,
+        pendingResolve: null,
+        pendingReject: null,
+        cancelled: false
+    };
+    let feedbackPopupSource = 'cta';
+    let isLeadSubmitLocked = false;
     if ($burger.length && $mobileMenu.length) {
         const openMenu = function () {
             $body.addClass('menu-open');
@@ -1566,14 +2047,1131 @@ $(function () {
         });
     }
 
-    if ($feedbackPopup.length && $feedbackPopupOpeners.length) {
+    const normalizeText = function (value) {
+        return String(value || '').replace(/\s+/g, ' ').trim();
+    };
+
+    const normalizePhone = function (value) {
+        let digits = String(value || '').replace(/\D+/g, '');
+
+        if (digits.length === 11 && digits.charAt(0) === '8') {
+            digits = '7' + digits.slice(1);
+        }
+
+        return digits;
+    };
+
+    const isValidPhone = function (value) {
+        const normalized = normalizePhone(value);
+        return normalized.length === 11 && normalized.charAt(0) === '7';
+    };
+
+    const formatCurrency = function (value) {
+        const numeric = Number(value);
+        const safe = isFinite(numeric) ? Math.max(0, Math.round(numeric)) : 0;
+        return safe.toLocaleString('ru-RU') + ' ₽';
+    };
+
+    const sanitizeFileToken = function (value, fallback) {
+        const token = normalizeText(value)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        if (!token) {
+            return fallback;
+        }
+
+        return token.slice(0, 64);
+    };
+
+    const PLAN_ATTACHMENT_MAX_LONG_SIDE = 1600;
+    const PLAN_ATTACHMENT_TARGET_BYTES = 280 * 1024;
+    const PLAN_ATTACHMENT_MAX_BYTES = 300 * 1024;
+    const PLAN_ATTACHMENT_MIN_QUALITY = 0.42;
+    const PLAN_ATTACHMENT_MAX_QUALITY = 0.9;
+    const PLAN_ATTACHMENT_QUALITY_STEP = 0.08;
+
+    const initPhoneMasks = function () {
+        const hasInputMask = typeof window.Inputmask === 'function';
+
+        if (!hasInputMask) {
+            return;
+        }
+
+        $('[data-phone-input]').each(function () {
+            const input = this;
+
+            if ($(input).data('phoneMaskReady')) {
+                return;
+            }
+
+            if (hasInputMask) {
+                window.Inputmask({
+                    mask: '+7 (999) 999 99 99',
+                    showMaskOnHover: false,
+                    clearIncomplete: true,
+                    jitMasking: true
+                }).mask(input);
+
+                $(input).data('phoneMaskReady', 'inputmask');
+            }
+        });
+    };
+
+    const buildFormMeta = function ($form) {
+        const sourceFromForm = normalizeText($form.attr('data-form-source'));
+
+        if (sourceFromForm) {
+            return {
+                source: sourceFromForm,
+                page: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+                url: String(window.location && window.location.href ? window.location.href : '')
+            };
+        }
+
+        if ($form.closest('.feedback-popup').length) {
+            return {
+                source: feedbackPopupSource || 'popup',
+                page: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+                url: String(window.location && window.location.href ? window.location.href : '')
+            };
+        }
+
+        if ($form.closest('.feedback.dark').length) {
+            return {
+                source: 'feedback-dark',
+                page: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+                url: String(window.location && window.location.href ? window.location.href : '')
+            };
+        }
+
+        return {
+            source: 'feedback',
+            page: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+            url: String(window.location && window.location.href ? window.location.href : '')
+        };
+    };
+
+    const setFormStatus = function ($form, message, type) {
+        let $status = $form.find('.feedback__status');
+
+        if (!$status.length) {
+            $status = $('<div class="feedback__status" role="status" aria-live="polite"></div>');
+            $form.append($status);
+        }
+
+        $status
+            .text(message)
+            .removeClass('is-error is-success')
+            .addClass(type === 'error' ? 'is-error' : 'is-success');
+    };
+
+    const clearFormStatus = function ($form) {
+        $form.find('.feedback__status').remove();
+    };
+
+    const ensureFormProgress = function ($form) {
+        let $progress = $form.find('.feedback__progress');
+
+        if ($progress.length) {
+            return $progress;
+        }
+
+        $progress = $(
+            '<div class="feedback__progress" aria-hidden="true">' +
+                '<div class="feedback__progress-track"><span class="feedback__progress-bar"></span></div>' +
+                '<div class="feedback__progress-text"></div>' +
+            '</div>'
+        );
+
+        $form.append($progress);
+        return $progress;
+    };
+
+    const setFormProgressPreparing = function ($form, message, percent) {
+        const $progress = ensureFormProgress($form);
+        const $text = $progress.find('.feedback__progress-text');
+        const $bar = $progress.find('.feedback__progress-bar');
+        const progressMessage = normalizeText(message) || 'Подготовка файлов...';
+        const hasPercent = isFinite(Number(percent));
+        const safePercent = hasPercent ? Math.min(99, Math.max(0, Math.round(Number(percent)))) : 35;
+
+        $progress.addClass('is-visible').attr('aria-hidden', 'false');
+
+        if (hasPercent) {
+            $progress.removeClass('is-indeterminate');
+        } else {
+            $progress.addClass('is-indeterminate');
+        }
+
+        $bar.css('width', String(safePercent) + '%');
+        $text.text(progressMessage);
+    };
+
+    const setFormProgressUpload = function ($form, percent) {
+        const $progress = ensureFormProgress($form);
+        const $text = $progress.find('.feedback__progress-text');
+        const $bar = $progress.find('.feedback__progress-bar');
+        const safePercent = Math.min(100, Math.max(0, Math.round(Number(percent) || 0)));
+
+        $progress
+            .addClass('is-visible')
+            .removeClass('is-indeterminate')
+            .attr('aria-hidden', 'false');
+        $bar.css('width', String(safePercent) + '%');
+        $text.text('Загрузка ' + safePercent + '%');
+    };
+
+    const resetFormProgress = function ($form) {
+        const $progress = $form.find('.feedback__progress');
+
+        if (!$progress.length) {
+            return;
+        }
+
+        $progress
+            .removeClass('is-visible is-indeterminate')
+            .attr('aria-hidden', 'true');
+        $progress.find('.feedback__progress-bar').css('width', '0%');
+        $progress.find('.feedback__progress-text').text('');
+    };
+
+    const isCaptchaConfigured = function () {
+        const siteKey = normalizeText(leadConfig.recaptchaSiteKey);
+        return !!leadConfig.recaptchaEnabled && siteKey !== '';
+    };
+
+    const clearCaptchaError = function () {
+        if (!$captchaPopupError.length) {
+            return;
+        }
+
+        $captchaPopupError.text('').removeClass('is-visible');
+    };
+
+    const setCaptchaError = function (message) {
+        if (!$captchaPopupError.length) {
+            return;
+        }
+
+        const text = normalizeText(message);
+        if (text === '') {
+            $captchaPopupError.text('').removeClass('is-visible');
+            return;
+        }
+
+        $captchaPopupError.text(text).addClass('is-visible');
+    };
+
+    const setCaptchaPopupText = function (message) {
+        if (!$captchaPopupText.length) {
+            return;
+        }
+
+        const text = normalizeText(message);
+        if (text !== '') {
+            $captchaPopupText.text(text);
+        }
+    };
+
+    const openCaptchaPopup = function (message) {
+        if (!$captchaPopup.length) {
+            return;
+        }
+
+        captchaState.cancelled = false;
+        clearCaptchaError();
+        setCaptchaPopupText(message || 'Ожидание проверки captcha...');
+        $captchaPopup.addClass('is-open').attr('aria-hidden', 'false');
+        $body.addClass('captcha-popup-open');
+    };
+
+    const closeCaptchaPopup = function () {
+        if (!$captchaPopup.length) {
+            return;
+        }
+
+        $captchaPopup.removeClass('is-open').attr('aria-hidden', 'true');
+        $body.removeClass('captcha-popup-open');
+    };
+
+    const clearPendingCaptchaPromise = function () {
+        captchaState.pendingResolve = null;
+        captchaState.pendingReject = null;
+    };
+
+    const rejectPendingCaptcha = function (message) {
+        if (typeof captchaState.pendingReject !== 'function') {
+            clearPendingCaptchaPromise();
+            return;
+        }
+
+        const reject = captchaState.pendingReject;
+        clearPendingCaptchaPromise();
+        reject(new Error(normalizeText(message) || 'Проверка captcha не завершена.'));
+    };
+
+    const resolvePendingCaptcha = function (token) {
+        if (typeof captchaState.pendingResolve !== 'function') {
+            clearPendingCaptchaPromise();
+            return;
+        }
+
+        const resolve = captchaState.pendingResolve;
+        clearPendingCaptchaPromise();
+        resolve(String(token || ''));
+    };
+
+    const resetCaptchaWidget = function () {
+        if (!window.grecaptcha || typeof window.grecaptcha.reset !== 'function') {
+            return;
+        }
+
+        if (captchaState.widgetId === null) {
+            return;
+        }
+
+        try {
+            window.grecaptcha.reset(captchaState.widgetId);
+        } catch (error) {
+            console.warn('[LeadForm] Failed to reset reCAPTCHA widget', error);
+        }
+    };
+
+    const waitForRecaptchaApi = function (timeoutMs) {
+        return new Promise(function (resolve, reject) {
+            const maxWait = Math.max(1000, Number(timeoutMs) || 14000);
+            const startedAt = Date.now();
+            const hasApi = function () {
+                return !!(window.grecaptcha && typeof window.grecaptcha.render === 'function');
+            };
+
+            if (hasApi()) {
+                resolve(window.grecaptcha);
+                return;
+            }
+
+            const timer = window.setInterval(function () {
+                if (hasApi()) {
+                    window.clearInterval(timer);
+                    resolve(window.grecaptcha);
+                    return;
+                }
+
+                if (Date.now() - startedAt >= maxWait) {
+                    window.clearInterval(timer);
+                    reject(new Error('Не удалось загрузить Google reCAPTCHA. Попробуйте еще раз.'));
+                }
+            }, 120);
+        });
+    };
+
+    const ensureCaptchaWidget = async function () {
+        if (!$captchaPopup.length || !$captchaPopupWidget.length) {
+            throw new Error('Не найден pop-up для проверки captcha.');
+        }
+
+        if (!isCaptchaConfigured()) {
+            throw new Error('Капча не настроена. Проверьте ключи в админке.');
+        }
+
+        const siteKey = normalizeText(leadConfig.recaptchaSiteKey);
+        const grecaptcha = await waitForRecaptchaApi(15000);
+
+        if (captchaState.widgetId !== null) {
+            resetCaptchaWidget();
+            return;
+        }
+
+        captchaState.widgetId = grecaptcha.render($captchaPopupWidget.get(0), {
+            sitekey: siteKey,
+            callback: function (token) {
+                closeCaptchaPopup();
+                setCaptchaPopupText('Ожидание проверки captcha...');
+                resolvePendingCaptcha(token);
+            },
+            'expired-callback': function () {
+                setCaptchaError('Срок действия капчи истек. Повторите проверку.');
+                closeCaptchaPopup();
+                rejectPendingCaptcha('Срок действия капчи истек. Повторите проверку.');
+                resetCaptchaWidget();
+            },
+            'error-callback': function () {
+                setCaptchaError('Ошибка проверки captcha. Повторите попытку.');
+                closeCaptchaPopup();
+                rejectPendingCaptcha('Ошибка проверки captcha. Повторите попытку.');
+                resetCaptchaWidget();
+            }
+        });
+    };
+
+    const requestCaptchaToken = async function () {
+        if (!isCaptchaConfigured()) {
+            throw new Error('Капча не настроена. Проверьте ключи в админке.');
+        }
+
+        openCaptchaPopup('Ожидание проверки captcha...');
+        await ensureCaptchaWidget();
+
+        if (captchaState.cancelled || !$captchaPopup.hasClass('is-open')) {
+            throw new Error('Проверка captcha отменена.');
+        }
+
+        setCaptchaPopupText('Подтвердите, что вы не робот.');
+
+        return new Promise(function (resolve, reject) {
+            captchaState.pendingResolve = resolve;
+            captchaState.pendingReject = reject;
+        });
+    };
+
+    const cancelCaptchaRequest = function (reason) {
+        const message = normalizeText(reason) || 'Проверка captcha отменена.';
+        captchaState.cancelled = true;
+        closeCaptchaPopup();
+        setCaptchaError(message);
+        rejectPendingCaptcha(message);
+        setCaptchaPopupText('Ожидание проверки captcha...');
+        resetCaptchaWidget();
+    };
+
+    const getLeadQueueProjects = function () {
+        const leadContext = getLeadContext();
+
+        if (!leadContext || typeof leadContext.getUnsentProjects !== 'function') {
+            return [];
+        }
+
+        const projects = leadContext.getUnsentProjects();
+        return Array.isArray(projects) ? projects : [];
+    };
+
+    const parseCurrencyText = function (value) {
+        const digits = String(value || '').match(/\d+/g);
+
+        if (!digits || !digits.length) {
+            return NaN;
+        }
+
+        return Number(digits.join(''));
+    };
+
+    const parsePriceNumber = function (value) {
+        const parsed = Number(value);
+
+        if (!isFinite(parsed)) {
+            return 0;
+        }
+
+        return parsed;
+    };
+
+    const getRuntimeProjectMeta = function () {
+        const leadContext = getLeadContext();
+
+        if (leadContext && typeof leadContext.getCurrentProjectMeta === 'function') {
+            const meta = leadContext.getCurrentProjectMeta();
+
+            return {
+                key: normalizeText(meta && meta.key) || String(window.location && window.location.pathname ? window.location.pathname : '/'),
+                path: normalizeText(meta && meta.path) || String(window.location && window.location.pathname ? window.location.pathname : '/'),
+                url: String(meta && meta.url ? meta.url : (window.location && window.location.href ? window.location.href : '')),
+                title: normalizeText(meta && meta.title),
+                id: normalizeText(meta && meta.id)
+            };
+        }
+
+        return {
+            key: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+            path: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+            url: String(window.location && window.location.href ? window.location.href : ''),
+            title: normalizeText($('.page-head__title').first().text()) || normalizeText(document.title),
+            id: normalizeText($('.card-info__subtitle').first().text())
+        };
+    };
+
+    const mergeRuntimeProjectPayload = function (projects, runtimeProject) {
+        const list = Array.isArray(projects) ? projects.slice() : [];
+
+        if (!runtimeProject || typeof runtimeProject !== 'object') {
+            return list;
+        }
+
+        const runtimeKey = normalizeText(runtimeProject.projectKey);
+
+        if (!runtimeKey) {
+            return list;
+        }
+
+        const existingIndex = list.findIndex(function (project) {
+            return normalizeText(project && project.projectKey) === runtimeKey;
+        });
+        const existing = existingIndex >= 0 && list[existingIndex] && typeof list[existingIndex] === 'object'
+            ? list[existingIndex]
+            : {};
+        const merged = Object.assign({}, existing, runtimeProject, {
+            projectKey: runtimeKey,
+            updatedAt: Date.now()
+        });
+        const existingMeta = existing.projectMeta && typeof existing.projectMeta === 'object'
+            ? existing.projectMeta
+            : {};
+        const runtimeMeta = runtimeProject.projectMeta && typeof runtimeProject.projectMeta === 'object'
+            ? runtimeProject.projectMeta
+            : {};
+
+        merged.projectMeta = Object.assign({}, existingMeta, runtimeMeta);
+
+        if (existingIndex >= 0) {
+            list[existingIndex] = merged;
+        } else {
+            list.push(merged);
+        }
+
+        return list;
+    };
+
+    const buildRuntimeProjectFallback = function () {
+        if (!window.planEditorApi || typeof window.planEditorApi.getAllPlansPayload !== 'function') {
+            return null;
+        }
+
+        let plansPayload = null;
+
+        try {
+            plansPayload = window.planEditorApi.getAllPlansPayload();
+        } catch (error) {
+            console.warn('[LeadForm] Failed to collect runtime plan payload', error);
+            return null;
+        }
+
+        if (!plansPayload || !Array.isArray(plansPayload.plans)) {
+            return null;
+        }
+
+        const hasChanges = plansPayload.plans.some(function (plan) {
+            if (!plan || typeof plan !== 'object') {
+                return false;
+            }
+
+            const hasObjects = Array.isArray(plan.fabricObjectsJson) && plan.fabricObjectsJson.length > 0;
+            const hasComment = normalizeText(plan.comment) !== '';
+            return hasObjects || !!plan.hasEdits || hasComment;
+        });
+
+        if (!hasChanges) {
+            return null;
+        }
+
+        const meta = getRuntimeProjectMeta();
+
+        return {
+            projectKey: normalizeText(meta && meta.key) || String(window.location && window.location.pathname ? window.location.pathname : '/'),
+            projectMeta: {
+                path: normalizeText(meta && meta.path) || String(window.location && window.location.pathname ? window.location.pathname : '/'),
+                url: String(meta && meta.url ? meta.url : (window.location && window.location.href ? window.location.href : '')),
+                title: normalizeText(meta && meta.title),
+                id: normalizeText(meta && meta.id)
+            },
+            planEditor: Object.assign({}, plansPayload, {
+                updatedAt: Date.now()
+            }),
+            updatedAt: Date.now()
+        };
+    };
+
+    const buildRuntimeCalculatorProjectFallback = function () {
+        const $calc = $('.card-calc').first();
+
+        if (!$calc.length) {
+            return null;
+        }
+
+        const $groups = $calc.find('[data-calc-group]');
+
+        if (!$groups.length) {
+            return null;
+        }
+
+        const selections = {};
+        const selectedOptions = [];
+
+        $groups.each(function (groupIndex) {
+            const $group = $(this);
+            const groupKey = String($group.attr('data-calc-group') || (groupIndex + 1));
+            const $groupTitle = $group.find('.card-calc__group-title').first().clone();
+
+            $groupTitle.find('.card-calc__group-number').remove();
+
+            const groupTitle = normalizeText($groupTitle.text());
+            const selectedIndices = [];
+            const selectedTitles = [];
+
+            $group.find('input[data-price]').each(function (optionIndex) {
+                if (!$(this).is(':checked')) {
+                    return;
+                }
+
+                const $option = $(this).closest('.card-calc__option');
+                const optionTitle = normalizeText($option.find('.card-calc__option-text').text());
+                const optionPrice = parsePriceNumber($(this).attr('data-price'));
+
+                selectedIndices.push(optionIndex);
+                selectedTitles.push(optionTitle);
+                selectedOptions.push({
+                    groupKey: groupKey,
+                    groupTitle: groupTitle,
+                    optionIndex: optionIndex,
+                    optionTitle: optionTitle,
+                    price: optionPrice,
+                    priceFormatted: formatCurrency(optionPrice)
+                });
+            });
+
+            selections[groupKey] = {
+                groupKey: groupKey,
+                groupTitle: groupTitle,
+                selectedIndices: selectedIndices,
+                selectedTitles: selectedTitles
+            };
+        });
+
+        const changesFromOutput = parseCurrencyText($calc.find('[data-calc-out="changes"]').first().text());
+        const baseFromOutput = parseCurrencyText($calc.find('[data-calc-out="base"]').first().text());
+        const totalFromOutput = parseCurrencyText($calc.find('[data-calc-out="total"]').first().text());
+        const baseFromData = parseCurrencyText($calc.attr('data-base-cost'));
+        const changesFallback = selectedOptions.reduce(function (sum, option) {
+            return sum + parsePriceNumber(option && option.price);
+        }, 0);
+        const base = isFinite(baseFromOutput) ? baseFromOutput : (isFinite(baseFromData) ? baseFromData : 0);
+        const changes = isFinite(changesFromOutput) ? changesFromOutput : changesFallback;
+        const total = isFinite(totalFromOutput) ? totalFromOutput : (base + changes);
+        const meta = getRuntimeProjectMeta();
+
+        return {
+            projectKey: normalizeText(meta && meta.key) || String(window.location && window.location.pathname ? window.location.pathname : '/'),
+            projectMeta: {
+                path: normalizeText(meta && meta.path) || String(window.location && window.location.pathname ? window.location.pathname : '/'),
+                url: String(meta && meta.url ? meta.url : (window.location && window.location.href ? window.location.href : '')),
+                title: normalizeText(meta && meta.title),
+                id: normalizeText(meta && meta.id)
+            },
+            calculator: {
+                selections: selections,
+                selectedOptions: selectedOptions,
+                totals: {
+                    base: base,
+                    changes: changes,
+                    total: total,
+                    baseFormatted: formatCurrency(base),
+                    changesFormatted: formatCurrency(changes),
+                    totalFormatted: formatCurrency(total)
+                },
+                updatedAt: Date.now()
+            },
+            updatedAt: Date.now()
+        };
+    };
+
+    const loadImage = function (src) {
+        return new Promise(function (resolve, reject) {
+            const image = new Image();
+            let safeUrl = src;
+
+            try {
+                safeUrl = String(new URL(src, window.location && window.location.href ? window.location.href : '').href);
+                const imageOrigin = new URL(safeUrl).origin;
+                const pageOrigin = window.location && window.location.origin ? window.location.origin : '';
+
+                if (imageOrigin && pageOrigin && imageOrigin !== pageOrigin) {
+                    image.crossOrigin = 'anonymous';
+                }
+            } catch (error) {
+                safeUrl = src;
+            }
+
+            image.onload = function () {
+                resolve(image);
+            };
+
+            image.onerror = function () {
+                reject(new Error('Failed to load image: ' + src));
+            };
+
+            image.src = safeUrl;
+        });
+    };
+
+    const loadFabricObjects = function (staticCanvas, payload) {
+        try {
+            const result = staticCanvas.loadFromJSON(payload);
+
+            if (result && typeof result.then === 'function') {
+                return result;
+            }
+
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    };
+
+    const canvasToJpegBlob = function (canvas, quality) {
+        return new Promise(function (resolve, reject) {
+            canvas.toBlob(function (blob) {
+                if (!blob) {
+                    reject(new Error('Failed to build JPEG blob'));
+                    return;
+                }
+
+                resolve(blob);
+            }, 'image/jpeg', quality);
+        });
+    };
+
+    const compressCanvasToTargetJpeg = async function (canvas) {
+        let quality = PLAN_ATTACHMENT_MAX_QUALITY;
+        let bestBlob = null;
+        let bestQuality = quality;
+        let selectedBlob = null;
+        let selectedQuality = quality;
+
+        while (quality >= PLAN_ATTACHMENT_MIN_QUALITY - 0.001) {
+            const currentQuality = Number(quality.toFixed(2));
+            const currentBlob = await canvasToJpegBlob(canvas, currentQuality);
+
+            if (!bestBlob || currentBlob.size < bestBlob.size) {
+                bestBlob = currentBlob;
+                bestQuality = currentQuality;
+            }
+
+            if (currentBlob.size <= PLAN_ATTACHMENT_TARGET_BYTES) {
+                selectedBlob = currentBlob;
+                selectedQuality = currentQuality;
+                break;
+            }
+
+            if (!selectedBlob && currentBlob.size <= PLAN_ATTACHMENT_MAX_BYTES) {
+                selectedBlob = currentBlob;
+                selectedQuality = currentQuality;
+            }
+
+            quality -= PLAN_ATTACHMENT_QUALITY_STEP;
+        }
+
+        if (!selectedBlob && bestBlob) {
+            selectedBlob = bestBlob;
+            selectedQuality = bestQuality;
+        }
+
+        if (!selectedBlob) {
+            throw new Error('Failed to compress JPEG attachment');
+        }
+
+        return {
+            blob: selectedBlob,
+            quality: selectedQuality,
+            isOversized: selectedBlob.size > PLAN_ATTACHMENT_MAX_BYTES
+        };
+    };
+
+    const formatKilobytes = function (bytes) {
+        const safeBytes = Math.max(0, Math.round(Number(bytes) || 0));
+        return String(Math.round(safeBytes / 1024)) + ' KB';
+    };
+
+    const renderPlanAttachment = async function (project, plan) {
+        if (!window.fabric || typeof window.fabric.StaticCanvas !== 'function') {
+            throw new Error('Fabric.js is not available');
+        }
+
+        const sourceImage = normalizeText(plan && plan.sourceImage);
+
+        if (!sourceImage) {
+            throw new Error('Plan source image is missing');
+        }
+
+        const image = await loadImage(sourceImage);
+        const width = Math.max(1, image.naturalWidth || image.width || 1);
+        const height = Math.max(1, image.naturalHeight || image.height || 1);
+        const maxSide = Math.max(width, height);
+        const outputScale = maxSide > PLAN_ATTACHMENT_MAX_LONG_SIDE
+            ? PLAN_ATTACHMENT_MAX_LONG_SIDE / maxSide
+            : 1;
+        const outputWidth = Math.max(1, Math.round(width * outputScale));
+        const outputHeight = Math.max(1, Math.round(height * outputScale));
+        const overlayCanvas = document.createElement('canvas');
+        const outputCanvas = document.createElement('canvas');
+        const outputContext = outputCanvas.getContext('2d');
+        const staticCanvas = new window.fabric.StaticCanvas(overlayCanvas, {
+            width: width,
+            height: height,
+            selection: false
+        });
+        const payload = {
+            objects: Array.isArray(plan.fabricObjectsJson) ? plan.fabricObjectsJson : []
+        };
+
+        outputCanvas.width = outputWidth;
+        outputCanvas.height = outputHeight;
+
+        try {
+            await loadFabricObjects(staticCanvas, payload);
+            staticCanvas.renderAll();
+
+            if (!outputContext) {
+                throw new Error('Canvas context is not available');
+            }
+
+            outputContext.fillStyle = '#ffffff';
+            outputContext.fillRect(0, 0, outputWidth, outputHeight);
+            outputContext.drawImage(image, 0, 0, outputWidth, outputHeight);
+            outputContext.drawImage(overlayCanvas, 0, 0, outputWidth, outputHeight);
+
+            const compressed = await compressCanvasToTargetJpeg(outputCanvas);
+
+            const projectToken = sanitizeFileToken(project && project.projectMeta && project.projectMeta.id ? project.projectMeta.id : project && project.projectKey, 'project');
+            const planToken = sanitizeFileToken(plan && plan.planTitle ? plan.planTitle : '', 'plan');
+            const fileName = projectToken + '-' + planToken + '.jpg';
+
+            return {
+                blob: compressed.blob,
+                fileName: fileName,
+                fileSize: compressed.blob.size,
+                isOversized: compressed.isOversized
+            };
+        } finally {
+            staticCanvas.dispose();
+        }
+    };
+
+    const buildAttachmentsForProjects = async function (projects, onPreparingProgress) {
+        const files = [];
+        const warnings = [];
+        let totalEditedPlans = 0;
+        let processedPlans = 0;
+
+        projects.forEach(function (project) {
+            const planEditor = project && project.planEditor && typeof project.planEditor === 'object'
+                ? project.planEditor
+                : null;
+            const plans = planEditor && Array.isArray(planEditor.plans)
+                ? planEditor.plans
+                : [];
+
+            plans.forEach(function (plan) {
+                const hasObjects = plan && Array.isArray(plan.fabricObjectsJson) && plan.fabricObjectsJson.length > 0;
+                const hasEdits = !!(plan && plan.hasEdits);
+
+                if (plan && (hasEdits || hasObjects)) {
+                    totalEditedPlans += 1;
+                }
+            });
+        });
+
+        for (let projectIndex = 0; projectIndex < projects.length; projectIndex += 1) {
+            const project = projects[projectIndex];
+            const planEditor = project && project.planEditor && typeof project.planEditor === 'object'
+                ? project.planEditor
+                : null;
+            const plans = planEditor && Array.isArray(planEditor.plans)
+                ? planEditor.plans
+                : [];
+
+            for (let planIndex = 0; planIndex < plans.length; planIndex += 1) {
+                const plan = plans[planIndex];
+                const hasObjects = plan && Array.isArray(plan.fabricObjectsJson) && plan.fabricObjectsJson.length > 0;
+                const hasEdits = !!(plan && plan.hasEdits);
+
+                if (!plan || (!hasEdits && !hasObjects)) {
+                    continue;
+                }
+
+                processedPlans += 1;
+                if (typeof onPreparingProgress === 'function') {
+                    onPreparingProgress(processedPlans, totalEditedPlans);
+                }
+
+                try {
+                    const rendered = await renderPlanAttachment(project, plan);
+                    files.push(rendered);
+
+                    if (rendered.isOversized) {
+                        const projectTitle = normalizeText(project && project.projectMeta && project.projectMeta.title);
+                        const planTitle = normalizeText(plan && plan.planTitle);
+
+                        warnings.push(
+                            'Attachment exceeds 300KB for "' +
+                            (projectTitle || project && project.projectKey || 'project') +
+                            '" / "' +
+                            (planTitle || ('plan ' + (planIndex + 1))) +
+                            '" (' +
+                            formatKilobytes(rendered.fileSize) +
+                            ')'
+                        );
+                    }
+                } catch (error) {
+                    const projectTitle = normalizeText(project && project.projectMeta && project.projectMeta.title);
+                    const planTitle = normalizeText(plan && plan.planTitle);
+                    warnings.push('Attachment skipped for "' + (projectTitle || project && project.projectKey || 'project') + '" / "' + (planTitle || ('plan ' + (planIndex + 1))) + '"');
+                    console.warn('[LeadForm] Failed to build plan attachment', error);
+                }
+            }
+        }
+
+        return {
+            files: files,
+            warnings: warnings
+        };
+    };
+
+    const sendLeadRequest = function (formData, onUploadProgress) {
+        return new Promise(function (resolve, reject) {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('POST', String(leadConfig.ajaxUrl), true);
+            xhr.withCredentials = true;
+
+            xhr.upload.addEventListener('progress', function (event) {
+                if (!event.lengthComputable || typeof onUploadProgress !== 'function') {
+                    return;
+                }
+
+                const percent = Math.round((event.loaded / event.total) * 100);
+                onUploadProgress(percent);
+            });
+
+            xhr.addEventListener('error', function () {
+                reject(new Error('Ошибка сети при отправке формы.'));
+            });
+
+            xhr.addEventListener('abort', function () {
+                reject(new Error('Отправка формы была отменена.'));
+            });
+
+            xhr.addEventListener('load', function () {
+                let responseJson = null;
+
+                try {
+                    responseJson = JSON.parse(String(xhr.responseText || ''));
+                } catch (error) {
+                    responseJson = null;
+                }
+
+                resolve({
+                    ok: xhr.status >= 200 && xhr.status < 300,
+                    status: xhr.status,
+                    data: responseJson
+                });
+            });
+
+            xhr.send(formData);
+        });
+    };
+
+    const submitLeadForm = async function ($form) {
+        if (!leadConfig.ajaxUrl || !leadConfig.nonce) {
+            setFormStatus($form, 'Не настроен endpoint отправки.', 'error');
+            return;
+        }
+
+        if (!isCaptchaConfigured()) {
+            setFormStatus($form, 'Капча не настроена. Проверьте ключи в админке.', 'error');
+            return;
+        }
+
+        if (isLeadSubmitLocked || $form.data('isSending') === '1') {
+            return;
+        }
+
+        const $nameField = $form.find('[name="name"]').first();
+        const $phoneField = $form.find('[name="phone"]').first();
+        const $messageField = $form.find('[name="message"]').first();
+        const $submitButton = $form.find('[type="submit"]').first();
+
+        clearFormStatus($form);
+        $form.data('isSending', '1');
+        isLeadSubmitLocked = true;
+        $submitButton.prop('disabled', true);
+        setFormProgressPreparing($form, 'Ожидание проверки captcha...');
+
+        try {
+            const captchaToken = await requestCaptchaToken();
+            const name = normalizeText($nameField.val());
+            const rawPhone = normalizeText($phoneField.val());
+            const message = normalizeText($messageField.val());
+            const normalizedPhone = normalizePhone(rawPhone);
+
+            if (!isValidPhone(normalizedPhone)) {
+                setFormStatus($form, 'Укажите корректный номер телефона.', 'error');
+                $phoneField.trigger('focus');
+                throw new Error('__phone_validation__');
+            }
+
+            setFormProgressPreparing($form, 'Подготовка файлов...');
+
+            let projects = getLeadQueueProjects();
+            const runtimePlanProject = buildRuntimeProjectFallback();
+            const runtimeCalculatorProject = buildRuntimeCalculatorProjectFallback();
+
+            if (runtimePlanProject) {
+                projects = mergeRuntimeProjectPayload(projects, runtimePlanProject);
+            }
+
+            if (runtimeCalculatorProject) {
+                projects = mergeRuntimeProjectPayload(projects, runtimeCalculatorProject);
+            }
+
+            if (runtimePlanProject || runtimeCalculatorProject) {
+                const leadContext = getLeadContext();
+                const patch = {};
+
+                if (runtimePlanProject && runtimePlanProject.planEditor) {
+                    patch.planEditor = runtimePlanProject.planEditor;
+                }
+
+                if (runtimeCalculatorProject && runtimeCalculatorProject.calculator) {
+                    patch.calculator = runtimeCalculatorProject.calculator;
+                }
+
+                if (leadContext && typeof leadContext.upsertCurrentProject === 'function' && Object.keys(patch).length) {
+                    leadContext.upsertCurrentProject(patch);
+                }
+            }
+
+            const projectKeys = projects
+                .map(function (project) {
+                    return normalizeText(project && project.projectKey);
+                })
+                .filter(function (key) {
+                    return key !== '';
+                });
+            const attachmentsResult = await buildAttachmentsForProjects(projects, function (processedPlans, totalPlans) {
+                if (!totalPlans) {
+                    setFormProgressPreparing($form, 'Подготовка файлов...');
+                    return;
+                }
+
+                const preparePercent = Math.round((processedPlans / totalPlans) * 35);
+                const safePercent = Math.min(35, Math.max(5, preparePercent));
+                setFormProgressPreparing($form, 'Подготовка файлов... ' + safePercent + '%', safePercent);
+            });
+            const formData = new FormData();
+
+            formData.append('action', 'tanyatheme_send_lead');
+            formData.append('nonce', String(leadConfig.nonce));
+            formData.append('name', name);
+            formData.append('phone', normalizedPhone);
+            formData.append('message', message);
+            formData.append('captchaToken', captchaToken);
+            formData.append('formMeta', JSON.stringify(buildFormMeta($form)));
+            formData.append('projectsContext', JSON.stringify({
+                projectKeys: projectKeys,
+                projects: projects
+            }));
+            formData.append('contextWarnings', JSON.stringify(attachmentsResult.warnings));
+
+            attachmentsResult.files.forEach(function (file) {
+                formData.append('attachments[]', file.blob, file.fileName);
+            });
+
+            setFormProgressUpload($form, 0);
+
+            const response = await sendLeadRequest(formData, function (percent) {
+                setFormProgressUpload($form, percent);
+            });
+            const responseJson = response && response.data ? response.data : null;
+
+            const hasSuccess = !!(responseJson && responseJson.success);
+
+            if (!response.ok || !hasSuccess) {
+                throw new Error(responseJson && responseJson.data && responseJson.data.message
+                    ? String(responseJson.data.message)
+                    : 'Не удалось отправить форму.');
+            }
+
+            setFormProgressUpload($form, 100);
+
+            const sentProjectKeys = Array.isArray(responseJson && responseJson.data && responseJson.data.sentProjectKeys)
+                ? responseJson.data.sentProjectKeys
+                : projectKeys;
+
+            const leadContext = getLeadContext();
+            if (leadContext && typeof leadContext.markSent === 'function' && sentProjectKeys.length) {
+                leadContext.markSent(sentProjectKeys);
+            }
+
+            setFormStatus($form, 'Спасибо, заявка отправлена.', 'success');
+            $form.trigger('reset');
+            initPhoneMasks();
+
+            if ($form.closest('.feedback-popup').length && window.tanyathemeFeedbackPopup) {
+                window.setTimeout(function () {
+                    window.tanyathemeFeedbackPopup.close();
+                    clearFormStatus($form);
+                }, 900);
+            }
+
+            window.setTimeout(function () {
+                resetFormProgress($form);
+            }, 700);
+        } catch (error) {
+            if (!error || error.message !== '__phone_validation__') {
+                console.warn('[LeadForm] Submit failed', error);
+                setFormStatus($form, error && error.message ? error.message : 'Ошибка отправки. Попробуйте еще раз.', 'error');
+            }
+            resetFormProgress($form);
+        } finally {
+            clearPendingCaptchaPromise();
+            captchaState.cancelled = false;
+            closeCaptchaPopup();
+            clearCaptchaError();
+            setCaptchaPopupText('Ожидание проверки captcha...');
+            resetCaptchaWidget();
+            $form.data('isSending', '0');
+            isLeadSubmitLocked = false;
+            $submitButton.prop('disabled', false);
+        }
+    };
+
+    initPhoneMasks();
+
+    if ($captchaPopup.length) {
+        const closeCaptchaPopupByUser = function (event) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            cancelCaptchaRequest('Проверка captcha отменена.');
+        };
+
+        if ($captchaPopupClosers.length) {
+            $captchaPopupClosers.on('click', closeCaptchaPopupByUser);
+        }
+
+        $(document).on('keydown', function (event) {
+            if (event.key !== 'Escape' || !$captchaPopup.hasClass('is-open')) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            closeCaptchaPopupByUser();
+        });
+    }
+
+    if ($feedbackPopup.length) {
         const $popup = $feedbackPopup.first();
         const $popupClosers = $popup.find('[data-feedback-popup-close]');
-        const $popupForm = $popup.find('.feedback-popup__form');
 
-        const openFeedbackPopup = function () {
+        const openFeedbackPopup = function (options) {
+            const settings = options && typeof options === 'object' ? options : {};
+
+            feedbackPopupSource = normalizeText(settings.source || feedbackPopupSource || 'popup') || 'popup';
             $popup.addClass('is-open').attr('aria-hidden', 'false');
             $body.addClass('feedback-popup-open');
+            initPhoneMasks();
         };
 
         const closeFeedbackPopup = function () {
@@ -1581,26 +3179,39 @@ $(function () {
             $body.removeClass('feedback-popup-open');
         };
 
-        $feedbackPopupOpeners.on('click', function (e) {
-            e.preventDefault();
-            openFeedbackPopup();
-        });
+        window.tanyathemeFeedbackPopup = {
+            open: openFeedbackPopup,
+            close: closeFeedbackPopup,
+            isOpen: function () {
+                return $popup.hasClass('is-open');
+            }
+        };
+
+        if ($feedbackPopupOpeners.length) {
+            $feedbackPopupOpeners.on('click', function (e) {
+                e.preventDefault();
+                openFeedbackPopup({
+                    source: normalizeText($(this).attr('data-feedback-source')) || 'cta'
+                });
+            });
+        }
 
         $popupClosers.on('click', function (e) {
             e.preventDefault();
             closeFeedbackPopup();
         });
 
-        if ($popupForm.length) {
-            $popupForm.on('submit', function (e) {
-                e.preventDefault();
-            });
-        }
-
         $(document).on('keydown', function (e) {
-            if (e.key === 'Escape' && $popup.hasClass('is-open')) {
+            if (e.key === 'Escape' && $popup.hasClass('is-open') && !$captchaPopup.hasClass('is-open')) {
                 closeFeedbackPopup();
             }
+        });
+    }
+
+    if ($feedbackForms.length) {
+        $feedbackForms.on('submit', function (event) {
+            event.preventDefault();
+            submitLeadForm($(this));
         });
     }
 

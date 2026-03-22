@@ -30,6 +30,18 @@ $(function () {
         return safeValue.toLocaleString('ru-RU') + ' ₽';
     };
 
+    const normalizeText = function (value) {
+        return String(value || '').replace(/\s+/g, ' ').trim();
+    };
+
+    const getLeadContext = function () {
+        if (window.tanyathemeLeadContext && typeof window.tanyathemeLeadContext === 'object') {
+            return window.tanyathemeLeadContext;
+        }
+
+        return null;
+    };
+
     $cardCalcBlocks.each(function (blockIndex) {
         const $window = $(window);
         const $calc = $(this);
@@ -43,6 +55,7 @@ $(function () {
         const eventNamespace = '.cardCalc' + blockIndex;
         const stickyStartOffset = 280;
         let isFirstRender = true;
+        let isCalculatorTouched = false;
         let stickyRafId = null;
         let forceFloatingUntil = 0;
 
@@ -323,9 +336,129 @@ $(function () {
             animateOutputValue($totalOutput, total, shouldAnimate);
             isFirstRender = false;
             requestFloatingStateUpdate();
+
+            const leadContext = getLeadContext();
+
+            if (isCalculatorTouched && leadContext && typeof leadContext.upsertCurrentProject === 'function') {
+                const selections = {};
+                const selectedOptions = [];
+
+                $calc.find('[data-calc-group]').each(function (groupIndex) {
+                    const $group = $(this);
+                    const groupKey = String($group.attr('data-calc-group') || (groupIndex + 1));
+                    const $groupTitle = $group.find('.card-calc__group-title').first().clone();
+
+                    $groupTitle.find('.card-calc__group-number').remove();
+
+                    const groupTitle = normalizeText($groupTitle.text());
+                    const selectedIndices = [];
+                    const selectedTitles = [];
+
+                    $group.find('input[data-price]').each(function (optionIndex) {
+                        if (!$(this).is(':checked')) {
+                            return;
+                        }
+
+                        const $option = $(this).closest('.card-calc__option');
+                        const optionTitle = normalizeText($option.find('.card-calc__option-text').text());
+                        const optionPrice = parsePrice($(this).attr('data-price'));
+
+                        selectedIndices.push(optionIndex);
+                        selectedTitles.push(optionTitle);
+                        selectedOptions.push({
+                            groupKey: groupKey,
+                            groupTitle: groupTitle,
+                            optionIndex: optionIndex,
+                            optionTitle: optionTitle,
+                            price: optionPrice,
+                            priceFormatted: formatCurrency(optionPrice)
+                        });
+                    });
+
+                    selections[groupKey] = {
+                        groupKey: groupKey,
+                        groupTitle: groupTitle,
+                        selectedIndices: selectedIndices,
+                        selectedTitles: selectedTitles
+                    };
+                });
+
+                leadContext.upsertCurrentProject({
+                    calculator: {
+                        selections: selections,
+                        selectedOptions: selectedOptions,
+                        totals: {
+                            base: base,
+                            changes: changes,
+                            total: total,
+                            baseFormatted: formatCurrency(base),
+                            changesFormatted: formatCurrency(changes),
+                            totalFormatted: formatCurrency(total)
+                        },
+                        updatedAt: Date.now()
+                    }
+                });
+            }
+        };
+
+        const restoreCalculatorState = function () {
+            const leadContext = getLeadContext();
+
+            if (!leadContext || typeof leadContext.getProject !== 'function' || typeof leadContext.getCurrentProjectKey !== 'function') {
+                return false;
+            }
+
+            const currentProject = leadContext.getProject(leadContext.getCurrentProjectKey());
+            const calculatorState = currentProject && currentProject.calculator && typeof currentProject.calculator === 'object'
+                ? currentProject.calculator
+                : null;
+
+            if (!calculatorState || !calculatorState.selections || typeof calculatorState.selections !== 'object') {
+                return false;
+            }
+
+            $calc.find('[data-calc-group]').each(function (groupIndex) {
+                const $group = $(this);
+                const groupKey = String($group.attr('data-calc-group') || (groupIndex + 1));
+                const groupState = calculatorState.selections[groupKey];
+
+                if (!groupState || !Array.isArray(groupState.selectedIndices)) {
+                    return;
+                }
+
+                const $groupInputs = $group.find('input[data-price]');
+
+                if (!$groupInputs.length) {
+                    return;
+                }
+
+                $groupInputs.prop('checked', false);
+
+                groupState.selectedIndices.forEach(function (selectedIndex) {
+                    const safeIndex = Number(selectedIndex);
+
+                    if (!isFinite(safeIndex)) {
+                        return;
+                    }
+
+                    const $input = $groupInputs.eq(safeIndex);
+
+                    if ($input.length) {
+                        $input.prop('checked', true);
+                    }
+                });
+
+                if ($group.find('input[type="radio"]').length && !$group.find('input[data-price]:checked').length) {
+                    $group.find('input[data-price]').first().prop('checked', true);
+                }
+            });
+
+            isCalculatorTouched = true;
+            return true;
         };
 
         $inputs.on('change', function () {
+            isCalculatorTouched = true;
             renderTotals();
             window.setTimeout(function () {
                 requestFloatingStateUpdate();
@@ -340,6 +473,7 @@ $(function () {
             window.visualViewport.addEventListener('scroll', requestFloatingStateUpdate);
         }
 
+        restoreCalculatorState();
         renderTotals();
     });
 });

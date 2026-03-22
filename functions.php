@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 $theme_parts = [
     'theme-setup',
     'menu',
+    'forms',
 ];
 
 foreach ($theme_parts as $theme_part) {

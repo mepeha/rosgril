@@ -1,6 +1,13 @@
 $(function () {
     const STORAGE_KEY = 'planEditor:v1:' + String(window.location && window.location.pathname ? window.location.pathname : '/');
     const STORAGE_SAVE_DELAY = 250;
+    const getLeadContext = function () {
+        if (window.tanyathemeLeadContext && typeof window.tanyathemeLeadContext === 'object') {
+            return window.tanyathemeLeadContext;
+        }
+
+        return null;
+    };
 
     const $body = $('body');
     const $planEditorModal = $('.plan-editor-modal');
@@ -286,6 +293,53 @@ $(function () {
     const queueCurrentPlanSave = function (withObjects) {
         saveCurrentPlanState(withObjects);
         schedulePersistState();
+        syncPlanEditorToLeadContext();
+    };
+
+    const buildAllPlansPayload = function () {
+        const plans = planEditorState.plans.map(function (plan, index) {
+            const snapshot = planEditorState.persistedState.plansState[plan.planKey] || {};
+            const hasObjects = Array.isArray(snapshot.fabricObjectsJson) && snapshot.fabricObjectsJson.length > 0;
+
+            return {
+                planIndex: index,
+                planKey: plan.planKey,
+                planTitle: plan.displayTitle || plan.title || 'План ' + (index + 1),
+                sourceImage: plan.imageSrc || '',
+                comment: typeof snapshot.comment === 'string' ? snapshot.comment : '',
+                zoom: clampPlanEditorZoom(parseNumberOr(snapshot.zoom, 1)),
+                panX: parseNumberOr(snapshot.panX, 0),
+                panY: parseNumberOr(snapshot.panY, 0),
+                fabricObjectsJson: Array.isArray(snapshot.fabricObjectsJson) ? snapshot.fabricObjectsJson : [],
+                updatedAt: parseNumberOr(snapshot.updatedAt, 0),
+                hasEdits: hasObjects
+            };
+        });
+
+        return {
+            pageKey: String(window.location && window.location.pathname ? window.location.pathname : '/'),
+            activePlanIndex: planEditorState.activeIndex,
+            plans: plans
+        };
+    };
+
+    const syncPlanEditorToLeadContext = function () {
+        const leadContext = getLeadContext();
+
+        if (!leadContext || typeof leadContext.upsertCurrentProject !== 'function') {
+            return;
+        }
+
+        const payload = buildAllPlansPayload();
+        const hasPayloadChanges = payload.plans.some(function (plan) {
+            return !!plan.hasEdits || normalizeText(plan.comment) !== '';
+        });
+
+        leadContext.upsertCurrentProject({
+            planEditor: hasPayloadChanges
+                ? Object.assign({}, payload, { updatedAt: Date.now() })
+                : null
+        });
     };
 
     const clearPlanAnnotations = function (shouldPersist) {
@@ -830,31 +884,7 @@ $(function () {
 
     const getAllPlansPayload = function () {
         queueCurrentPlanSave(true);
-
-        const plans = planEditorState.plans.map(function (plan, index) {
-            const snapshot = planEditorState.persistedState.plansState[plan.planKey] || {};
-            const hasObjects = Array.isArray(snapshot.fabricObjectsJson) && snapshot.fabricObjectsJson.length > 0;
-
-            return {
-                planIndex: index,
-                planKey: plan.planKey,
-                planTitle: plan.displayTitle || plan.title || 'План ' + (index + 1),
-                sourceImage: plan.imageSrc || '',
-                comment: typeof snapshot.comment === 'string' ? snapshot.comment : '',
-                zoom: clampPlanEditorZoom(parseNumberOr(snapshot.zoom, 1)),
-                panX: parseNumberOr(snapshot.panX, 0),
-                panY: parseNumberOr(snapshot.panY, 0),
-                fabricObjectsJson: Array.isArray(snapshot.fabricObjectsJson) ? snapshot.fabricObjectsJson : [],
-                updatedAt: parseNumberOr(snapshot.updatedAt, 0),
-                hasEdits: hasObjects
-            };
-        });
-
-        return {
-            pageKey: String(window.location && window.location.pathname ? window.location.pathname : '/'),
-            activePlanIndex: planEditorState.activeIndex,
-            plans: plans
-        };
+        return buildAllPlansPayload();
     };
 
     if ($planEditorModal.length && $planParts.length) {
@@ -948,6 +978,14 @@ $(function () {
 
         $planEditorForm.on('submit', function (event) {
             event.preventDefault();
+            queueCurrentPlanSave(true);
+
+            if (window.tanyathemeFeedbackPopup && typeof window.tanyathemeFeedbackPopup.open === 'function') {
+                closePlanEditor();
+                window.tanyathemeFeedbackPopup.open({
+                    source: 'plan-editor'
+                });
+            }
         });
 
         $(document).on('keydown', function (event) {
@@ -969,6 +1007,7 @@ $(function () {
         $(window).on('beforeunload', function () {
             saveCurrentPlanState(true);
             flushPersistState();
+            syncPlanEditorToLeadContext();
         });
 
         window.planEditorApi = {

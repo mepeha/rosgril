@@ -1067,6 +1067,106 @@ body {
   border: 1px solid black;
 }
 
+.feedback__status {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.feedback__status.is-success {
+  color: rgb(20, 90, 20);
+}
+
+.feedback__status.is-error {
+  color: rgb(140, 23, 23);
+}
+
+.dark .feedback__status.is-success {
+  color: rgb(165, 235, 165);
+}
+
+.dark .feedback__status.is-error {
+  color: rgb(255, 160, 160);
+}
+
+.feedback-popup .feedback__status.is-success {
+  color: rgb(20, 90, 20);
+}
+
+.feedback-popup .feedback__status.is-error {
+  color: rgb(140, 23, 23);
+}
+
+.feedback__progress {
+  display: none;
+  margin-top: 10px;
+}
+
+.feedback__progress.is-visible {
+  display: block;
+}
+
+.feedback__progress-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.feedback__progress-bar {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(0, 0, 0, 0.75);
+  transition: width 0.18s linear;
+}
+
+.feedback__progress.is-indeterminate .feedback__progress-bar {
+  width: 35%;
+  animation: feedback-progress-loading 1.1s linear infinite;
+}
+
+.feedback__progress-text {
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.3;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.dark .feedback__progress-track {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dark .feedback__progress-bar {
+  background: rgb(244, 177, 102);
+}
+
+.dark .feedback__progress-text {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.feedback-popup .feedback__progress-track {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.feedback-popup .feedback__progress-bar {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.feedback-popup .feedback__progress-text {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+@keyframes feedback-progress-loading {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
 .feedback__bg {
   position: absolute;
   right: 0;
@@ -1076,7 +1176,8 @@ body {
   z-index: 1;
 }
 
-body.feedback-popup-open {
+body.feedback-popup-open,
+body.captcha-popup-open {
   overflow: hidden;
 }
 
@@ -1211,6 +1312,89 @@ body.feedback-popup-open {
   stroke: rgb(255, 255, 255);
 }
 
+.captcha-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.captcha-popup.is-open {
+  display: flex;
+}
+
+.captcha-popup__overlay {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.captcha-popup__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(430px, 100vw - 32px);
+  background: rgb(27, 27, 27);
+  color: rgb(255, 255, 255);
+  border: 1px solid rgba(244, 177, 102, 0.35);
+  padding: 20px 18px 18px;
+  box-shadow: 0 20px 34px rgba(0, 0, 0, 0.45);
+}
+
+.captcha-popup__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.captcha-popup__close span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 1px;
+  background: rgb(255, 255, 255);
+}
+.captcha-popup__close span:nth-child(1) {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.captcha-popup__close span:nth-child(2) {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.captcha-popup__title {
+  margin: 0 26px 8px 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.captcha-popup__text {
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.captcha-popup__widget {
+  display: flex;
+  justify-content: center;
+  min-height: 78px;
+}
+
+.captcha-popup__error {
+  display: none;
+  margin-top: 10px;
+  color: rgb(255, 176, 176);
+}
+
+.captcha-popup__error.is-visible {
+  display: block;
+}
+
 @media (max-width: 991px) {
   .feedback-popup {
     padding: 12px;
@@ -1265,6 +1449,20 @@ body.feedback-popup-open {
     padding: 14px 16px;
     font-size: 16px;
     line-height: 20px;
+  }
+  .captcha-popup__dialog {
+    width: min(360px, 100vw - 24px);
+    padding: 18px 14px 14px;
+  }
+  .captcha-popup__title {
+    font-size: 18px;
+  }
+}
+@media (max-width: 370px) {
+  .captcha-popup__widget {
+    transform: scale(0.88);
+    transform-origin: top center;
+    min-height: 70px;
   }
 }
 .footer {

@@ -275,7 +275,7 @@ if ($card_calc_group_count > 0) {
 $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $project_title;
 ?>
 
-<main>
+<main class="single-project-main" data-project-title="<?php echo esc_attr($project_title); ?>" data-project-id="<?php echo esc_attr($project_id); ?>">
 
   <div class="page-head">
     <div class="container">
@@ -694,7 +694,7 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
               <div class="card-calc__summary-value orange" data-calc-out="total">0 ₽</div>
             </div>
           </div>
-          <button class="card-calc__summary-action button button-main" type="button">Оставить заявку</button>
+          <button class="card-calc__summary-action button button-main" type="button" data-feedback-popup-open>Оставить заявку</button>
         </div>
       </div>
     </div>

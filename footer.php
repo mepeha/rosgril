@@ -1,4 +1,14 @@
-<?php $theme_uri = esc_url(get_template_directory_uri()); ?>
+<?php
+$theme_uri = esc_url(get_template_directory_uri());
+$recaptcha_settings = function_exists('tanyatheme_get_recaptcha_settings')
+    ? tanyatheme_get_recaptcha_settings()
+    : [
+        'public_key' => '',
+        'enabled' => false,
+    ];
+$recaptcha_site_key = isset($recaptcha_settings['public_key']) ? trim((string) $recaptcha_settings['public_key']) : '';
+$recaptcha_enabled = !empty($recaptcha_settings['enabled']) && $recaptcha_site_key !== '';
+?>
 <footer class="footer">
   <div class="container">
     <div class="footer__area">
@@ -108,6 +118,18 @@
   </div>
 </footer>
 <?php require get_template_directory() . '/parts/feedback/popup.php'; ?>
+<?php require get_template_directory() . '/parts/feedback/captcha-popup.php'; ?>
+<script>
+  window.tanyathemeLead = <?php echo wp_json_encode([
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      'nonce' => wp_create_nonce('tanyatheme_send_lead'),
+      'recaptchaSiteKey' => $recaptcha_site_key,
+      'recaptchaEnabled' => $recaptcha_enabled,
+  ]); ?>;
+</script>
+<?php if ($recaptcha_enabled) : ?>
+<script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+<?php endif; ?>
 <script src="<?php echo $theme_uri; ?>/dist/js/vendor.js"></script>
 <script src="<?php echo $theme_uri; ?>/dist/js/main.js"></script>
 <?php wp_footer(); ?>

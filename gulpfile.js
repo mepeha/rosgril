@@ -61,6 +61,7 @@ gulp.task("vendorScripts", function () {
             nodeModules + "jquery/dist/jquery.min.js",
             "node_modules/aos/dist/aos.js",
             "node_modules/@fancyapps/ui/dist/fancybox/fancybox.umd.js",
+            "node_modules/inputmask/dist/inputmask.min.js",
             "node_modules/fabric/dist/index.min.js",
             "libs/js/*.min.js"
         ])
@@ -74,7 +75,10 @@ gulp.task("vendorScripts", function () {
 // Собираем твои JS-файлы
 gulp.task("scripts", function () {
     return gulp
-        .src("src/js/**/*.js")
+        .src([
+            "src/js/lead-context.js",
+            "src/js/**/!(lead-context).js",
+        ])
         .pipe(concat("main.js"))
         .pipe(gulp.dest("dist/js"))
         .pipe(browserSync.stream());

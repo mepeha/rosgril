@@ -11,16 +11,16 @@
     <div class="text">
       И МЫ СВЯЖЕМСЯ С ВАМИ В БЛИЖАЙШЕЕ ВРЕМЯ
     </div>
-    <form class="feedback__form">
-      <input class="feedback__input" type="text" placeholder="Имя">
-      <input class="feedback__input" type="text" placeholder="Номер">
-      <textarea class="feedback__input" name="" id="" cols="30" rows="5" placeholder="Сообщение"></textarea>
-      <a href="#" class="feedback__button button button-stroke" data-feedback-popup-open>
+    <form class="feedback__form feedback-popup__form">
+      <input class="feedback__input" name="name" type="text" placeholder="Имя" autocomplete="name">
+      <input class="feedback__input" name="phone" type="tel" placeholder="Номер" autocomplete="tel" inputmode="tel" data-phone-input required>
+      <textarea class="feedback__input" name="message" cols="30" rows="5" placeholder="Сообщение"></textarea>
+      <button class="feedback__button button button-stroke" type="submit">
         Оставить заявку
         <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"></path>
         </svg>
-      </a>
+      </button>
     </form>
   </div>
 </div>
