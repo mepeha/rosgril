@@ -1010,6 +1010,8 @@ $(function () {
         const image = await loadImage(sourceImage);
         const width = Math.max(1, image.naturalWidth || image.width || 1);
         const height = Math.max(1, image.naturalHeight || image.height || 1);
+        const sourceCanvasWidth = Math.max(1, Math.round(Number(plan && plan.canvasWidth) || width));
+        const sourceCanvasHeight = Math.max(1, Math.round(Number(plan && plan.canvasHeight) || height));
         const maxSide = Math.max(width, height);
         const outputScale = maxSide > PLAN_ATTACHMENT_MAX_LONG_SIDE
             ? PLAN_ATTACHMENT_MAX_LONG_SIDE / maxSide
@@ -1020,9 +1022,10 @@ $(function () {
         const outputCanvas = document.createElement('canvas');
         const outputContext = outputCanvas.getContext('2d');
         const staticCanvas = new window.fabric.StaticCanvas(overlayCanvas, {
-            width: width,
-            height: height,
-            selection: false
+            width: sourceCanvasWidth,
+            height: sourceCanvasHeight,
+            selection: false,
+            enableRetinaScaling: false
         });
         const payload = {
             objects: Array.isArray(plan.fabricObjectsJson) ? plan.fabricObjectsJson : []
@@ -1042,7 +1045,17 @@ $(function () {
             outputContext.fillStyle = '#ffffff';
             outputContext.fillRect(0, 0, outputWidth, outputHeight);
             outputContext.drawImage(image, 0, 0, outputWidth, outputHeight);
-            outputContext.drawImage(overlayCanvas, 0, 0, outputWidth, outputHeight);
+            outputContext.drawImage(
+                overlayCanvas,
+                0,
+                0,
+                overlayCanvas.width,
+                overlayCanvas.height,
+                0,
+                0,
+                outputWidth,
+                outputHeight
+            );
 
             const compressed = await compressCanvasToTargetJpeg(outputCanvas);
 

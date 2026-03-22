@@ -484,6 +484,7 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
         <button class="plan-editor-modal__tool" type="button" data-plan-tool="eraser">Ластик</button>
         <button class="plan-editor-modal__tool" type="button" data-plan-tool="line">Линия</button>
         <button class="plan-editor-modal__tool" type="button" data-plan-tool="text">Текст</button>
+        <button class="plan-editor-modal__tool" type="button" data-plan-tool="select">Выделение</button>
         <button class="plan-editor-modal__tool" type="button" data-plan-tool="hand">Перемещение</button>
         <button class="plan-editor-modal__tool" type="button" data-plan-action="clear">Очистить всё</button>
         <div class="plan-editor-modal__zoom">
