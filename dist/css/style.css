@@ -252,6 +252,10 @@ body {
   }
 }
 
+.dop .param__body {
+  text-align: right;
+}
+
 .orange-block {
   background-color: rgb(244, 177, 102);
   padding: 24px;
@@ -1353,6 +1357,9 @@ body.feedback-popup-open {
   margin-bottom: 16px;
 }
 .card-slider__main .slick-slide img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  height: 500px;
   width: 100%;
   display: block;
 }
@@ -1368,6 +1375,9 @@ body.feedback-popup-open {
   margin: 0 8px;
 }
 .card-slider__mini .slick-slide img {
+  height: 150px;
+  -o-object-fit: cover;
+     object-fit: cover;
   width: 100%;
   display: block;
   filter: brightness(0.82);

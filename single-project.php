@@ -1,6 +1,100 @@
 <?php
 get_header();
 $theme_uri = esc_url(get_template_directory_uri());
+
+$project_title = get_the_title();
+$project_id = trim((string) get_field('id'));
+
+$project_slider = get_field('slider');
+$project_main_image = get_field('image');
+$slider_images = [];
+
+$collect_project_image = static function ($image_item, $fallback_alt = '') {
+    $image_url = '';
+    $image_alt = '';
+
+    if (is_array($image_item)) {
+        $image_url = isset($image_item['url']) ? (string) $image_item['url'] : '';
+        $image_alt = isset($image_item['alt']) ? (string) $image_item['alt'] : '';
+    } elseif (is_numeric($image_item)) {
+        $image_id = (int) $image_item;
+        $image_url = (string) wp_get_attachment_image_url($image_id, 'full');
+        $image_alt = (string) get_post_meta($image_id, '_wp_attachment_image_alt', true);
+    } elseif (is_string($image_item)) {
+        $image_url = $image_item;
+    }
+
+    $image_url = trim($image_url);
+    $image_alt = trim($image_alt);
+    $fallback_alt = trim((string) $fallback_alt);
+
+    if ($image_url === '') {
+        return null;
+    }
+
+    return [
+        'url' => $image_url,
+        'alt' => $image_alt !== '' ? $image_alt : $fallback_alt,
+    ];
+};
+
+if (is_array($project_slider)) {
+    foreach ($project_slider as $slider_image_item) {
+        $slider_image = $collect_project_image($slider_image_item, $project_title);
+
+        if (is_array($slider_image)) {
+            $slider_images[] = $slider_image;
+        }
+    }
+}
+
+if (empty($slider_images)) {
+    $main_image = $collect_project_image($project_main_image, $project_title);
+
+    if (is_array($main_image)) {
+        $slider_images[] = $main_image;
+    }
+}
+
+if (empty($slider_images)) {
+    $slider_images[] = [
+        'url' => $theme_uri . '/dist/img/card-head-1.webp',
+        'alt' => $project_title,
+    ];
+}
+
+$main_params = get_field('main-param');
+if (!is_array($main_params)) {
+    $main_params = [];
+}
+
+$material_group = get_field('material');
+if (!is_array($material_group)) {
+    $material_group = [];
+}
+$material_title = trim((string) ($material_group['material-head'] ?? 'Применяемые отделочные материалы'));
+$material_body = trim((string) ($material_group['material-body'] ?? ''));
+
+$dop_params = get_field('dop-param');
+if (!is_array($dop_params)) {
+    $dop_params = [];
+}
+
+$price_group = get_field('material_копировать');
+if (!is_array($price_group)) {
+    $price_group = get_field('field_69bfa7a7239d8');
+}
+if (!is_array($price_group)) {
+    $price_group = [];
+}
+
+$price_head = trim((string) ($price_group['price-head'] ?? 'Стоимость проекта'));
+$price_subhead = trim((string) ($price_group['price-subhead'] ?? '(архитектурный раздел)'));
+$price_body = trim((string) ($price_group['price-body'] ?? '22 000 ₽'));
+$price_digits = preg_replace('/[^\d]/u', '', $price_body);
+$card_calc_base_cost = $price_digits !== '' ? (int) $price_digits : 22000;
+
+$breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $project_title;
 ?>
 
 <main>
@@ -9,11 +103,10 @@ $theme_uri = esc_url(get_template_directory_uri());
     <div class="container">
       <div class="page-head__area">
         <div class="breadcrumbs">
-          главная - каталог проектов - проект D-1
+          главная - каталог проектов - <?php echo esc_html($breadcrumbs_project); ?>
         </div>
         <h1 class="page-head__title ">
-          Проект одноэтажного жилого дома
-          со встроенным гаражом на две машины
+          <?php echo esc_html($project_title); ?>
         </h1>
       </div>
     </div>
@@ -24,85 +117,70 @@ $theme_uri = esc_url(get_template_directory_uri());
       <div class="card-head__area">
         <div class="card-slider">
           <div class="card-slider__main">
-            <a href="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" data-fancybox="slider" class="card-slider__main-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </a>
-            <a href="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" data-fancybox="slider" class="card-slider__main-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </a>
-            <a href="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" data-fancybox="slider" class="card-slider__main-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </a>
-            <a href="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" data-fancybox="slider" class="card-slider__main-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </a>
+            <?php foreach ($slider_images as $slider_image) : ?>
+              <a href="<?php echo esc_url($slider_image['url']); ?>" data-fancybox="slider" class="card-slider__main-item">
+                <img src="<?php echo esc_url($slider_image['url']); ?>" alt="<?php echo esc_attr($slider_image['alt']); ?>">
+              </a>
+            <?php endforeach; ?>
           </div>
           <div class="card-slider__mini">
-            <div class="card-slider__mini-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </div>
-            <div class="card-slider__mini-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </div>
-            <div class="card-slider__mini-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </div>
-            <div class="card-slider__mini-item">
-              <img src="<?php echo $theme_uri; ?>/dist/img/card-head-1.webp" alt="">
-            </div>
+            <?php foreach ($slider_images as $slider_image) : ?>
+              <div class="card-slider__mini-item">
+                <img src="<?php echo esc_url($slider_image['url']); ?>" alt="<?php echo esc_attr($slider_image['alt']); ?>">
+              </div>
+            <?php endforeach; ?>
           </div>
         </div>
         <div class="card-info">
-          <h2 class="card-info__subtitle gray">
-            D-1
-          </h2>
+          <?php if ($project_id !== '') : ?>
+            <h2 class="card-info__subtitle gray">
+              <?php echo esc_html($project_id); ?>
+            </h2>
+          <?php endif; ?>
           <div class="card-info__title name">
-            Проект одноэтажного жилого дома
-            со встроенным гаражом на две машины
+            <?php echo esc_html($project_title); ?>
           </div>
-          <div class="param">
-            <div class="param__head gray">
-              Общая площадь
+          <?php foreach ($main_params as $main_param) : ?>
+            <?php
+            if (!is_array($main_param)) {
+                continue;
+            }
+
+            $main_param_head = trim((string) ($main_param['main-param-head'] ?? ''));
+            $main_param_body = trim((string) ($main_param['main-param-body'] ?? ''));
+
+            if ($main_param_head === '' && $main_param_body === '') {
+                continue;
+            }
+            ?>
+            <div class="param">
+              <div class="param__head gray">
+                <?php echo esc_html($main_param_head); ?>
+              </div>
+              <div class="param__body">
+                <?php echo esc_html($main_param_body); ?>
+              </div>
             </div>
-            <div class="param__body">
-              270 м2
-            </div>
-          </div>
-          <div class="param">
-            <div class="param__head gray">
-              Террасы, балконы
-            </div>
-            <div class="param__body">
-              36 м2
-            </div>
-          </div>
-          <div class="param">
-            <div class="param__head gray">
-              Крыша
-            </div>
-            <div class="param__body">
-              чердачная
-            </div>
-          </div>
+          <?php endforeach; ?>
           <div class="material">
             <div class="material__title gray">
-              Применяемые отделочные материалы
+              <?php echo esc_html($material_title); ?>
             </div>
             <div class="material__body">
-              минеральная фасадная штукатурка, планкен, керамогранит, мягкая черепица
+              <?php echo esc_html($material_body); ?>
             </div>
           </div>
           <div class="general">
             <div class="price">
               <div class="price__area">
                 <div class="price__title">
-                  Стоимость проекта
+                  <?php echo esc_html($price_head); ?>
                 </div>
                 <div class="price__subtitle mini gray">
-                  (архитектурный раздел)
+                  <?php echo esc_html($price_subhead); ?>
                 </div>
                 <div class="price__cost orange">
-                  22 000 ₽
+                  <?php echo esc_html($price_body); ?>
                 </div>
               </div>
               <div class="price__more gray mini">
@@ -113,46 +191,28 @@ $theme_uri = esc_url(get_template_directory_uri());
               <div class="dop__title">
                 Приобретается дополнительно
               </div>
-              <div class="param">
-                <div class="param__head gray">
-                  Общая площадь
+              <?php foreach ($dop_params as $dop_param) : ?>
+                <?php
+                if (!is_array($dop_param)) {
+                    continue;
+                }
+
+                $dop_param_name = trim((string) ($dop_param['dop-param-name'] ?? ''));
+                $dop_param_body = trim((string) ($dop_param['dop-param-body'] ?? ''));
+
+                if ($dop_param_name === '' && $dop_param_body === '') {
+                    continue;
+                }
+                ?>
+                <div class="param">
+                  <div class="param__head gray">
+                    <?php echo esc_html($dop_param_name); ?>
+                  </div>
+                  <div class="param__body">
+                    <?php echo esc_html($dop_param_body); ?>
+                  </div>
                 </div>
-                <div class="param__body">
-                  270 м2
-                </div>
-              </div>
-              <div class="param">
-                <div class="param__head gray">
-                  Террасы, балконы
-                </div>
-                <div class="param__body">
-                  36 м2
-                </div>
-              </div>
-              <div class="param">
-                <div class="param__head gray">
-                  Крыша
-                </div>
-                <div class="param__body">
-                  чердачная
-                </div>
-              </div>
-              <div class="param">
-                <div class="param__head gray">
-                  Общая площадь
-                </div>
-                <div class="param__body">
-                  270 м2
-                </div>
-              </div>
-              <div class="param">
-                <div class="param__head gray">
-                  Террасы, балконы
-                </div>
-                <div class="param__body">
-                  36 м2
-                </div>
-              </div>
+              <?php endforeach; ?>
 
             </div>
           </div>
@@ -389,7 +449,7 @@ $theme_uri = esc_url(get_template_directory_uri());
     </div>
   </section>
 
-  <section class="card-calc" data-base-cost="22000">
+  <section class="card-calc" data-base-cost="<?php echo esc_attr((string) $card_calc_base_cost); ?>">
     <div class="container">
       <h2 class="block-title card-calc__title">
         Расчет стоимости при выборе характеристик проекта

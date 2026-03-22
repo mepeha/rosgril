@@ -1,12 +1,22 @@
-<?php
-get_header();
-$theme_uri = esc_url(get_template_directory_uri());
-?>
-
-<main>
   <section class="project-list mini-margin">
+    <?php
+    $project_archive_url = get_post_type_archive_link('project');
+
+    if (!is_string($project_archive_url) || $project_archive_url === '') {
+        $project_archive_url = '/project/';
+    }
+
+    $project_list_query = new WP_Query([
+        'post_type'      => 'project',
+        'post_status'    => 'publish',
+        'posts_per_page' => 6,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+    ]);
+    ?>
+
     <div class="container">
-      <h1>ПРОЕКТЫ</h1>
+      <h2>ПРОЕКТЫ</h2>
       <div class="main-filter three-grid mini-margin">
         <a href="" class="main-filter__item">
           <div class="name">
@@ -45,23 +55,27 @@ $theme_uri = esc_url(get_template_directory_uri());
           <img src="<?php echo $theme_uri; ?>/dist/img/three-floor.webp" alt="" class="image">
         </a>
       </div>
-
       <div class="main-catalog three-grid">
-        <?php if (have_posts()) : ?>
-          <?php while (have_posts()) : the_post(); ?>
+        <?php if ($project_list_query->have_posts()) : ?>
+          <?php while ($project_list_query->have_posts()) : $project_list_query->the_post(); ?>
             <?php
             $catalog_item_context = 'post';
             require get_template_directory() . '/parts/catalog/item.php';
             ?>
           <?php endwhile; ?>
+          <?php wp_reset_postdata(); ?>
         <?php else : ?>
           <p class="text">Проекты пока не добавлены.</p>
         <?php endif; ?>
       </div>
+      <a href="<?php echo esc_url($project_archive_url); ?>" class="main-catalog__button button button-stroke" data-feedback-popup-open>
+        смотреть все проекты
+        <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"></path>
+        </svg>
+
+      </a>
     </div>
+
+
   </section>
-
-  <?php require get_template_directory() . '/parts/feedback.php'; ?>
-</main>
-
-<?php get_footer(); ?>
