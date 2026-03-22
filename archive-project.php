@@ -61,7 +61,7 @@ $theme_uri = esc_url(get_template_directory_uri());
     </div>
   </section>
 
-  <?php require get_template_directory() . '/parts/feedback.php'; ?>
+  <?php require get_template_directory() . '/parts/feedback/default.php'; ?>
 </main>
 
 <?php get_footer(); ?>

@@ -170,6 +170,108 @@ if (!is_array($engineering_params)) {
     $engineering_params = [];
 }
 
+$calc_params = get_field('calc-param', 'option');
+if (!is_array($calc_params)) {
+    $calc_params = get_field('calc-param', 'options');
+}
+if (!is_array($calc_params)) {
+    $calc_params = get_field('calc-param', 'calc');
+}
+if (!is_array($calc_params)) {
+    $calc_params = [];
+}
+
+$parse_calc_price = static function ($value) {
+    if (is_numeric($value)) {
+        return (float) $value;
+    }
+
+    $value_string = trim((string) $value);
+    if ($value_string === '') {
+        return 0.0;
+    }
+
+    $normalized_value = preg_replace('/[^\d,.\-]/u', '', $value_string);
+    if (!is_string($normalized_value) || $normalized_value === '') {
+        return 0.0;
+    }
+
+    $normalized_value = str_replace(',', '.', $normalized_value);
+
+    return is_numeric($normalized_value) ? (float) $normalized_value : 0.0;
+};
+
+$card_calc_groups = [];
+
+foreach ($calc_params as $calc_group_index => $calc_group_row) {
+    if (!is_array($calc_group_row)) {
+        continue;
+    }
+
+    $calc_group_title = trim((string) ($calc_group_row['calc-param-name'] ?? ''));
+    $calc_group_items_rows = $calc_group_row['calc-param-item'] ?? [];
+    $calc_group_is_multi = !empty($calc_group_row['calc-multy']);
+
+    if (!is_array($calc_group_items_rows)) {
+        $calc_group_items_rows = [];
+    }
+
+    $calc_group_items = [];
+
+    foreach ($calc_group_items_rows as $calc_item_row) {
+        if (!is_array($calc_item_row)) {
+            continue;
+        }
+
+        $calc_item_name = trim((string) ($calc_item_row['calc-param-item-name'] ?? ''));
+        if ($calc_item_name === '') {
+            continue;
+        }
+
+        $calc_item_price = $parse_calc_price($calc_item_row['calc-param-item-cost'] ?? 0);
+
+        $calc_group_items[] = [
+            'name'  => $calc_item_name,
+            'price' => $calc_item_price,
+        ];
+    }
+
+    if ($calc_group_title === '') {
+        $calc_group_title = 'Параметр ' . ($calc_group_index + 1);
+    }
+
+    if (empty($calc_group_items)) {
+        continue;
+    }
+
+    $card_calc_groups[] = [
+        'number'   => count($card_calc_groups) + 1,
+        'title'    => $calc_group_title,
+        'is_multi' => $calc_group_is_multi,
+        'items'    => $calc_group_items,
+    ];
+}
+
+$card_calc_columns = [[], [], []];
+$card_calc_group_count = count($card_calc_groups);
+
+if ($card_calc_group_count > 0) {
+    $card_calc_column_count = count($card_calc_columns);
+    $base_groups_per_column = intdiv($card_calc_group_count, $card_calc_column_count);
+    $groups_remainder = $card_calc_group_count % $card_calc_column_count;
+    $group_offset = 0;
+
+    for ($column_index = 0; $column_index < $card_calc_column_count; $column_index++) {
+        $groups_in_column = $base_groups_per_column + ($column_index < $groups_remainder ? 1 : 0);
+        if ($groups_in_column <= 0) {
+            continue;
+        }
+
+        $card_calc_columns[$column_index] = array_slice($card_calc_groups, $group_offset, $groups_in_column);
+        $group_offset += $groups_in_column;
+    }
+}
+
 $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $project_title;
 ?>
 
@@ -547,326 +649,34 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
 
       <div class="card-calc__box">
         <div class="card-calc__grid">
-          <div class="card-calc__column">
-            <fieldset class="card-calc__group" data-calc-group="1">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">1</span>
-                Добавление и изменение помещений
-              </legend>
+          <?php foreach ($card_calc_columns as $card_calc_column_groups) : ?>
+            <div class="card-calc__column">
+              <?php foreach ($card_calc_column_groups as $card_calc_group) : ?>
+                <fieldset class="card-calc__group" data-calc-group="<?php echo esc_attr((string) $card_calc_group['number']); ?>">
+                  <legend class="card-calc__group-title orange uppercase">
+                    <span class="card-calc__group-number"><?php echo esc_html((string) $card_calc_group['number']); ?></span>
+                    <?php echo esc_html($card_calc_group['title']); ?>
+                  </legend>
 
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Изменение планировочных решений путем перемещения перегородок, не затрагивая несущие стены</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Изменение расположения окон, дверей и проемов</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Изменение уклона кровли и навесов</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="7000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Изменение высоты потолков</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Веранда</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Крыльцо</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Балкон</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="checkbox" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Терраса</span>
-              </label>
-            </fieldset>
-
-            <fieldset class="card-calc__group" data-calc-group="2">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">2</span>
-                Тип фундамента
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-2" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">По умолчанию</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-2" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Заменить на желаемый (монолитный ленточный ж/б, свайно-ростверковый ж/б, сборные блоки ФБС, мелкозаглубленная ж/б лента, забивные ж/б сваи, винтовые сваи)</span>
-              </label>
-            </fieldset>
-
-            <fieldset class="card-calc__group" data-calc-group="3">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">3</span>
-                Материал наружных и несущих стен
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-3" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Газобетонные блоки 300</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-3" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Газобетонные блоки 400</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-3" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Поризованный керамический блок 380/250</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-3" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Каркас 150/200</span>
-              </label>
-            </fieldset>
-
-            <fieldset class="card-calc__group" data-calc-group="4">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">4</span>
-                Утеплитель
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-4" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Минеральная вата (100)</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-4" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Экструдированный пенополистирол (100)</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-4" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Экструдированный пенополистирол ПЕНОПЛЕКС 120</span>
-              </label>
-            </fieldset>
-          </div>
-
-          <div class="card-calc__column">
-            <fieldset class="card-calc__group" data-calc-group="5">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">5</span>
-                Материал внутренних перегородок
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-5" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">По проекту</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-5" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Кирпич (120)</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-5" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Деревянные каркасы с различными заполнителями (150)</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-5" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Газобетонные блоки 150</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-5" data-price="10000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Плита гипсовая пазогребневая (100)</span>
-              </label>
-            </fieldset>
-
-            <fieldset class="card-calc__group" data-calc-group="6">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">6</span>
-                Тип перекрытия
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-6" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">По проекту</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-6" data-price="5000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Монолитные ж/б</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-6" data-price="5000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Сборные ж/б плиты</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-6" data-price="5000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Монолитные ж/б и по деревянным балкам</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-6" data-price="5000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">По деревянным балкам</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-6" data-price="5000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Сборные ж/б плиты и по деревянным балкам</span>
-              </label>
-            </fieldset>
-
-            <fieldset class="card-calc__group" data-calc-group="7">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">7</span>
-                Цокольный или подвальный этаж
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-7" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Без изменений</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-7" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Цоколь/Подвал</span>
-              </label>
-            </fieldset>
-          </div>
-
-          <div class="card-calc__column">
-            <fieldset class="card-calc__group" data-calc-group="8">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">8</span>
-                Отделка фасада
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-8" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">По проекту</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-8" data-price="7000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Декоративная штукатурка</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-8" data-price="7000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Лицевой кирпич</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-8" data-price="7000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Клинкерная плитка</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-8" data-price="7000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Фиброцементный сайдинг</span>
-              </label>
-            </fieldset>
-
-            <fieldset class="card-calc__group" data-calc-group="9">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">9</span>
-                Гараж
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-9" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">По проекту</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-9" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Убрать гараж</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-9" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">1 автомобиль</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-9" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">2 автомобиля</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-9" data-price="15000">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">3 автомобиля</span>
-              </label>
-            </fieldset>
-
-            <fieldset class="card-calc__group" data-calc-group="10">
-              <legend class="card-calc__group-title orange uppercase">
-                <span class="card-calc__group-number">10</span>
-                Покрытие кровли
-              </legend>
-
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-10" data-price="0" checked>
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Металлочерепица</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-10" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Мягкая черепица</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-10" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Керамическая черепица</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-10" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Композитная черепица</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-10" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Фальцевая кровля</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-10" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Наплавляемая</span>
-              </label>
-              <label class="card-calc__option">
-                <input type="radio" name="calc-group-10" data-price="0">
-                <span class="card-calc__control"></span>
-                <span class="card-calc__option-text">Цементно-песчаная черепица</span>
-              </label>
-            </fieldset>
-          </div>
+                  <?php foreach ($card_calc_group['items'] as $card_calc_item_index => $card_calc_item) : ?>
+                    <?php $is_checked_by_default = !$card_calc_group['is_multi'] && $card_calc_item_index === 0; ?>
+                    <label class="card-calc__option">
+                      <input
+                        type="<?php echo esc_attr($card_calc_group['is_multi'] ? 'checkbox' : 'radio'); ?>"
+                        <?php if (!$card_calc_group['is_multi']) : ?>
+                          name="<?php echo esc_attr('calc-group-' . $card_calc_group['number']); ?>"
+                        <?php endif; ?>
+                        data-price="<?php echo esc_attr((string) $card_calc_item['price']); ?>"
+                        <?php checked($is_checked_by_default); ?>
+                      >
+                      <span class="card-calc__control"></span>
+                      <span class="card-calc__option-text"><?php echo esc_html($card_calc_item['name']); ?></span>
+                    </label>
+                  <?php endforeach; ?>
+                </fieldset>
+              <?php endforeach; ?>
+            </div>
+          <?php endforeach; ?>
         </div>
 
         <div class="card-calc__summary">
@@ -890,33 +700,7 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
     </div>
   </section>
 
-  <section class="feedback dark margin">
-    <div class="container">
-      <div class="feedback__area">
-        <div class="feedback__info">
-
-          <h2>
-            нужно Внести изменения в проект?
-          </h2>
-          <div class="text">
-            Оставьте заявку, и менеджер свяжется
-            с Вами в ближайшее время
-          </div>
-        </div>
-        <form class="feedback__form">
-          <input class="feedback__input" type="text" placeholder="Имя">
-          <input class="feedback__input" type="text" placeholder="Номер">
-          <a href="#" class="feedback__button button button-main">
-            Оставить заявку
-            <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9.75 12.4141L15.25 6.91406L9.75 1.41406M14 6.91406L1 6.91406" stroke="black" stroke-width="2" stroke-linecap="square"/>
-            </svg>
-          </a>
-        </form>
-      </div>
-    </div>
-    <img src="<?php echo $theme_uri; ?>/dist/img/feedback-bg.webp" alt="" class="feedback__bg">
-  </section>
+  <?php require get_template_directory() . '/parts/feedback/project-change.php'; ?>
 
 
   <section class="project-list mini-margin">
@@ -1014,32 +798,7 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
 
 
   </section>
-  <section class="feedback">
-    <div class="container">
-      <div class="feedback__area">
-        <div class="feedback__info">
-          <div class="text">
-            Не нашли подходящий проект?
-          </div>
-          <h2 class="info__title">
-            создадим <i>идеальный дом</i> для вас
-          </h2>
-        </div>
-        <form class="feedback__form">
-          <input class="feedback__input" type="text" placeholder="Имя">
-          <input class="feedback__input" type="text" placeholder="Номер">
-          <a href="#" class="feedback__button button button-stroke">
-            Оставить заявку
-            <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"></path>
-            </svg>
-
-          </a>
-        </form>
-      </div>
-    </div>
-    <img src="<?php echo $theme_uri; ?>/dist/img/feedback-bg.webp" alt="" class="feedback__bg">
-  </section>
+  <?php require get_template_directory() . '/parts/feedback/single-bottom.php'; ?>
 
 
 

@@ -9,7 +9,7 @@
   <?php require get_template_directory() . '/parts/home-ready.php'; ?>
   <?php require get_template_directory() . '/parts/project-list.php'; ?>
   <?php require get_template_directory() . '/parts/end-home.php'; ?>
-  <?php require get_template_directory() . '/parts/feedback.php'; ?>
+  <?php require get_template_directory() . '/parts/feedback/default.php'; ?>
 </main>
 
 <?php get_footer(); ?>
