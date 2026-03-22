@@ -80,7 +80,10 @@ if (!is_array($dop_params)) {
     $dop_params = [];
 }
 
-$price_group = get_field('material_копировать');
+$price_group = get_field('price');
+if (!is_array($price_group)) {
+    $price_group = get_field('material_копировать');
+}
 if (!is_array($price_group)) {
     $price_group = get_field('field_69bfa7a7239d8');
 }
@@ -90,9 +93,82 @@ if (!is_array($price_group)) {
 
 $price_head = trim((string) ($price_group['price-head'] ?? 'Стоимость проекта'));
 $price_subhead = trim((string) ($price_group['price-subhead'] ?? '(архитектурный раздел)'));
-$price_body = trim((string) ($price_group['price-body'] ?? '22 000 ₽'));
-$price_digits = preg_replace('/[^\d]/u', '', $price_body);
-$card_calc_base_cost = $price_digits !== '' ? (int) $price_digits : 22000;
+$price_body_raw = $price_group['price-body'] ?? '22000';
+$card_calc_base_cost = 22000;
+
+if (is_numeric($price_body_raw)) {
+    $price_value = (int) round((float) $price_body_raw);
+    $price_body = number_format($price_value, 0, '', ' ') . ' ₽';
+    $card_calc_base_cost = $price_value;
+} else {
+    $price_body = trim((string) $price_body_raw);
+    $price_digits = preg_replace('/[^\d]/u', '', $price_body);
+    $card_calc_base_cost = $price_digits !== '' ? (int) $price_digits : 22000;
+}
+
+$plan_editor_rows = get_field('plan-editor');
+if (!is_array($plan_editor_rows)) {
+    $plan_editor_rows = [];
+}
+
+$plan_editor_items = [];
+
+foreach ($plan_editor_rows as $plan_editor_index => $plan_editor_row) {
+    if (!is_array($plan_editor_row)) {
+        continue;
+    }
+
+    $plan_title = trim((string) ($plan_editor_row['plan-editor-body'] ?? ''));
+    $plan_image = $collect_project_image($plan_editor_row['plan-editor-head'] ?? null, $plan_title !== '' ? $plan_title : $project_title);
+
+    if (!is_array($plan_image)) {
+        continue;
+    }
+
+    if ($plan_title === '') {
+        $plan_title = 'План ' . ($plan_editor_index + 1);
+    }
+
+    $plan_editor_items[] = [
+        'title' => $plan_title,
+        'url'   => $plan_image['url'],
+        'alt'   => $plan_image['alt'],
+    ];
+}
+
+$services_tab_title = trim((string) get_field('services-name'));
+if ($services_tab_title === '') {
+    $services_tab_title = 'Стоимость услуг';
+}
+
+$services_params = get_field('services-param');
+if (!is_array($services_params)) {
+    $services_params = [];
+}
+
+$services_gray_text = trim((string) get_field('services-gray-text'));
+
+$extra_tab_title = trim((string) get_field('dop-servies'));
+if ($extra_tab_title === '') {
+    $extra_tab_title = 'дополнительные услуги';
+}
+
+$extra_params = get_field('dop-servies-param');
+if (!is_array($extra_params)) {
+    $extra_params = [];
+}
+
+$engineering_tab_title = trim((string) get_field('seti'));
+if ($engineering_tab_title === '') {
+    $engineering_tab_title = 'ИНЖЕНЕРНЫЕ СЕТИ ТИПОВЫЕ';
+}
+
+$engineering_text = trim((string) get_field('seti-text'));
+
+$engineering_params = get_field('seti-param');
+if (!is_array($engineering_params)) {
+    $engineering_params = [];
+}
 
 $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $project_title;
 ?>
@@ -241,6 +317,21 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
   <div class="plans">
     <div class="container">
       <div class="plans__area">
+        <?php if (!empty($plan_editor_items)) : ?>
+          <?php foreach ($plan_editor_items as $plan_editor_item) : ?>
+            <div class="plans__part">
+              <h3 class="plans__title">
+                <?php echo esc_html($plan_editor_item['title']); ?>
+              </h3>
+              <div class="plans__image">
+                <img src="<?php echo esc_url($plan_editor_item['url']); ?>" alt="<?php echo esc_attr($plan_editor_item['alt']); ?>">
+              </div>
+              <button class="button button-stroke plans__edit-button" type="button">
+                редактировать планировку
+              </button>
+            </div>
+          <?php endforeach; ?>
+        <?php else : ?>
           <div class="plans__part">
             <h3 class="plans__title">
               1 ЭТАЖ
@@ -252,17 +343,18 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
               редактировать планировку
             </button>
           </div>
-        <div class="plans__part">
-          <h3 class="plans__title">
-            1 ЭТАЖ
-          </h3>
-          <div class="plans__image">
-            <img src="<?php echo $theme_uri; ?>/dist/img/plan-2.webp" alt="">
+          <div class="plans__part">
+            <h3 class="plans__title">
+              2 ЭТАЖ
+            </h3>
+            <div class="plans__image">
+              <img src="<?php echo $theme_uri; ?>/dist/img/plan-2.webp" alt="">
+            </div>
+            <button class="button button-stroke plans__edit-button" type="button">
+              редактировать планировку
+            </button>
           </div>
-          <button class="button button-stroke plans__edit-button" type="button">
-            редактировать планировку
-          </button>
-        </div>
+        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -323,124 +415,119 @@ $breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $pro
     <div class="container">
       <div class="card-tabs__head">
         <div class="card-tabs__head-item" data-tab-key="services">
-          Стоимость услуг
+          <?php echo esc_html($services_tab_title); ?>
         </div>
         <div class="card-tabs__head-item" data-tab-key="extra">
-          дополнительные услуги
+          <?php echo esc_html($extra_tab_title); ?>
         </div>
         <div class="card-tabs__head-item" data-tab-key="engineering">
-          ИНЖЕНЕРНЫЕ СЕТИ ТИПОВЫЕ
+          <?php echo esc_html($engineering_tab_title); ?>
         </div>
       </div>
       <div class="card-tabs__body">
         <div class="card-tabs__body-item text" data-tab-key="services">
           <div class="width-eight">
-            <div class="param">
-              <div class="param__head orange">
-                Конструктивный раздел
+            <?php foreach ($services_params as $services_param) : ?>
+              <?php
+              if (!is_array($services_param)) {
+                  continue;
+              }
+
+              $services_param_name = trim((string) ($services_param['services-param-name'] ?? ''));
+              $services_param_body = trim((string) ($services_param['services-param-body'] ?? ''));
+
+              if ($services_param_name === '' && $services_param_body === '') {
+                  continue;
+              }
+              ?>
+              <div class="param">
+                <div class="param__head orange">
+                  <?php echo esc_html($services_param_name); ?>
+                </div>
+                <div class="param__body">
+                  <?php echo esc_html($services_param_body); ?>
+                </div>
               </div>
-              <div class="param__body">
-                27 000 ₽
+            <?php endforeach; ?>
+            <?php if ($services_gray_text !== '') : ?>
+              <div class="subtext mini gray">
+                <?php echo esc_html($services_gray_text); ?>
               </div>
-            </div>
-            <div class="param">
-              <div class="param__head orange">
-                Конструктивный раздел
-              </div>
-              <div class="param__body">
-                27 000 ₽
-              </div>
-            </div>
-            <div class="param">
-              <div class="param__head orange">
-                Конструктивный раздел
-              </div>
-              <div class="param__body">
-                27 000 ₽
-              </div>
-            </div>
-            <div class="param">
-              <div class="param__head orange">
-                Конструктивный раздел
-              </div>
-              <div class="param__body">
-                27 000 ₽
-              </div>
-            </div>
-            <div class="subtext mini gray">
-              *Планировка участка (подробная схема генерального плана) ‒ это распределение территории участка с указанием мест для мощения, расположения септика, скважины, бассейна и различных построек, с учетом установленных норм (без учета озеленения).
-            </div>
+            <?php endif; ?>
           </div>
-
-
         </div>
         <div class="card-tabs__body-item" data-tab-key="extra">
           <div class="dop">
-            <div class="dop__item">
-              <h3 class="dop__title">
-                Что входит
-                в проект
-              </h3>
-              <p>
-                Проект предоставляется на бумажном носителе формата A3 в единственном экземпляре
-              </p>
-              <p>
-                Состав архитектурного проекта ‒ раздел Ахитектурные решения (АР). <a href="#">Читать подробнее про состав проекта</a>
-              </p>
-            </div>
-            <div class="dop__item">
-              <h3 class="dop__title">
-                бесплатная доставка
-              </h3>
-              <p>
-                Доставка проекта осуществляется бесплатно, курьерской службой CDEK
-              </p>
-            </div>
-            <div class="dop__item">
-              <h3 class="dop__title">
-                внесение изменений
-              </h3>
-              <p>
-                К типовым проектам возможно внесение изменений, ориентировочную стоимость изменений можно посчитать в
-                <a href="#">списке характеристик проекта</a>
-              </p>
-              <p>
-                Финальную стоимость изменений Вам сможет озвучить менеджер после получения Технического задания на внесение изменений, бланк Технического задания можно скачать здесь
-              </p>
-            </div>
+            <?php foreach ($extra_params as $extra_param) : ?>
+              <?php
+              if (!is_array($extra_param)) {
+                  continue;
+              }
+
+              $extra_title = trim((string) ($extra_param['dop-servies-param-head'] ?? ''));
+              $extra_body = trim((string) ($extra_param['dop-servies-param-body'] ?? ''));
+
+              if ($extra_title === '' && $extra_body === '') {
+                  continue;
+              }
+
+              $extra_body_is_html = $extra_body !== '' && preg_match('/<[^>]+>/', $extra_body) === 1;
+              ?>
+              <div class="dop__item">
+                <?php if ($extra_title !== '') : ?>
+                  <h3 class="dop__title">
+                    <?php echo esc_html($extra_title); ?>
+                  </h3>
+                <?php endif; ?>
+                <?php if ($extra_body !== '') : ?>
+                  <?php if ($extra_body_is_html) : ?>
+                    <?php echo wp_kses_post($extra_body); ?>
+                  <?php else : ?>
+                    <p><?php echo esc_html($extra_body); ?></p>
+                  <?php endif; ?>
+                <?php endif; ?>
+              </div>
+            <?php endforeach; ?>
           </div>
         </div>
         <div class="card-tabs__body-item" data-tab-key="engineering">
-          <p>
-            ИНЖЕНЕРНЫЕ СЕТИ ТИПОВЫЕ
-            В состав ИС входит два раздела (СО и ВК) — отопление, водоснабжение, канализация.
-            В случае внесений изменений в архитектурный проект стоимость разработки типовых инженерных сетей увеличивается.
-          </p>
+          <?php if ($engineering_text !== '') : ?>
+            <p>
+              <?php echo esc_html($engineering_text); ?>
+            </p>
+          <?php endif; ?>
           <div class="width-eight">
             <div class="seti">
-              <div class="seti__item">
-                <p > Вариант с радиаторным отоплением и электрическим теплым полом в мокрых помещениях</p>
-                <p class="seti__price orange">
-                  27 000 ₽
-                </p>
+              <?php foreach ($engineering_params as $engineering_param) : ?>
+                <?php
+                if (!is_array($engineering_param)) {
+                    continue;
+                }
 
-              </div>
-              <div class="seti__item">
-                <p> Вариант с отоплением водяным теплым полом
-                  и дополнительными радиаторами в местах больших теплопотерь</p>
-                <p class="seti__price orange">
-                  +5 000 ₽ к стоимости
-                </p>
+                $engineering_param_text = trim((string) ($engineering_param['seti-param-text'] ?? ''));
+                $engineering_param_cost = trim((string) ($engineering_param['seti-param-cost'] ?? ''));
 
-              </div>
-              <div class="seti__item">
-                <p> Индивидуальные инженерные сети выполняются по техническому заданию Заказчика</p>
-                <p class="seti__price orange">
-                  300 ₽ за 1 м2
-                </p>
+                if ($engineering_param_text === '' && $engineering_param_cost === '') {
+                    continue;
+                }
 
-              </div>
-
+                $engineering_text_is_html = $engineering_param_text !== '' && preg_match('/<[^>]+>/', $engineering_param_text) === 1;
+                ?>
+                <div class="seti__item">
+                  <?php if ($engineering_param_text !== '') : ?>
+                    <?php if ($engineering_text_is_html) : ?>
+                      <?php echo wp_kses_post($engineering_param_text); ?>
+                    <?php else : ?>
+                      <p><?php echo esc_html($engineering_param_text); ?></p>
+                    <?php endif; ?>
+                  <?php endif; ?>
+                  <?php if ($engineering_param_cost !== '') : ?>
+                    <p class="seti__price orange">
+                      <?php echo esc_html($engineering_param_cost); ?>
+                    </p>
+                  <?php endif; ?>
+                </div>
+              <?php endforeach; ?>
             </div>
           </div>
 

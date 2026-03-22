@@ -65,13 +65,22 @@ if ($catalog_item_context === 'static') {
     $catalog_item_param_1 = $param_values[0] ?? '—';
     $catalog_item_param_2 = $param_values[1] ?? '—';
 
-    $price_group = get_field('material_копировать');
+    $price_group = get_field('price');
+    if (!is_array($price_group)) {
+        $price_group = get_field('material_копировать');
+    }
     if (!is_array($price_group)) {
         $price_group = get_field('field_69bfa7a7239d8');
     }
 
     if (is_array($price_group)) {
-        $catalog_item_price = trim((string) ($price_group['price-body'] ?? ''));
+        $catalog_price_raw = $price_group['price-body'] ?? '';
+
+        if (is_numeric($catalog_price_raw)) {
+            $catalog_item_price = number_format((int) round((float) $catalog_price_raw), 0, '', ' ') . ' ₽';
+        } else {
+            $catalog_item_price = trim((string) $catalog_price_raw);
+        }
     }
 
     if ($catalog_item_price === '') {
