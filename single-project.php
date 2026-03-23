@@ -272,23 +272,9 @@ if ($card_calc_group_count > 0) {
     }
 }
 
-$breadcrumbs_project = $project_id !== '' ? 'проект ' . $project_id : $project_title;
 ?>
 
 <main class="single-project-main" data-project-title="<?php echo esc_attr($project_title); ?>" data-project-id="<?php echo esc_attr($project_id); ?>">
-
-  <div class="page-head">
-    <div class="container">
-      <div class="page-head__area">
-        <div class="breadcrumbs">
-          главная - каталог проектов - <?php echo esc_html($breadcrumbs_project); ?>
-        </div>
-        <h1 class="page-head__title ">
-          <?php echo esc_html($project_title); ?>
-        </h1>
-      </div>
-    </div>
-  </div>
 
   <div class="card-head margin">
     <div class="container">

@@ -97,19 +97,43 @@ body {
 
 
 .page-head {
-}
-
-.container {
+  padding: 4px 0 32px;
+  @include laptop {
+    padding: 0 0 20px;
+  }
 }
 
 .page-head__area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  @include laptop {
+    gap: 8px;
+  }
 }
 
 .breadcrumbs {
-  margin-bottom: 12px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(178, 178, 178, 1);
 }
 
 .page-head__title {
+  margin: 0;
+}
+
+.page-head__subtitle {
+  margin: 0;
+  font-size: 28px;
+  line-height: 34px;
+  text-transform: uppercase;
+  color: rgba(244, 177, 102, 1);
+  @include laptop {
+    font-size: 18px;
+    line-height: 24px;
+  }
 }
 
 .param {

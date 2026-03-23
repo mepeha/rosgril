@@ -70,3 +70,81 @@
       <button class="mobile-menu__overlay" type="button" aria-label="Закрыть меню"></button>
     </div>
 </header>
+
+<?php
+$page_head_data = null;
+
+if (is_singular(['project', 'page'])) {
+    $page_head_post_id = (int) get_queried_object_id();
+
+    if ($page_head_post_id > 0) {
+        $page_head_title = trim((string) get_the_title($page_head_post_id));
+        $page_head_subtitle = '';
+        $page_head_hide_breadcrumbs = false;
+        $page_head_hide_title = false;
+        $page_head_hide_subtitle = false;
+
+        if (function_exists('get_field')) {
+            $page_head_hide_breadcrumbs = (bool) get_field('breadcrumbs', $page_head_post_id);
+            $page_head_hide_title = (bool) get_field('head-title', $page_head_post_id);
+            $page_head_hide_subtitle = (bool) get_field('head-subtitle', $page_head_post_id);
+            $page_head_subtitle = trim((string) get_field('subtitle', $page_head_post_id));
+        }
+
+        $page_head_breadcrumbs_text = '';
+        if (!$page_head_hide_breadcrumbs && $page_head_title !== '') {
+            if (get_post_type($page_head_post_id) === 'project') {
+                $page_head_project_label = $page_head_title;
+
+                if (function_exists('get_field')) {
+                    $page_head_project_id = trim((string) get_field('id', $page_head_post_id));
+                    if ($page_head_project_id !== '') {
+                        $page_head_project_label = 'проект ' . $page_head_project_id;
+                    }
+                }
+
+                $page_head_breadcrumbs_text = 'главная - каталог проектов - ' . $page_head_project_label;
+            } else {
+                $page_head_breadcrumbs_text = 'главная - ' . $page_head_title;
+            }
+        }
+
+        $page_head_title_to_render = (!$page_head_hide_title && $page_head_title !== '') ? $page_head_title : '';
+        $page_head_subtitle_to_render = (!$page_head_hide_subtitle && $page_head_subtitle !== '') ? $page_head_subtitle : '';
+
+        if ($page_head_breadcrumbs_text !== '' || $page_head_title_to_render !== '' || $page_head_subtitle_to_render !== '') {
+            $page_head_data = [
+                'breadcrumbs' => $page_head_breadcrumbs_text,
+                'title' => $page_head_title_to_render,
+                'subtitle' => $page_head_subtitle_to_render,
+            ];
+        }
+    }
+}
+?>
+
+<?php if (is_array($page_head_data)) : ?>
+  <div class="page-head">
+    <div class="container">
+      <div class="page-head__area">
+        <?php if ($page_head_data['breadcrumbs'] !== '') : ?>
+          <div class="breadcrumbs">
+            <?php echo esc_html($page_head_data['breadcrumbs']); ?>
+          </div>
+        <?php endif; ?>
+
+        <?php if ($page_head_data['title'] !== '') : ?>
+          <h1 class="page-head__title">
+            <?php echo esc_html($page_head_data['title']); ?>
+          </h1>
+        <?php endif; ?>
+
+        <?php if ($page_head_data['subtitle'] !== '') : ?>
+          <h3 class="page-head__subtitle">
+            <?php echo esc_html($page_head_data['subtitle']); ?>
+          </h3>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+<?php endif; ?>
