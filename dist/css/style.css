@@ -871,21 +871,38 @@ body {
   bottom: 0;
   left: 0;
 }
-.main-filter__item:hover {
+.main-filter__item:hover, .main-filter__item.is-active {
   background: rgb(244, 177, 102);
 }
-.main-filter__item:hover .name {
+.main-filter__item:hover .name, .main-filter__item.is-active .name {
   color: black;
 }
-.main-filter__item:hover .image {
+.main-filter__item:hover .image, .main-filter__item.is-active .image {
   filter: invert(1) contrast(1.05);
   mix-blend-mode: multiply;
 }
-.main-filter__item:hover path {
+.main-filter__item:hover path, .main-filter__item.is-active path {
   stroke: rgb(27, 27, 27);
 }
-.main-filter__item:hover circle {
+.main-filter__item:hover circle, .main-filter__item.is-active circle {
   stroke: rgb(27, 27, 27);
+}
+
+.project-list__more {
+  margin: 32px auto 0;
+}
+
+.project-list__more[hidden] {
+  display: none !important;
+}
+
+.project-list__more.is-hidden {
+  display: none !important;
+}
+
+.project-list__more.is-loading {
+  opacity: 0.65;
+  pointer-events: none;
 }
 
 .item {

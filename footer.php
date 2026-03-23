@@ -126,6 +126,13 @@ $recaptcha_enabled = !empty($recaptcha_settings['enabled']) && $recaptcha_site_k
       'recaptchaSiteKey' => $recaptcha_site_key,
       'recaptchaEnabled' => $recaptcha_enabled,
   ]); ?>;
+  window.tanyathemeProjectFilter = <?php echo wp_json_encode([
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      'nonce' => wp_create_nonce('tanyatheme_filter_projects'),
+      'archiveUrl' => function_exists('tanyatheme_get_project_archive_url')
+          ? tanyatheme_get_project_archive_url()
+          : home_url('/project/'),
+  ]); ?>;
 </script>
 <?php if ($recaptcha_enabled) : ?>
 <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>

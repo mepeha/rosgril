@@ -37,7 +37,8 @@
     bottom: 0;
     left: 0;
   }
-  &:hover {
+  &:hover,
+  &.is-active {
     background: rgba(244, 177, 102, 1);
     .name {
       color: black;
@@ -57,6 +58,23 @@
 
 
 .project-list {
+}
+
+.project-list__more {
+  margin: 32px auto 0;
+}
+
+.project-list__more[hidden] {
+  display: none !important;
+}
+
+.project-list__more.is-hidden {
+  display: none !important;
+}
+
+.project-list__more.is-loading {
+  opacity: 0.65;
+  pointer-events: none;
 }
 
 

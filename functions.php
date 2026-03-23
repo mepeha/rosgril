@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 $theme_parts = [
     'theme-setup',
     'menu',
+    'project-filter',
     'forms',
 ];
 
