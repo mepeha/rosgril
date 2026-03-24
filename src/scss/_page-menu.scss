@@ -47,6 +47,16 @@
   z-index: 2;
   padding: 32px 100px 32px 32px;
 
+  .arrow {
+    transition: transform 0.2s ease;
+    transform-origin: center;
+  }
+
+  &:hover .arrow,
+  &:focus-visible .arrow {
+    transform: rotate(-54deg);
+  }
+
   &.project {
     grid-row: span 3;
 
@@ -99,6 +109,6 @@
     }
 
     right: 12px;
-    bottom: 6px;
+    bottom: 12px;
   }
 }

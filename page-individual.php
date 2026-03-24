@@ -78,7 +78,7 @@ if (empty($project_example_items)) {
                         загородных жилых домов
                     </h1>
                     <h3>
-                        Стоимость проектирования от 550 ₽/ м2
+                        Стоимость проектирования <span class="nowrap">от 550 ₽/ м2</span>
                     </h3>
                     <a href="/project/" class="banner__button button button-main">
                         смотреть все проекты

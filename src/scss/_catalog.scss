@@ -27,34 +27,17 @@
   height: 175px;
   transition: all 0.2s ease-in-out;
 
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -10px;
-    height: 3px;
-    border-radius: 999px;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  &::before {
-    background: rgba(244, 177, 102, 0.28);
-  }
-
-  &::after {
-    background: rgba(244, 177, 102, 1);
-    transform: scaleX(0);
-    transform-origin: left center;
-  }
-
   .name {
     margin-bottom: unset;
   }
 
   .arrow {
+    transition: transform 0.2s ease;
+    transform-origin: center;
+    @include laptop {
+      position: unset;
+    }
+
   }
 
   .image {
@@ -67,8 +50,13 @@
     }
   }
   &:hover,
-  &.is-active {
+  &:focus-visible {
     background: rgba(244, 177, 102, 1);
+
+    .arrow {
+      transform: rotate(-45deg);
+    }
+
     .name {
       color: black;
     }
@@ -84,29 +72,27 @@
     }
 
   }
-
-  &.is-active::before {
-    opacity: 1;
-  }
-
-  &.is-active::after {
-    opacity: 1;
-    animation: main-filter-progress 0.2s linear forwards;
+  &.is-active {
+    background: rgba(255, 255, 255, 1);
+    .name {
+      color: black;
+    }
+    .image {
+      filter: invert(1) contrast(1.05);
+      mix-blend-mode: multiply;
+    }
+    path {
+      stroke: rgb(27, 27, 27);
+    }
+    circle {
+      stroke: rgb(27, 27, 27);
+    }
   }
   @include laptop {
     height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-}
-
-@keyframes main-filter-progress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
   }
 }
 
