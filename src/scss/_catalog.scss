@@ -16,16 +16,38 @@
   }
 }
 .main-filter {
-  @include laptop {
-    display: none;
-  }
+
 }
 .main-filter__item {
   padding: 14px 22px;
+  display: block;
   position: relative;
   background: rgba(33, 33, 33, 1);
   height: 175px;
   transition: all 0.2s ease-in-out;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    height: 3px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    background: rgba(244, 177, 102, 0.28);
+  }
+
+  &::after {
+    background: rgba(244, 177, 102, 1);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
 
 
   .arrow {
@@ -36,6 +58,9 @@
     position: absolute;
     bottom: 0;
     left: 0;
+    @include laptop {
+      height: 100%;
+    }
   }
   &:hover,
   &.is-active {
@@ -53,6 +78,28 @@
     circle {
       stroke: rgb(27, 27, 27);
     }
+
+  }
+
+  &.is-active::before {
+    opacity: 1;
+  }
+
+  &.is-active::after {
+    opacity: 1;
+    animation: main-filter-progress 0.2s linear forwards;
+  }
+  @include laptop {
+    height: 85px;
+  }
+}
+
+@keyframes main-filter-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 

@@ -30,6 +30,9 @@
     height: 500px;
     width: 100%;
     display: block;
+    @include laptop {
+      height: 250px;
+    }
   }
 }
 
@@ -51,6 +54,9 @@
     width: 100%;
     display: block;
     filter: brightness(0.82);
+    @include laptop {
+      height: 90px;
+    }
   }
 
   .card-slider__mini-item.slick-current  {

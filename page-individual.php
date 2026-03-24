@@ -1,6 +1,70 @@
 <?php
 get_header();
 $theme_uri = get_template_directory_uri();
+
+$project_example_gallery_raw = [];
+if (function_exists('get_field')) {
+    $project_example_contexts = [
+        'end-home-admin-page',
+        'options_end-home-admin-page',
+        'options_end_home_admin_page',
+        'option',
+        'options',
+    ];
+
+    foreach ($project_example_contexts as $project_example_context) {
+        $project_example_value = get_field('end-home-example', $project_example_context);
+        if (is_array($project_example_value) && !empty($project_example_value)) {
+            $project_example_gallery_raw = $project_example_value;
+            break;
+        }
+    }
+}
+
+$project_example_items = [];
+if (!empty($project_example_gallery_raw)) {
+    foreach ($project_example_gallery_raw as $project_example_item) {
+        if (!is_array($project_example_item)) {
+            continue;
+        }
+
+        $project_example_full = trim((string) ($project_example_item['url'] ?? ''));
+        if ($project_example_full === '') {
+            continue;
+        }
+
+        $project_example_sizes = is_array($project_example_item['sizes'] ?? null) ? $project_example_item['sizes'] : [];
+        $project_example_thumb = trim((string) ($project_example_sizes['medium_large'] ?? $project_example_sizes['large'] ?? $project_example_sizes['medium'] ?? $project_example_full));
+        $project_example_caption = trim((string) ($project_example_item['caption'] ?? ''));
+        $project_example_title = trim((string) ($project_example_item['title'] ?? ''));
+        $project_example_alt = trim((string) ($project_example_item['alt'] ?? ''));
+
+        if ($project_example_caption === '') {
+            $project_example_caption = $project_example_title;
+        }
+
+        if ($project_example_alt === '') {
+            $project_example_alt = $project_example_caption !== '' ? $project_example_caption : ($project_example_title !== '' ? $project_example_title : 'Пример выполненного проекта');
+        }
+
+        $project_example_items[] = [
+            'full' => $project_example_full,
+            'thumb' => $project_example_thumb,
+            'caption' => $project_example_caption,
+            'alt' => $project_example_alt,
+        ];
+    }
+}
+
+if (empty($project_example_items)) {
+    $project_example_items = [
+        ['full' => $theme_uri . '/dist/img/card-head-1.webp', 'thumb' => $theme_uri . '/dist/img/card-head-1.webp', 'caption' => 'Пример проекта 1', 'alt' => 'Пример проекта 1'],
+        ['full' => $theme_uri . '/dist/img/catalog-image-1.webp', 'thumb' => $theme_uri . '/dist/img/catalog-image-1.webp', 'caption' => 'Пример проекта 2', 'alt' => 'Пример проекта 2'],
+        ['full' => $theme_uri . '/dist/img/individual-2.webp', 'thumb' => $theme_uri . '/dist/img/individual-2.webp', 'caption' => 'Пример проекта 3', 'alt' => 'Пример проекта 3'],
+        ['full' => $theme_uri . '/dist/img/plan-1.webp', 'thumb' => $theme_uri . '/dist/img/plan-1.webp', 'caption' => 'Пример проекта 4', 'alt' => 'Пример проекта 4'],
+        ['full' => $theme_uri . '/dist/img/plan-2.webp', 'thumb' => $theme_uri . '/dist/img/plan-2.webp', 'caption' => 'Пример проекта 5', 'alt' => 'Пример проекта 5'],
+    ];
+}
 ?>
 
 <main>
@@ -16,7 +80,7 @@ $theme_uri = get_template_directory_uri();
                     <h3>
                         Стоимость проектирования от 550 ₽/ м2
                     </h3>
-                    <a href="" class="banner__button button button-main">
+                    <a href="/project/" class="banner__button button button-main">
                         смотреть все проекты
                         <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.75 12.4141L15.25 6.91406L9.75 1.41406M14 6.91406L1 6.91406" stroke="black" stroke-width="2" stroke-linecap="square"/>
@@ -35,7 +99,7 @@ $theme_uri = get_template_directory_uri();
                     <div class="text">
                         Мы разрабатываем проекты частных жилых домов, которые отвечают всем потребностям заказчика и отражают его индивидуальность. Разработанная нами документация, позволяет построить надежный дом, в котором будет приятно жить Вам и Вашим близким!
                     </div>
-                    <a href="/project" class="info__button button button-stroke">
+                    <a href="/project" class="info__button button button-stroke" data-feedback-popup-open>
                         воплотить ваш проект
                         <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"/>
@@ -128,101 +192,13 @@ $theme_uri = get_template_directory_uri();
         </div>
     </div>
 
-    <section class="project-list margin">
-
-        <div class="container">
-            <h2>выполненные проекты</h2>
-            <div class="main-catalog three-grid">
-                <div class="item">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/catalog-image-1.webp"); ?>" alt="" class="item__image">
-                    <div class="item__info">
-                        <div class="item__name">
-                            Проект одноэтажного жилого дома
-                            со встроенным гаражом
-                            на две машины
-                        </div>
-                        <div class="item__param">
-                            <div class="item__param-item">
-                                116 м2
-                            </div>
-                            <div class="item__param-item">
-                                12х14
-                            </div>
-                        </div>
-                        <div class="item__price">
-            <span>
-              от 50 000 ₽
-            </span>
-                            <svg width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17.6498 22.4725L27.606 12.5163L17.6498 2.56006M25.3432 12.5163L1.81034 12.5163" stroke="#B2B2B2" stroke-width="3.62044" stroke-linecap="square"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/catalog-image-1.webp"); ?>" alt="" class="item__image">
-                    <div class="item__info">
-                        <div class="item__name">
-                            Проект одноэтажного жилого дома
-                            со встроенным гаражом
-                            на две машины
-                        </div>
-                        <div class="item__param">
-                            <div class="item__param-item">
-                                116 м2
-                            </div>
-                            <div class="item__param-item">
-                                12х14
-                            </div>
-                        </div>
-                        <div class="item__price">
-            <span>
-              от 50 000 ₽
-            </span>
-                            <svg width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17.6498 22.4725L27.606 12.5163L17.6498 2.56006M25.3432 12.5163L1.81034 12.5163" stroke="#B2B2B2" stroke-width="3.62044" stroke-linecap="square"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/catalog-image-1.webp"); ?>" alt="" class="item__image">
-                    <div class="item__info">
-                        <div class="item__name">
-                            Проект одноэтажного жилого дома
-                            со встроенным гаражом
-                            на две машины
-                        </div>
-                        <div class="item__param">
-                            <div class="item__param-item">
-                                116 м2
-                            </div>
-                            <div class="item__param-item">
-                                12х14
-                            </div>
-                        </div>
-                        <div class="item__price">
-            <span>
-              от 50 000 ₽
-            </span>
-                            <svg width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17.6498 22.4725L27.606 12.5163L17.6498 2.56006M25.3432 12.5163L1.81034 12.5163" stroke="#B2B2B2" stroke-width="3.62044" stroke-linecap="square"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <a href="/project" class="main-catalog__button button button-stroke">
-                смотреть все проекты
-                <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"></path>
-                </svg>
-
-            </a>
-        </div>
-
-
-    </section>
+    <?php
+    $projects_section_title = 'Выполненные проекты';
+    $projects_section_class = 'margin';
+    $projects_section_count = 3;
+    $projects_section_exclude_id = 0;
+    require get_template_directory() . '/parts/catalog/projects-section.php';
+    ?>
 
 
     <section class="stages-project mini-margin">
@@ -383,90 +359,34 @@ $theme_uri = get_template_directory_uri();
 
             <div class="project-example__slider-wrap">
                 <div class="project-example__slider">
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/card-head-1.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 1">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/card-head-1.webp"); ?>" alt="Пример проекта 1">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/catalog-image-1.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 2">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/catalog-image-1.webp"); ?>" alt="Пример проекта 2">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/individual-2.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 3">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/individual-2.webp"); ?>" alt="Пример проекта 3">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/plan-1.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 4">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/plan-1.webp"); ?>" alt="Пример проекта 4">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/plan-2.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 5">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/plan-2.webp"); ?>" alt="Пример проекта 5">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/end-home-1.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 6">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/end-home-1.webp"); ?>" alt="Пример проекта 6">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/end-home-2.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 7">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/end-home-2.webp"); ?>" alt="Пример проекта 7">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/end-home-3.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 8">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/end-home-3.webp"); ?>" alt="Пример проекта 8">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/two-floor.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 9">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/two-floor.webp"); ?>" alt="Пример проекта 9">
-                        </a>
-                    </div>
-                    <div class="project-example__slide">
-                        <a class="project-example__slide-link" href="<?php echo esc_url($theme_uri . "/dist/img/three-floor.webp"); ?>" data-fancybox="project-example-gallery" data-caption="Пример проекта 10">
-                            <img src="<?php echo esc_url($theme_uri . "/dist/img/three-floor.webp"); ?>" alt="Пример проекта 10">
-                        </a>
-                    </div>
+                    <?php foreach ($project_example_items as $project_example_item) : ?>
+                        <div class="project-example__slide">
+                            <a
+                                class="project-example__slide-link"
+                                href="<?php echo esc_url($project_example_item['full']); ?>"
+                                data-fancybox="project-example-gallery"
+                                <?php if ($project_example_item['caption'] !== '') : ?>
+                                    data-caption="<?php echo esc_attr($project_example_item['caption']); ?>"
+                                <?php endif; ?>
+                            >
+                                <img src="<?php echo esc_url($project_example_item['full']); ?>" alt="<?php echo esc_attr($project_example_item['alt']); ?>">
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
             <div class="project-example__thumbs" aria-label="Навигация по слайдам проекта">
-                <button class="project-example__thumb is-active" type="button" data-example-slide="0" aria-label="Открыть слайд 1">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/card-head-1.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="1" aria-label="Открыть слайд 2">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/catalog-image-1.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="2" aria-label="Открыть слайд 3">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/individual-2.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="3" aria-label="Открыть слайд 4">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/plan-1.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="4" aria-label="Открыть слайд 5">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/plan-2.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="5" aria-label="Открыть слайд 6">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/end-home-1.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="6" aria-label="Открыть слайд 7">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/end-home-2.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="7" aria-label="Открыть слайд 8">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/end-home-3.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="8" aria-label="Открыть слайд 9">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/two-floor.webp"); ?>" alt="">
-                </button>
-                <button class="project-example__thumb" type="button" data-example-slide="9" aria-label="Открыть слайд 10">
-                    <img src="<?php echo esc_url($theme_uri . "/dist/img/three-floor.webp"); ?>" alt="">
-                </button>
+                <?php foreach ($project_example_items as $project_example_index => $project_example_item) : ?>
+                    <button
+                        class="project-example__thumb<?php echo $project_example_index === 0 ? ' is-active' : ''; ?>"
+                        type="button"
+                        data-example-slide="<?php echo esc_attr((string) $project_example_index); ?>"
+                        aria-label="<?php echo esc_attr('Открыть слайд ' . ($project_example_index + 1)); ?>"
+                    >
+                        <img src="<?php echo esc_url($project_example_item['thumb']); ?>" alt="<?php echo esc_attr($project_example_item['alt']); ?>">
+                    </button>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>

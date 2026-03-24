@@ -51,7 +51,7 @@ $theme_uri = get_template_directory_uri();
                             <span class="orange">авторский надзор:</span> контроль за выполнением строительных и отделочных работ в соответствии с проектной документацией
                         </li>
                     </ul>
-                    <a href="/project" class="info__button button button-stroke">
+                    <a href="/individual" class="info__button button button-stroke">
                         подробнее
                         <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"/>

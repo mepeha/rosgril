@@ -2479,7 +2479,6 @@ $(function () {
         $endHomeSlider.slick({
             slidesToShow: 3,
             slidesToScroll: 1,
-            variableWidth: true,
             infinite: false,
             autoplay: false,
             arrows: true,
@@ -2498,7 +2497,8 @@ $(function () {
                     breakpoint: 768,
                     settings: {
                         slidesToShow: 1,
-                        arrows: false
+                        arrows: false,
+                        dots: true
                     }
                 }
             ]

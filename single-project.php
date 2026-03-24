@@ -347,9 +347,9 @@ if ($card_calc_group_count > 0) {
                   <?php echo esc_html($price_body); ?>
                 </div>
               </div>
-              <div class="price__more gray mini">
+              <a href="/composition" class="price__more gray mini">
                 Что еще входит в стоимость?
-              </div>
+              </a>
             </div>
             <div class="dop">
               <div class="dop__title">
@@ -382,15 +382,15 @@ if ($card_calc_group_count > 0) {
           </div>
           <div class="buttons">
             <div class="buttons__head">
-              <a href="" class="button button-main">
+              <button class="button button-main" data-feedback-popup-open>
                 заказать проект
-              </a>
+              </button>
             </div>
             <div class="buttons__change">
-              <a href="/project" class=" button button-stroke">
+              <a href="#editor" class=" button button-stroke">
                 внести изменения <br> в проект
               </a>
-              <a href="/project" class=" button button-stroke">
+              <a href="#calc" class=" button button-stroke">
                 изменить планировку
               </a>
             </div>
@@ -402,7 +402,7 @@ if ($card_calc_group_count > 0) {
   <div class="container">
     <h2 class="block-title">ПОЭТАЖНЫЕ ПЛАНЫ</h2>
   </div>
-  <div class="plans">
+  <div class="plans" id="editor">
     <div class="container">
       <div class="plans__area">
         <?php if (!empty($plan_editor_items)) : ?>
@@ -625,7 +625,7 @@ if ($card_calc_group_count > 0) {
     </div>
   </section>
 
-  <section class="card-calc" data-base-cost="<?php echo esc_attr((string) $card_calc_base_cost); ?>">
+  <section id="calc" class="card-calc" data-base-cost="<?php echo esc_attr((string) $card_calc_base_cost); ?>">
     <div class="container">
       <h2 class="block-title card-calc__title">
         Расчет стоимости при выборе характеристик проекта
@@ -689,102 +689,13 @@ if ($card_calc_group_count > 0) {
 
   <?php require get_template_directory() . '/parts/feedback/project-change.php'; ?>
 
-
-  <section class="project-list mini-margin">
-
-    <div class="container">
-      <h2>ПРОСМОТРЕННЫЕ ПРОЕКТЫ</h2>
-      <div class="main-catalog three-grid">
-        <div class="item">
-          <img src="<?php echo $theme_uri; ?>/dist/img/catalog-image-1.webp" alt="" class="item__image">
-          <div class="item__info">
-            <div class="item__name">
-              Проект одноэтажного жилого дома
-              со встроенным гаражом
-              на две машины
-            </div>
-            <div class="item__param">
-              <div class="item__param-item">
-                116 м2
-              </div>
-              <div class="item__param-item">
-                12х14
-              </div>
-            </div>
-            <div class="item__price">
-            <span>
-              от 50 000 ₽
-            </span>
-              <svg width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.6498 22.4725L27.606 12.5163L17.6498 2.56006M25.3432 12.5163L1.81034 12.5163" stroke="#B2B2B2" stroke-width="3.62044" stroke-linecap="square"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <img src="<?php echo $theme_uri; ?>/dist/img/catalog-image-1.webp" alt="" class="item__image">
-          <div class="item__info">
-            <div class="item__name">
-              Проект одноэтажного жилого дома
-              со встроенным гаражом
-              на две машины
-            </div>
-            <div class="item__param">
-              <div class="item__param-item">
-                116 м2
-              </div>
-              <div class="item__param-item">
-                12х14
-              </div>
-            </div>
-            <div class="item__price">
-            <span>
-              от 50 000 ₽
-            </span>
-              <svg width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.6498 22.4725L27.606 12.5163L17.6498 2.56006M25.3432 12.5163L1.81034 12.5163" stroke="#B2B2B2" stroke-width="3.62044" stroke-linecap="square"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <img src="<?php echo $theme_uri; ?>/dist/img/catalog-image-1.webp" alt="" class="item__image">
-          <div class="item__info">
-            <div class="item__name">
-              Проект одноэтажного жилого дома
-              со встроенным гаражом
-              на две машины
-            </div>
-            <div class="item__param">
-              <div class="item__param-item">
-                116 м2
-              </div>
-              <div class="item__param-item">
-                12х14
-              </div>
-            </div>
-            <div class="item__price">
-            <span>
-              от 50 000 ₽
-            </span>
-              <svg width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.6498 22.4725L27.606 12.5163L17.6498 2.56006M25.3432 12.5163L1.81034 12.5163" stroke="#B2B2B2" stroke-width="3.62044" stroke-linecap="square"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-      <a href="/project" class="main-catalog__button button button-stroke">
-        смотреть все проекты
-        <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"></path>
-        </svg>
-
-      </a>
-    </div>
-
-
-  </section>
+  <?php
+  $projects_section_title = 'Другие проекты';
+  $projects_section_class = 'mini-margin';
+  $projects_section_count = 3;
+  $projects_section_exclude_id = (int) get_the_ID();
+  require get_template_directory() . '/parts/catalog/projects-section.php';
+  ?>
   <?php require get_template_directory() . '/parts/feedback/single-bottom.php'; ?>
 
 

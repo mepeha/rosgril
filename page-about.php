@@ -31,7 +31,7 @@ $theme_uri = get_template_directory_uri();
                         <li>разрабатываем техническую документацию для реализации объекта;</li>
                         <li>ведем авторское сопровождение в реализации объекта</li>
                     </ul>
-                    <a href="/project" class="info__button button button-stroke">
+                    <a href="/project" class="info__button button button-stroke" data-feedback-popup-open>
                         получить бесплатную консультацию
                         <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.75 12.4142L15.25 6.91422L9.75 1.41421M14 6.91422L1 6.91421" stroke="white" stroke-width="2" stroke-linecap="square"/>

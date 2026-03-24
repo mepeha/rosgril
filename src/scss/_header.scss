@@ -17,6 +17,9 @@
 }
 
 .logo {
+  @include laptop {
+    width: 95px;
+  }
 }
 
 .menu {
@@ -119,11 +122,24 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  svg {
+    flex-shrink: 0;
+  }
+
   @include desktop {
     margin-left: 24px;
   }
   @include mobile {
-    display: none;
+    margin-left: 0;
+    font-size: 14px;
+    line-height: 18px;
+    gap: 6px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 
@@ -204,12 +220,7 @@
       padding: 0;
     }
 
-    > .menu-item:last-child,
-    > li:last-child {
-      > .mobile-menu__item {
-        margin-bottom: 0;
-      }
-    }
+
 
     .sub-menu {
       margin: 0;
@@ -226,11 +237,6 @@
         padding: 0;
       }
 
-      .menu-item:last-child {
-        > .mobile-menu__item {
-          margin-bottom: 0;
-        }
-      }
     }
   }
 

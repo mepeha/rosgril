@@ -146,7 +146,7 @@ $theme_uri = get_template_directory_uri();
             можно ли внести изменения в готовый проект?
         </h2>
         <p>
-            В любой готовый проект можно <a class="orange underline" href="/change.html">внести изменения</a>
+            В любой готовый проект можно <a class="orange underline" href="/change/">внести изменения</a>
         </p>
         <br>
         <br>
@@ -154,7 +154,7 @@ $theme_uri = get_template_directory_uri();
             частые вопросы
         </h2>
         <h3 class="orange underline ">
-            <a href="#">
+            <a href="/take/">
                 как заказать проект дома
                 <svg width="26" height="22" viewBox="0 0 26 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21.207 18.4082L23.6521 4.54188L9.78576 2.09687M21.7985 5.83975L2.52152 19.3376" stroke="#F4B166" stroke-width="3.62044" stroke-linecap="square"/>
@@ -163,7 +163,7 @@ $theme_uri = get_template_directory_uri();
             </a>
         </h3>
         <h3 class="orange underline">
-            <a href="#">
+            <a href="/change/">
                 внесение изменений в проект
                 <svg width="26" height="22" viewBox="0 0 26 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21.207 18.4082L23.6521 4.54188L9.78576 2.09687M21.7985 5.83975L2.52152 19.3376" stroke="#F4B166" stroke-width="3.62044" stroke-linecap="square"/>
@@ -172,7 +172,7 @@ $theme_uri = get_template_directory_uri();
             </a>
         </h3>
         <h3 class="orange underline">
-            <a href="#">
+            <a href="/individual/">
                 индивидуальное проектирование
                 <svg width="26" height="22" viewBox="0 0 26 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21.207 18.4082L23.6521 4.54188L9.78576 2.09687M21.7985 5.83975L2.52152 19.3376" stroke="#F4B166" stroke-width="3.62044" stroke-linecap="square"/>
