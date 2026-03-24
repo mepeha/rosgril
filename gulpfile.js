@@ -4,7 +4,6 @@ const sass = require("gulp-sass")(require("sass"));
 const terser = require("gulp-terser");
 const browserSync = require("browser-sync").create();
 const sourcemaps = require("gulp-sourcemaps");
-const newer = require("gulp-newer");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
 const dependents = require("gulp-dependents");
@@ -30,11 +29,9 @@ gulp.task("serve", function () {
 gulp.task("vendorStyles", function () {
     return gulp
         .src([
-            "node_modules/aos/dist/aos.css",
             "node_modules/@fancyapps/ui/dist/fancybox/fancybox.css",
             "libs/css/*.css",
         ])
-        .pipe(newer("dist/css/vendor.css"))
         .pipe(concat("vendor.css"))
         .pipe(gulp.dest("dist/css"))
         .pipe(browserSync.stream());
@@ -59,13 +56,11 @@ gulp.task("vendorScripts", function () {
     return gulp
         .src([
             nodeModules + "jquery/dist/jquery.min.js",
-            "node_modules/aos/dist/aos.js",
             "node_modules/@fancyapps/ui/dist/fancybox/fancybox.umd.js",
             "node_modules/inputmask/dist/inputmask.min.js",
             "node_modules/fabric/dist/index.min.js",
             "libs/js/*.min.js"
         ])
-        .pipe(newer("dist/js/vendor.js"))
         .pipe(concat("vendor.js"))
         .pipe(terser())
         .pipe(gulp.dest("dist/js"))

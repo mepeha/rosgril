@@ -5,10 +5,10 @@ $theme_uri = get_template_directory_uri();
 
 <main>
 
-    <section class="create arch-buro">
+    <section class="create arch-buro margin">
         <div class="container">
             <div class="create__area">
-                <img class="create__image" src="<?php echo $theme_uri; ?>/dist/img/interdesign.webp" alt="">
+                <img class="create__image js-fast-zoom-reveal" src="<?php echo $theme_uri; ?>/dist/img/interdesign.webp" alt="">
                 <div class="create__info info content">
                     <h2 class="info__title">
                         дизайн интерьеров
@@ -59,7 +59,7 @@ $theme_uri = get_template_directory_uri();
 
                     </a>
                 </div>
-                <img class="our-services__img" src="<?php echo $theme_uri; ?>/dist/img/our-services.webp" alt="">
+                <img class="our-services__img js-fast-zoom-reveal" src="<?php echo $theme_uri; ?>/dist/img/our-services.webp" alt="">
             </div>
         </div>
     </section>

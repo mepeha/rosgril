@@ -1,7 +1,7 @@
   <section class="home-ready margin">
     <div class="container">
       <div class="home-ready__area">
-        <img src="<?php echo $theme_uri; ?>/dist/img/home-ready.webp" alt="" class="home-ready__image">
+        <img src="<?php echo $theme_uri; ?>/dist/img/home-ready.webp" alt="" class="home-ready__image js-fast-zoom-reveal">
         <div class="create__info info">
           <h2>
             Дом готов? <span class="nowrap">

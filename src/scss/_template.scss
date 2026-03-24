@@ -240,3 +240,26 @@ body {
   padding: 24px;
   color: black;
 }
+
+.js-fast-zoom-reveal {
+  opacity: 0;
+  transform: translateY(24px) scale(0.84);
+  filter: blur(7px);
+  transform-origin: center;
+  transition: transform 2.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 2.1s ease, filter 2.3s ease;
+  will-change: transform, opacity, filter;
+}
+
+.js-fast-zoom-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-fast-zoom-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

@@ -10,7 +10,7 @@ $theme_uri = get_template_directory_uri();
     <section class="create arch-buro">
         <div class="container">
             <div class="create__area">
-                <img class="create__image" src="<?php echo $theme_uri; ?>/dist/img/tania-buro.webp" alt="">
+                <img class="create__image js-fast-zoom-reveal" src="<?php echo $theme_uri; ?>/dist/img/tania-buro.webp" alt="">
                 <div class="create__info info content">
                     <h2 class="info__title">
                         Дома, в которых хочется жить

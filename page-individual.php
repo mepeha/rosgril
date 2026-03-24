@@ -87,14 +87,14 @@ if (empty($project_example_items)) {
                         </svg>
                     </a>
                 </div>
-                <img class="individual-banner__image" src="<?php echo esc_url($theme_uri . "/dist/img/individual-banner-img.webp"); ?>" alt="">
+                <img class="individual-banner__image js-fast-zoom-reveal" src="<?php echo esc_url($theme_uri . "/dist/img/individual-banner-img.webp"); ?>" alt="">
             </div>
         </div>
     </section>
     <section class="create">
         <div class="container">
             <div class="create__area">
-                <img class="create__image" src="<?php echo esc_url($theme_uri . "/dist/img/individual-2.webp"); ?>" alt="">
+                <img class="create__image js-fast-zoom-reveal" src="<?php echo esc_url($theme_uri . "/dist/img/individual-2.webp"); ?>" alt="">
                 <div class="create__info info">
                     <div class="text">
                         Мы разрабатываем проекты частных жилых домов, которые отвечают всем потребностям заказчика и отражают его индивидуальность. Разработанная нами документация, позволяет построить надежный дом, в котором будет приятно жить Вам и Вашим близким!

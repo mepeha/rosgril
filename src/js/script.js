@@ -35,6 +35,53 @@ $(function () {
     };
     let feedbackPopupSource = 'cta';
     let isLeadSubmitLocked = false;
+
+    const initFastZoomReveal = function () {
+        const $revealItems = $('.js-fast-zoom-reveal');
+        const revealStepDelay = 320;
+
+        if (!$revealItems.length) {
+            return;
+        }
+
+        if (!('IntersectionObserver' in window)) {
+            $revealItems.each(function () {
+                const orderValue = Number($(this).attr('data-reveal-order'));
+                const order = isFinite(orderValue) ? Math.max(0, orderValue) : 0;
+
+                window.setTimeout(function () {
+                    $(this).addClass('is-visible');
+                }.bind(this), order * revealStepDelay);
+            });
+            return;
+        }
+
+        const revealObserver = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                const orderValue = Number($(entry.target).attr('data-reveal-order'));
+                const order = isFinite(orderValue) ? Math.max(0, orderValue) : 0;
+
+                window.setTimeout(function () {
+                    entry.target.classList.add('is-visible');
+                }, order * revealStepDelay);
+                observer.unobserve(entry.target);
+            });
+        }, {
+            threshold: 0.2,
+            rootMargin: '0px 0px -8% 0px'
+        });
+
+        $revealItems.each(function () {
+            revealObserver.observe(this);
+        });
+    };
+
+    initFastZoomReveal();
+
     if ($burger.length && $mobileMenu.length) {
         const openMenu = function () {
             $body.addClass('menu-open');

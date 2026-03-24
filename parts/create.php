@@ -1,7 +1,12 @@
   <section class="create">
     <div class="container">
       <div class="create__area">
-        <img class="create__image" src="<?php echo $theme_uri; ?>/dist/img/tania.webp" alt="">
+        <img
+          class="create__image js-fast-zoom-reveal"
+          src="<?php echo $theme_uri; ?>/dist/img/tania.webp"
+          alt=""
+          data-reveal-order="1"
+        >
         <div class="create__info info">
           <h2 class="info__title">
             создаем дома <br>

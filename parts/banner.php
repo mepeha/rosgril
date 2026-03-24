@@ -11,7 +11,12 @@
             <path d="M9.75 12.4141L15.25 6.91406L9.75 1.41406M14 6.91406L1 6.91406" stroke="black" stroke-width="2" stroke-linecap="square"/>
           </svg>
         </a>
-        <img class="banner__image" src="<?php echo $theme_uri; ?>/dist/img/banner-bg.webp" alt="Коттедж">
+        <img
+          class="banner__image js-fast-zoom-reveal"
+          src="<?php echo $theme_uri; ?>/dist/img/banner-bg.webp"
+          alt="Коттедж"
+          data-reveal-order="0"
+        >
       </div>
     </div>
   </section>

@@ -376,6 +376,28 @@ body {
   color: black;
 }
 
+.js-fast-zoom-reveal {
+  opacity: 0;
+  transform: translateY(24px) scale(0.84);
+  filter: blur(7px);
+  transform-origin: center;
+  transition: transform 2.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 2.1s ease, filter 2.3s ease;
+  will-change: transform, opacity, filter;
+}
+
+.js-fast-zoom-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-fast-zoom-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
 .header {
   padding: 36px 0;
   position: relative;
@@ -1155,6 +1177,25 @@ body {
   display: flex;
   flex-direction: column;
 }
+.item .item__arrow {
+  transition: transform 0.2s ease;
+  transform-origin: center;
+}
+.item .item__arrow path {
+  transition: stroke 0.2s ease;
+}
+.item .item__name {
+  transition: color 0.2s ease;
+}
+.item:hover .item__arrow, .item:focus-visible .item__arrow, .item:active .item__arrow {
+  transform: rotate(-45deg);
+}
+.item:hover .item__arrow path, .item:focus-visible .item__arrow path, .item:active .item__arrow path {
+  stroke: rgb(244, 177, 102);
+}
+.item:active .item__name, .item:focus-visible .item__name {
+  color: rgb(244, 177, 102);
+}
 
 .item__image {
   height: 250px;
@@ -1162,13 +1203,18 @@ body {
 
 .item__info {
   padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .item__name {
-  margin-bottom: 8px;
+  margin-bottom: auto;
 }
 
 .item__param {
+  margin-top: 8px;
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
@@ -1347,6 +1393,11 @@ body {
 .dark .feedback__info {
   max-width: 600px;
 }
+@media (max-width: 991px) {
+  .dark .feedback__info {
+    max-width: 100%;
+  }
+}
 .dark .info__title {
   margin-bottom: 20px;
 }
@@ -1356,6 +1407,14 @@ body {
   flex-direction: column;
   gap: 12px;
   width: 579px;
+}
+.feedback__form .text {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0%;
+  text-align: left;
+  margin-bottom: 16px;
 }
 @media (max-width: 991px) {
   .feedback__form {

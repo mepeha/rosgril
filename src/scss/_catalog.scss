@@ -130,6 +130,36 @@
   background: rgba(43, 43, 43, 1);
   display: flex;
   flex-direction: column;
+
+  .item__arrow {
+    transition: transform 0.2s ease;
+    transform-origin: center;
+  }
+
+  .item__arrow path {
+    transition: stroke 0.2s ease;
+  }
+
+  .item__name {
+    transition: color 0.2s ease;
+  }
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    .item__arrow {
+      transform: rotate(-45deg);
+    }
+
+    .item__arrow path {
+      stroke: rgba(244, 177, 102, 1);
+    }
+  }
+
+  &:active .item__name,
+  &:focus-visible .item__name {
+    color: rgba(244, 177, 102, 1);
+  }
 }
 
 .item__image {
@@ -138,14 +168,18 @@
 
 .item__info {
   padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .item__name {
- margin-bottom: 8px;
+ margin-bottom: auto;
 }
 
 .item__param {
-
+  margin-top: 8px;
   display: flex;
   gap: 8px;
   margin-bottom: 8px;

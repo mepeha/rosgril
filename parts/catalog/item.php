@@ -112,7 +112,7 @@ $catalog_item_price = trim($catalog_item_price);
       <span class="text no-margin">
         <?php echo esc_html($catalog_item_price); ?>
       </span>
-      <svg width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="item__arrow" width="31" height="26" viewBox="0 0 31 26" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M17.6498 22.4725L27.606 12.5163L17.6498 2.56006M25.3432 12.5163L1.81034 12.5163" stroke="#B2B2B2" stroke-width="3.62044" stroke-linecap="square"/>
       </svg>
     </div>
