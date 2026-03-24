@@ -16,69 +16,47 @@ $recaptcha_enabled = !empty($recaptcha_settings['enabled']) && $recaptcha_site_k
         <img src="<?php echo $theme_uri; ?>/dist/img/logo.svg" alt="Арх Бюро Суворова">
       </a>
       <div class="footer__menu">
-        <div class="footer__menu-block">
-          <h3 class="footer-title">
-            КАТАЛОГ ПРОЕКТОВ
-          </h3>
-          <div class="footer__menu-item">
-            Индивидуальное проектирование
+        <?php
+        $footer_menu_blocks = [
+            [
+                'title'    => 'КАТАЛОГ ПРОЕКТОВ',
+                'location' => 'footer_catalog',
+            ],
+            [
+                'title'    => 'ИНДИВИДУАЛЬНОЕ ПРОЕКТИРОВАНИЕ',
+                'location' => 'footer_individual',
+            ],
+            [
+                'title'    => 'О НАС',
+                'location' => 'footer_about',
+            ],
+            [
+                'title'    => 'ЧАСТЫЕ ВОПРОСЫ',
+                'location' => 'footer_faq',
+            ],
+        ];
+        ?>
+        <?php foreach ($footer_menu_blocks as $footer_menu_block) : ?>
+          <div class="footer__menu-block">
+            <h3 class="footer-title">
+              <?php echo esc_html($footer_menu_block['title']); ?>
+            </h3>
+            <?php
+            if (has_nav_menu($footer_menu_block['location'])) {
+                wp_nav_menu([
+                    'theme_location'        => $footer_menu_block['location'],
+                    'container'             => false,
+                    'menu_class'            => 'footer__menu-list',
+                    'depth'                 => 1,
+                    'fallback_cb'           => false,
+                    'tanyatheme_link_class' => 'footer__menu-item',
+                ]);
+            } else {
+                echo '<ul class="footer__menu-list"></ul>';
+            }
+            ?>
           </div>
-          <div class="footer__menu-item">
-            одноэтажные
-          </div>
-          <div class="footer__menu-item">
-            двухэтажные
-          </div>
-          <div class="footer__menu-item">
-            бани
-          </div>
-        </div>
-        <div class="footer__menu-block">
-          <h3 class="footer-title">
-            ИНФОРМАЦИЯ
-          </h3>
-          <div class="footer__menu-item">
-            Как заказать проект дома
-          </div>
-          <div class="footer__menu-item">
-            Состав проектной документации
-          </div>
-          <div class="footer__menu-item">
-            Способы оплаты
-          </div>
-          <div class="footer__menu-item">
-            Внесение изменений в проект
-          </div>
-          <div class="footer__menu-item">
-            Доставка
-          </div>
-        </div>
-        <div class="footer__menu-block">
-          <h3 class="footer-title">
-            КОМПАНИЯ
-          </h3>
-          <div class="footer__menu-item">
-            о нас
-          </div>
-          <div class="footer__menu-item">
-            частые вопросы
-          </div>
-          <div class="footer__menu-item">
-            Контакты
-          </div>
-        </div>
-        <div class="footer__menu-block">
-          <h3 class="footer-title">
-            ИНТЕРЬЕР
-          </h3>
-          <div class="footer__menu-item">
-            Интерьерные решения
-          </div>
-          <div class="footer__menu-item">
-            Интерьерные решения
-          </div>
-        </div>
-
+        <?php endforeach; ?>
       </div>
       <div class="footer__contact">
         <h3 class="footer-title">

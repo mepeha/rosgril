@@ -5,7 +5,7 @@
           готовые Проекты <br>
           домов и коттеджей
         </h1>
-        <a href="" class="banner__button button button-main" data-feedback-popup-open>
+        <a href="/project/" class="banner__button button button-main">
           смотреть все проекты
           <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9.75 12.4141L15.25 6.91406L9.75 1.41406M14 6.91406L1 6.91406" stroke="black" stroke-width="2" stroke-linecap="square"/>

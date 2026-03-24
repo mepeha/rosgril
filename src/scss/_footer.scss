@@ -52,7 +52,39 @@
 }
 
 .footer__menu-item {
-  margin-bottom: 12px;
+  display: inline-block;
+  margin: 0;
+  text-decoration: none;
+}
+
+.footer__menu-list {
+  margin: 0;
+  padding: 0;
+  list-style: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none !important;
+  }
+
+  li,
+  > li,
+  .menu-item {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    list-style-type: none !important;
+  }
+
+  li::marker,
+  > li::marker,
+  .menu-item::marker {
+    content: "";
+  }
 }
 
 .footer__contact {

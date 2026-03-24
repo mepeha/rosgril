@@ -1,7 +1,7 @@
 h1 {
   font-size: 46px;
   line-height: 62px;
-  font-weight: 700;
+  font-weight: 500;
   text-transform: uppercase;
   margin-bottom: 32px;
 }
@@ -119,6 +119,29 @@ li {
   margin: 6px 0 6px 20px;
 }
 
+:root {
+  --anchor-scroll-offset: 96px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--anchor-scroll-offset);
+}
+
+[id] {
+  scroll-margin-top: var(--anchor-scroll-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+@media (max-width: 991px) {
+  :root {
+    --anchor-scroll-offset: 72px;
+  }
+}
 body {
   color: white;
   font-family: "Inter", sans-serif;
@@ -256,8 +279,45 @@ body {
 
 .breadcrumbs {
   margin: 0;
+  text-transform: lowercase;
+}
+.breadcrumbs li {
+  margin: unset;
+}
+
+.breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   font-size: 14px;
   line-height: 20px;
+  color: rgb(178, 178, 178);
+}
+
+.breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+}
+.breadcrumbs__item:not(:last-child)::after {
+  content: " - ";
+  margin: 0 4px;
+  color: rgb(178, 178, 178);
+}
+
+.breadcrumbs__link {
+  color: rgb(178, 178, 178);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.breadcrumbs__link:hover, .breadcrumbs__link:focus-visible {
+  color: rgb(244, 177, 102);
+}
+
+.breadcrumbs__current {
   color: rgb(178, 178, 178);
 }
 
@@ -638,6 +698,9 @@ body {
   }
 }
 
+.create.arch-buro {
+  padding: 0 0 50px;
+}
 .create.arch-buro .create__area {
   gap: 100px;
 }
@@ -1572,7 +1635,36 @@ body.captcha-popup-open {
 }
 
 .footer__menu-item {
-  margin-bottom: 12px;
+  display: inline-block;
+  margin: 0;
+  text-decoration: none;
+}
+
+.footer__menu-list {
+  margin: 0;
+  padding: 0;
+  list-style: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer__menu-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none !important;
+}
+.footer__menu-list li,
+.footer__menu-list > li,
+.footer__menu-list .menu-item {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+  list-style-type: none !important;
+}
+.footer__menu-list li::marker,
+.footer__menu-list > li::marker,
+.footer__menu-list .menu-item::marker {
+  content: "";
 }
 
 .footer__contact {

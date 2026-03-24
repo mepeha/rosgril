@@ -91,30 +91,66 @@ if (is_singular(['project', 'page'])) {
             $page_head_subtitle = trim((string) get_field('subtitle', $page_head_post_id));
         }
 
-        $page_head_breadcrumbs_text = '';
+        $page_head_breadcrumbs = [];
         if (!$page_head_hide_breadcrumbs && $page_head_title !== '') {
+            $page_head_breadcrumbs[] = [
+                'label' => 'Главная',
+                'url' => home_url('/'),
+            ];
+
             if (get_post_type($page_head_post_id) === 'project') {
                 $page_head_project_label = $page_head_title;
 
                 if (function_exists('get_field')) {
                     $page_head_project_id = trim((string) get_field('id', $page_head_post_id));
                     if ($page_head_project_id !== '') {
-                        $page_head_project_label = 'проект ' . $page_head_project_id;
+                        $page_head_project_label = 'Проект ' . $page_head_project_id;
                     }
                 }
 
-                $page_head_breadcrumbs_text = 'главная - каталог проектов - ' . $page_head_project_label;
+                $page_head_archive_link = get_post_type_archive_link('project');
+                if (!$page_head_archive_link) {
+                    $page_head_archive_link = home_url('/project/');
+                }
+
+                $page_head_breadcrumbs[] = [
+                    'label' => 'Каталог проектов',
+                    'url' => $page_head_archive_link,
+                ];
+
+                $page_head_breadcrumbs[] = [
+                    'label' => $page_head_project_label,
+                    'url' => '',
+                ];
             } else {
-                $page_head_breadcrumbs_text = 'главная - ' . $page_head_title;
+                if (is_page($page_head_post_id)) {
+                    $page_head_ancestors = array_reverse((array) get_post_ancestors($page_head_post_id));
+                    foreach ($page_head_ancestors as $page_head_ancestor_id) {
+                        $page_head_ancestor_title = trim((string) get_the_title($page_head_ancestor_id));
+                        if ($page_head_ancestor_title === '') {
+                            continue;
+                        }
+
+                        $page_head_breadcrumbs[] = [
+                            'label' => $page_head_ancestor_title,
+                            'url' => get_permalink($page_head_ancestor_id),
+                        ];
+                    }
+                }
+
+                $page_head_breadcrumbs[] = [
+                    'label' => $page_head_title,
+                    'url' => '',
+                ];
             }
         }
 
         $page_head_title_to_render = (!$page_head_hide_title && $page_head_title !== '') ? $page_head_title : '';
         $page_head_subtitle_to_render = (!$page_head_hide_subtitle && $page_head_subtitle !== '') ? $page_head_subtitle : '';
 
-        if ($page_head_breadcrumbs_text !== '' || $page_head_title_to_render !== '' || $page_head_subtitle_to_render !== '') {
+        if (!empty($page_head_breadcrumbs) || $page_head_title_to_render !== '' || $page_head_subtitle_to_render !== '') {
             $page_head_data = [
-                'breadcrumbs' => $page_head_breadcrumbs_text,
+                'breadcrumbs' => $page_head_breadcrumbs,
                 'title' => $page_head_title_to_render,
                 'subtitle' => $page_head_subtitle_to_render,
             ];
@@ -127,10 +163,33 @@ if (is_singular(['project', 'page'])) {
   <div class="page-head">
     <div class="container">
       <div class="page-head__area">
-        <?php if ($page_head_data['breadcrumbs'] !== '') : ?>
-          <div class="breadcrumbs">
-            <?php echo esc_html($page_head_data['breadcrumbs']); ?>
-          </div>
+        <?php if (!empty($page_head_data['breadcrumbs'])) : ?>
+          <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <ol class="breadcrumbs__list">
+              <?php
+              $page_head_breadcrumbs_total = count($page_head_data['breadcrumbs']);
+              foreach ($page_head_data['breadcrumbs'] as $page_head_breadcrumb_index => $page_head_breadcrumb_item) :
+                  $page_head_is_last_breadcrumb = ($page_head_breadcrumb_index === $page_head_breadcrumbs_total - 1);
+                  $page_head_breadcrumb_label = isset($page_head_breadcrumb_item['label']) ? (string) $page_head_breadcrumb_item['label'] : '';
+                  $page_head_breadcrumb_url = isset($page_head_breadcrumb_item['url']) ? (string) $page_head_breadcrumb_item['url'] : '';
+                  if ($page_head_breadcrumb_label === '') {
+                      continue;
+                  }
+                  ?>
+                  <li class="breadcrumbs__item<?php echo $page_head_is_last_breadcrumb ? ' breadcrumbs__item--current' : ''; ?>">
+                    <?php if (!$page_head_is_last_breadcrumb && $page_head_breadcrumb_url !== '') : ?>
+                      <a href="<?php echo esc_url($page_head_breadcrumb_url); ?>" class="breadcrumbs__link">
+                        <?php echo esc_html($page_head_breadcrumb_label); ?>
+                      </a>
+                    <?php else : ?>
+                      <span class="breadcrumbs__current" aria-current="page">
+                        <?php echo esc_html($page_head_breadcrumb_label); ?>
+                      </span>
+                    <?php endif; ?>
+                  </li>
+              <?php endforeach; ?>
+            </ol>
+          </nav>
         <?php endif; ?>
 
         <?php if ($page_head_data['title'] !== '') : ?>

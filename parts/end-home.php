@@ -1,4 +1,4 @@
-  <section class="end-home margin">
+  <section class="end-home margin" id="end-home">
     <div class="container">
       <h2>построенные дома</h2>
       <div class="end-home__area">

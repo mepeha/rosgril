@@ -7,9 +7,12 @@ if (!defined('ABSPATH')) {
 function tanyatheme_register_menus(): void
 {
     register_nav_menus([
-        'primary' => __('Primary Menu', 'tanyatheme'),
-        'mobile'  => __('Mobile Menu', 'tanyatheme'),
-        'footer'  => __('Footer Menu', 'tanyatheme'),
+        'primary'           => __('Primary Menu', 'tanyatheme'),
+        'mobile'            => __('Mobile Menu', 'tanyatheme'),
+        'footer_catalog'    => __('Footer Catalog', 'tanyatheme'),
+        'footer_individual' => __('Footer Individual', 'tanyatheme'),
+        'footer_about'      => __('Footer About', 'tanyatheme'),
+        'footer_faq'        => __('Footer FAQ', 'tanyatheme'),
     ]);
 }
 

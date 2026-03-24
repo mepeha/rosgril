@@ -1,5 +1,30 @@
 @use "globals" as *;
 
+:root {
+  --anchor-scroll-offset: 96px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--anchor-scroll-offset);
+}
+
+[id] {
+  scroll-margin-top: var(--anchor-scroll-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@include laptop {
+  :root {
+    --anchor-scroll-offset: 72px;
+  }
+}
+
 body {
   color: white;
   font-family: $inter;
@@ -115,8 +140,48 @@ body {
 
 .breadcrumbs {
   margin: 0;
+  text-transform: lowercase;
+  li {
+    margin: unset;
+  }
+}
+
+.breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   font-size: 14px;
   line-height: 20px;
+  color: rgba(178, 178, 178, 1);
+}
+
+.breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+
+  &:not(:last-child)::after {
+    content: " - ";
+    margin: 0 4px;
+    color: rgba(178, 178, 178, 1);
+  }
+}
+
+.breadcrumbs__link {
+  color: rgba(178, 178, 178, 1);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: rgba(244, 177, 102, 1);
+  }
+}
+
+.breadcrumbs__current {
   color: rgba(178, 178, 178, 1);
 }
 

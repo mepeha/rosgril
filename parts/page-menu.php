@@ -2,7 +2,7 @@
     <div class="container">
       <div class="page-menu__area">
 
-        <div class="page-menu__item project" style="background-image: url(<?php echo $theme_uri; ?>/dist/img/page-menu-item-bg.webp)">
+        <a href="/individual/" class="page-menu__item project" style="background-image: url(<?php echo $theme_uri; ?>/dist/img/page-menu-item-bg.webp)">
           <div class="name">
             Индивидуальное
             проектирование
@@ -16,8 +16,8 @@
               <path d="M45.0186 43.4248L47.4636 29.5585L33.5973 27.1135M45.61 30.8564L26.333 44.3542" stroke="black" stroke-width="3.62044" stroke-linecap="square"/>
             </svg>
           </div>
-        </div>
-        <div class="page-menu__item">
+        </a>
+        <a href="/take/" class="page-menu__item">
           <div class="name">
             Как заказать проект дома
           </div>
@@ -28,8 +28,8 @@
               <path d="M45.0186 43.4248L47.4636 29.5585L33.5973 27.1135M45.61 30.8564L26.333 44.3542" stroke="black" stroke-width="3.62044" stroke-linecap="square"/>
             </svg>
           </div>
-        </div>
-        <div class="page-menu__item">
+        </a>
+        <a href="/composition/" class="page-menu__item">
           <div class="name">
             Состав проектной документации
           </div>
@@ -40,8 +40,8 @@
               <path d="M45.0186 43.4248L47.4636 29.5585L33.5973 27.1135M45.61 30.8564L26.333 44.3542" stroke="black" stroke-width="3.62044" stroke-linecap="square"/>
             </svg>
           </div>
-        </div>
-        <div class="page-menu__item">
+        </a>
+        <a href="/change/" class="page-menu__item">
           <div class="name">
             Внесение изменений в проект
           </div>
@@ -51,7 +51,7 @@
               <path d="M45.0186 43.4248L47.4636 29.5585L33.5973 27.1135M45.61 30.8564L26.333 44.3542" stroke="black" stroke-width="3.62044" stroke-linecap="square"/>
             </svg>
           </div>
-        </div>
+        </a>
         <img src="<?php echo $theme_uri; ?>/dist/img/page-menu-bg.webp" alt="" class="page-menu__bg">
       </div>
     </div>
