@@ -4,13 +4,14 @@
         <img class="create__image" src="<?php echo $theme_uri; ?>/dist/img/tania.webp" alt="">
         <div class="create__info info">
           <h2 class="info__title">
-            создаем дома
-            и пространства,
-            в которых приятно жить
+            создаем дома <br>
+            и пространства, <br>
+
+              <i>в которых приятно жить</i>
           </h2>
           <div class="text">
-            Наша команда проектирует современные
-            дома, где комфорт, функциональность
+            Наша команда проектирует современные <br>
+            дома, где комфорт, функциональность <br>
             и эстетика объединяются в каждом решении
           </div>
           <a href="#end-home" class="info__button button button-stroke">

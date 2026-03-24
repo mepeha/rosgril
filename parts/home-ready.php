@@ -4,13 +4,17 @@
         <img src="<?php echo $theme_uri; ?>/dist/img/home-ready.webp" alt="" class="home-ready__image">
         <div class="create__info info">
           <h2>
-            Дом готов?
-            Дело за интерьером
+            Дом готов? <span class="nowrap">
+                   Дело за интерьером
+              </span>
+
           </h2>
           <div class="text">
-            Наша команда создаёт современные интерьеры, где эстетика встречается с комфортом.
+            Наша команда создаёт современные интерьеры, <span class="nowrap">
+                  где эстетика
+              </span>  встречается <span class="nowrap"> с комфортом.</span>
             Мы превращаем пустые стены
-            в атмосферные пространства с душой
+            <span class="nowrap">в атмосферные</span> пространства <span class="nowrap">с душой</span>
           </div>
           <a href="/resh/" class="info__button button button-stroke">
             узнать подробнее

@@ -11,11 +11,11 @@ get_header();
 
     <section class="take-project-info content">
         <div class="container">
-            <div class="take-project-info__content">
+            <div class="take-project-info__content" id="pay">
                 <h3>СПОСОБЫ ОПЛАТЫ</h3>
                 <p>Счет в банке любым способом перевода на расчетный счет (с банковского счета, сбербанк онлайн и т.д.). Для типовых проектов предоплата 100%.</p>
 
-                <h3>ПОЛУЧЕНИЕ ПРОЕКТНОЙ ДОКУМЕНТАЦИИ</h3>
+                <h3 id="delivery">ПОЛУЧЕНИЕ ПРОЕКТНОЙ ДОКУМЕНТАЦИИ</h3>
                 <p>
                 <ul>
                     <li>Встреча по предварительной договоренности в г. Екатеринбург.</li>

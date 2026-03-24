@@ -107,6 +107,6 @@ $theme_uri = get_template_directory_uri();
             </div>
         </div>
     </div>
-
+    <?php require get_template_directory() . '/parts/feedback/take.php'; ?>
 </main>
 <?php get_footer(); ?>

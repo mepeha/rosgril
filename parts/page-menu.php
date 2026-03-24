@@ -43,7 +43,7 @@
         </a>
         <a href="/change/" class="page-menu__item">
           <div class="name">
-            Внесение изменений в проект
+            Внесение изменений <span style="white-space: nowrap">в проект</span>
           </div>
           <div class="arrow">
             <svg width="74" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -59,8 +59,19 @@ body {
   text-align: left;
   text-transform: uppercase;
   width: fit-content;
+
+  svg {
+    transition: transform 0.2s ease;
+    transform-origin: center;
+  }
+
+  &:hover svg,
+  &:focus-visible svg {
+    transform: rotate(-45deg);
+  }
+
   @include tablet {
-    font-size: 12px;
+    font-size: 18px;
     padding: 10px 20px;
   }
 }
@@ -69,6 +80,9 @@ body {
   &:hover {
     background: rgba(240, 214, 185, 1);
   }
+}
+.nowrap {
+  white-space: nowrap;
 }
 .button-stroke {
   box-sizing: border-box;

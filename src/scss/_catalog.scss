@@ -13,6 +13,7 @@
   gap: 25px;
   @include laptop {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
 }
 .main-filter {
@@ -49,6 +50,9 @@
     transform-origin: left center;
   }
 
+  .name {
+    margin-bottom: unset;
+  }
 
   .arrow {
   }
@@ -59,7 +63,7 @@
     bottom: 0;
     left: 0;
     @include laptop {
-      height: 100%;
+      display: none;
     }
   }
   &:hover,
@@ -90,7 +94,10 @@
     animation: main-filter-progress 0.2s linear forwards;
   }
   @include laptop {
-    height: 85px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 

@@ -120,3 +120,36 @@
     object-fit: contain;
   }
 }
+
+@media (min-width: 992px) {
+  .footer__menu-item {
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 1px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.2s ease;
+      pointer-events: none;
+    }
+
+    &:hover::before,
+    &:focus-visible::before {
+      transform: scaleX(1);
+    }
+  }
+
+  .footer__menu-list .current-menu-item > .footer__menu-item::before,
+  .footer__menu-list .current_page_item > .footer__menu-item::before,
+  .footer__menu-list .current-menu-parent > .footer__menu-item::before,
+  .footer__menu-list .current-menu-ancestor > .footer__menu-item::before,
+  .footer__menu-item[aria-current="page"]::before {
+    transform: scaleX(1);
+  }
+}

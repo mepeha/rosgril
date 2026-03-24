@@ -24,9 +24,16 @@
   padding: 0 0 50px;
   .create__area {
     gap: 100px;
+    @include laptop {
+      gap: 30px;
+    }
   }
   .create__image {
     width: 100%;
+    @include laptop {
+      object-fit: contain;
+      height: 400px;
+    }
   }
 }
 
